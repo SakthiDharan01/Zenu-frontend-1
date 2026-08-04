@@ -1,3 +1,5 @@
+import { apiFetch } from './apiClient';
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000';
 
 export type AuthUser = {
@@ -59,16 +61,8 @@ const ensureOk = async (response: Response) => {
 export const authClient = {
   async getCurrentUser(): Promise<AuthUser | null> {
     try {
-      const headers: HeadersInit = {};
-      const token = typeof window !== 'undefined' ? localStorage.getItem('zenu_access_token') : null;
-      if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-      }
-
-      const response = await fetch(buildUrl('/api/me'), {
+      const response = await apiFetch('/api/me', {
         method: 'GET',
-        headers,
-        credentials: 'include',
         cache: 'no-store'
       });
 
@@ -85,12 +79,8 @@ export const authClient = {
   },
 
   async signIn(input: SignInInput): Promise<AuthUser> {
-    const response = await fetch(buildUrl('/api/auth/sign-in'), {
+    const response = await apiFetch('/api/auth/sign-in', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      credentials: 'include',
       body: JSON.stringify(input)
     });
 
@@ -100,21 +90,13 @@ export const authClient = {
       throw new Error('Sign in response missing user');
     }
 
-    if (data?.accessToken && typeof window !== 'undefined') {
-      localStorage.setItem('zenu_access_token', data.accessToken as string);
-    }
-
     emitAuthChange();
     return user;
   },
 
   async signUp(input: SignUpInput): Promise<AuthUser> {
-    const response = await fetch(buildUrl('/api/auth/sign-up'), {
+    const response = await apiFetch('/api/auth/sign-up', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      credentials: 'include',
       body: JSON.stringify(input)
     });
 
@@ -124,21 +106,13 @@ export const authClient = {
       throw new Error('Sign up response missing user');
     }
 
-    if (data?.accessToken && typeof window !== 'undefined') {
-      localStorage.setItem('zenu_access_token', data.accessToken as string);
-    }
-
     emitAuthChange();
     return user;
   },
 
   async requestPasswordReset(email: string): Promise<string> {
-    const response = await fetch(buildUrl('/api/auth/forgot-password'), {
+    const response = await apiFetch('/api/auth/forgot-password', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      credentials: 'include',
       body: JSON.stringify({ email })
     });
 
@@ -147,12 +121,8 @@ export const authClient = {
   },
 
   async resetPassword(input: ResetPasswordInput): Promise<string> {
-    const response = await fetch(buildUrl('/api/auth/reset-password'), {
+    const response = await apiFetch('/api/auth/reset-password', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      credentials: 'include',
       body: JSON.stringify(input)
     });
 
@@ -161,21 +131,9 @@ export const authClient = {
   },
 
   async signOut(): Promise<void> {
-    const headers: HeadersInit = {};
-    const token = typeof window !== 'undefined' ? localStorage.getItem('zenu_access_token') : null;
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
-    }
-
-    const response = await fetch(buildUrl('/api/logout'), {
-      method: 'POST',
-      headers,
-      credentials: 'include'
+    const response = await apiFetch('/api/logout', {
+      method: 'POST'
     });
-
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('zenu_access_token');
-    }
 
     if (response.status === 401) {
       emitAuthChange();

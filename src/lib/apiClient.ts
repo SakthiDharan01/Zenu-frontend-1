@@ -46,25 +46,31 @@ const ensureOk = async (response: Response) => {
   throw new Error(message || 'Unexpected error');
 };
 
-const request = async <T>(path: string, init?: RequestInit): Promise<T> => {
-  const { headers: initHeaders, ...restInit } = init ?? {};
-  
-  const headers: HeadersInit = {
+export async function apiFetch(
+  path: string,
+  options: RequestInit = {}
+): Promise<Response> {
+  const url = buildUrl(path);
+
+  const defaultHeaders: HeadersInit = {
     'Content-Type': 'application/json',
-    ...initHeaders
+    'Accept': 'application/json',
   };
 
-  const token = typeof window !== 'undefined' ? localStorage.getItem('zenu_access_token') : null;
-  if (token) {
-    (headers as Record<string, string>)['Authorization'] = `Bearer ${token}`;
-  }
-
-  const response = await fetch(buildUrl(path), {
+  const response = await fetch(url, {
+    ...options,
     credentials: 'include',
-    headers,
-    ...restInit
+    headers: {
+      ...defaultHeaders,
+      ...(options.headers || {}),
+    },
   });
 
+  return response;
+}
+
+const request = async <T>(path: string, init?: RequestInit): Promise<T> => {
+  const response = await apiFetch(path, init);
   const okResponse = await ensureOk(response);
   const data = await parseJson<T>(okResponse);
   return (data as T) ?? ({} as T);
