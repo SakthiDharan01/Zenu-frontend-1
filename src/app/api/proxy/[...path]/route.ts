@@ -5,7 +5,7 @@ const BACKEND_URL = process.env.BACKEND_URL ?? 'https://zenu-backend-5dgz.onrend
 async function handler(req: NextRequest, { params }: { params: { path: string[] } }) {
   const path = params.path.join('/');
   const search = req.nextUrl.search ?? '';
-  const backendUrl = `${BACKEND_URL}/api/${path}${search}`;
+  const backendUrl = `${BACKEND_URL}/${path}${search}`;;
 
   let body: string | undefined;
   if (req.method !== 'GET' && req.method !== 'HEAD') {
