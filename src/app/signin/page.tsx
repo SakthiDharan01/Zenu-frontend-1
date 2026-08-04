@@ -43,7 +43,8 @@ const SignInPage = () => {
         email: values.email,
         password: values.password
       });
-      router.push('/');
+      await new Promise(resolve => setTimeout(resolve, 100));
+      router.replace('/');
       router.refresh();
     } catch (error) {
       console.error('Sign-in failed', error);

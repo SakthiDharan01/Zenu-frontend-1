@@ -66,7 +66,8 @@ const SignUpPage = () => {
         fullName: values.fullName?.trim() ? values.fullName.trim() : undefined,
         username: values.username?.trim() ? values.username.trim() : undefined
       });
-      router.push('/');
+      await new Promise(resolve => setTimeout(resolve, 100));
+      router.replace('/');
       router.refresh();
     } catch (error) {
       console.error('Sign-up failed', error);
