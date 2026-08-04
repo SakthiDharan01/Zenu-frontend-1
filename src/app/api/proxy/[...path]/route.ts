@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const BACKEND_URL = process.env.BACKEND_URL ?? 'https://zenu-backend.onrender.com';
+const BACKEND_URL = process.env.BACKEND_URL ?? 'https://zenu-backend-5dgz.onrender.com';
 
 async function handler(req: NextRequest, { params }: { params: { path: string[] } }) {
   const path = params.path.join('/');
