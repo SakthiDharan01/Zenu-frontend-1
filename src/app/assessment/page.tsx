@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { apiClient } from '@/lib/apiClient';
 import { useAuth } from '@/components/providers/AuthProvider';
@@ -18,6 +18,20 @@ export default function StressAssessmentPage() {
   const [selected, setSelected] = useState<number | null>(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [daysUntilNext, setDaysUntilNext] = useState<number | null>(null);
+
+  useEffect(() => {
+    const lastCompletedStr = localStorage.getItem('zenu_pss_last_completed');
+    if (lastCompletedStr) {
+      const lastCompleted = new Date(lastCompletedStr);
+      const now = new Date();
+      const diffMs = now.getTime() - lastCompleted.getTime();
+      const diffDays = diffMs / (1000 * 60 * 60 * 24);
+      if (diffDays < 7) {
+        setDaysUntilNext(Math.ceil(7 - diffDays));
+      }
+    }
+  }, []);
 
   const progress = useMemo(() => ((currentQIndex + 1) / PSS_QUESTIONS.length) * 100, [currentQIndex]);
 
@@ -36,6 +50,7 @@ export default function StressAssessmentPage() {
       const scoredAnswers = calculateScoredAnswers(finalAnswers);
 
       await apiClient.submitPSS(scoredAnswers);
+      localStorage.setItem('zenu_pss_last_completed', new Date().toISOString());
       router.push('/');
       router.refresh();
     } catch (submitError) {
@@ -92,6 +107,29 @@ export default function StressAssessmentPage() {
             className="mt-6 inline-flex items-center justify-center rounded-full bg-blue-600 text-white px-6 py-3 font-medium hover:bg-blue-700"
           >
             Go to sign in
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (daysUntilNext !== null) {
+    return (
+      <div className="min-h-[70vh] flex items-center justify-center px-4">
+        <div className="max-w-lg w-full bg-white rounded-3xl border border-gray-100 shadow-lg p-8 text-center">
+          <div className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-emerald-100 text-emerald-600 mb-4">
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <h1 className="text-2xl font-semibold text-gray-900">You&apos;re all caught up!</h1>
+          <p className="text-gray-600 mt-3">Your next stress check-in is in {daysUntilNext} day{daysUntilNext !== 1 ? 's' : ''}.</p>
+          <button
+            type="button"
+            onClick={() => router.push('/')}
+            className="mt-6 inline-flex items-center justify-center rounded-full bg-blue-600 text-white px-6 py-3 font-medium hover:bg-blue-700"
+          >
+            Return to Dashboard
           </button>
         </div>
       </div>

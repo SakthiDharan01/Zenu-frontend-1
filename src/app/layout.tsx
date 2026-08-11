@@ -1,4 +1,3 @@
-// src/app/layout.tsx
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
@@ -19,21 +18,12 @@ export const viewport = {
   initialScale: 1,
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} antialiased`}>
+      <body className={inter.className}>
         <AuthProvider>
-          <div className="flex flex-col min-h-screen">
-            <Navigation />
-            <main className="flex-1 pt-16">
-              {children}
-            </main>
-          </div>
+          {children}
         </AuthProvider>
       </body>
     </html>

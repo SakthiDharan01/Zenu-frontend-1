@@ -293,22 +293,24 @@ const HomePage = () => {
   const modules = useMemo(() => overview?.modules ?? [], [overview]);
 
   useEffect(() => {
-    if (!user || !pss || dashboardLoading) {
+    if (!user || dashboardLoading) {
       setShowMandatoryPssPrompt(false);
       return;
     }
 
+    const lastCompletedStr = localStorage.getItem('zenu_pss_last_completed');
+    if (!lastCompletedStr) {
+      setShowMandatoryPssPrompt(true);
+      return;
+    }
+
+    const lastCompleted = new Date(lastCompletedStr);
     const now = new Date();
-    const lastAssessmentDate = pss.createdAt ? new Date(pss.createdAt) : null;
+    const diffMs = now.getTime() - lastCompleted.getTime();
+    const diffDays = diffMs / (1000 * 60 * 60 * 24);
 
-    const completedToday =
-      !!lastAssessmentDate &&
-      now.getFullYear() === lastAssessmentDate.getFullYear() &&
-      now.getMonth() === lastAssessmentDate.getMonth() &&
-      now.getDate() === lastAssessmentDate.getDate();
-
-    setShowMandatoryPssPrompt(!completedToday);
-  }, [user, pss, dashboardLoading]);
+    setShowMandatoryPssPrompt(diffDays >= 7);
+  }, [user, dashboardLoading]);
 
   const handleWaterGarden = async () => {
     try {
@@ -337,16 +339,16 @@ const HomePage = () => {
       {showMandatoryPssPrompt ? (
         <div className="fixed inset-0 z-[100] bg-black/45 backdrop-blur-sm flex items-center justify-center px-4">
           <div className="max-w-md w-full rounded-3xl bg-white shadow-2xl border border-white/60 p-8 text-center">
-            <h2 className="text-2xl font-semibold text-gray-900">Daily stress check-in required</h2>
+            <h2 className="text-2xl font-semibold text-gray-900">Weekly stress check-in required</h2>
             <p className="text-gray-600 mt-3">
-              Please complete today&apos;s PSS assessment before using other modules.
+              Please complete this week&apos;s PSS assessment before using other modules.
             </p>
             <button
               type="button"
               onClick={() => router.push('/assessment')}
               className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-blue-600 text-white px-6 py-3 font-medium hover:bg-blue-700"
             >
-              Start today&apos;s PSS
+              Start this week&apos;s PSS
             </button>
           </div>
         </div>

@@ -24,7 +24,8 @@ async function handler(req: NextRequest, { params }: { params: { path: string[] 
 
   const responseBody = await backendRes.arrayBuffer();
 
-  const proxyRes = new NextResponse(responseBody, {
+  const isNoBodyStatus = backendRes.status === 204 || backendRes.status === 205 || backendRes.status === 304;
+  const proxyRes = new NextResponse(isNoBodyStatus ? null : responseBody, {
     status: backendRes.status,
     statusText: backendRes.statusText,
   });
