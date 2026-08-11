@@ -1,5 +1,6 @@
 'use client';
 import { useEffect } from "react";
+import { ArrowLeft } from "lucide-react";
 import InnerCompassComponent from "@/components/InnerCompass";
 import { trackEngagement } from '@/lib/signals';
 
