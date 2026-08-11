@@ -31,6 +31,7 @@ import type {
 import { cn } from '@/lib/utils';
 import { StreakGarden } from '@/components/StreakGarden';
 import { PSSCheck } from '@/components/PSSCheck';
+import AgenticRecommendations from '@/components/dashboard/AgenticRecommendations';
 
 type ModuleVisual = {
   href: string;
@@ -361,6 +362,10 @@ const HomePage = () => {
             Hey {user?.username ?? user?.fullName ?? user?.email?.split('@')[0] ?? 'friend'}, you&apos;re safe here.
           </h1>
           <p className="mt-4 text-lg text-gray-600">Pick a practice below or follow today&apos;s focus to keep your nervous system steady.</p>
+        </div>
+
+        <div className="mb-12 max-w-4xl mx-auto">
+          <AgenticRecommendations />
         </div>
 
         {error ? (

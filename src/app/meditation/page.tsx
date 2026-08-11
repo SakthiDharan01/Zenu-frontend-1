@@ -12,6 +12,7 @@ import type { Meditation } from '@/lib/types';
 import { toast } from 'sonner';
 import { Flame, CloudRain, Waves, TreePine, Play, Headphones, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import { trackEngagement } from '@/lib/signals';
 
 type SoundType = 'fire' | 'rain' | 'forest' | 'ocean';
 
@@ -255,6 +256,15 @@ const MeditationPageInner = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedMeditation, setSelectedMeditation] = useState<Meditation | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+
+  useEffect(() => {
+    trackEngagement('meditation_jpmr', 'opened');
+    const start = Date.now();
+    return () => {
+      const duration = Math.round((Date.now() - start) / 1000);
+      trackEngagement('meditation_jpmr', 'completed', duration);
+    };
+  }, []);
 
   const loadMeditations = useCallback(async () => {
     setLoading(true);

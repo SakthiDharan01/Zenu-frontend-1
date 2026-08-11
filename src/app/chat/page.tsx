@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import { RequireAuth } from '@/components/auth/RequireAuth';
 import { apiClient } from '@/lib/apiClient';
 import type { ChatMessage, ConversationSummary } from '@/lib/types';
+import { trackEngagement } from '@/lib/signals';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -39,6 +40,15 @@ const ChatContent = () => {
   const [input, setInput] = useState('');
   const [isSending, setIsSending] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    trackEngagement('chatbot_seviyan', 'opened');
+    const start = Date.now();
+    return () => {
+      const duration = Math.round((Date.now() - start) / 1000);
+      trackEngagement('chatbot_seviyan', 'completed', duration);
+    };
+  }, []);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });

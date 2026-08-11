@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { trackEngagement } from '@/lib/signals';
 import BottomBar from "./components/BottomBar";
 import CanvasArea from "./components/CanvasArea";
 import StickerPanel from "./components/modals/StickerPanel";
@@ -22,7 +23,13 @@ export default function Page() {
   useShortcuts(setTool);
 
   useEffect(() => {
+    trackEngagement('arts_scribble', 'opened');
+    const start = Date.now();
     loadFromLocalStorage();
+    return () => {
+      const duration = Math.round((Date.now() - start) / 1000);
+      trackEngagement('arts_scribble', 'completed', duration);
+    };
   }, [loadFromLocalStorage]);
 
   const { darkMode } = useToolStore();

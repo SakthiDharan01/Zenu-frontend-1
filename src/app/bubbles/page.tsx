@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { trackEngagement } from '@/lib/signals';
 
 // Calming pastel color palette for zen experience
 const PALETTE = {
@@ -414,6 +415,15 @@ const BubbleCanvas = () => {
   const lastFrameTimeRef = useRef<number>(0);
   const [currentAffirmation, setCurrentAffirmation] = useState(AFFIRMATIONS[0]);
   const [headerVisible, setHeaderVisible] = useState(true);
+
+  useEffect(() => {
+    trackEngagement('bubble_simulation', 'opened');
+    const start = Date.now();
+    return () => {
+      const duration = Math.round((Date.now() - start) / 1000);
+      trackEngagement('bubble_simulation', 'completed', duration);
+    };
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;

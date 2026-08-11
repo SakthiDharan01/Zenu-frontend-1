@@ -1,7 +1,8 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState, useRef } from 'react';
 import { toast } from 'sonner';
+import { trackEngagement } from '@/lib/signals';
 
 import { BreathingSelector } from '@/components/BreathingSelector';
 import { BreathingModal } from '@/components/BreathingModal';
@@ -37,10 +38,18 @@ const Breathing = () => {
   }, []);
 
   useEffect(() => {
+    trackEngagement('breathing_box', 'opened');
+    const start = Date.now();
+    
     if (!user) {
       return;
     }
     void loadPatterns();
+    
+    return () => {
+      const duration = Math.round((Date.now() - start) / 1000);
+      // Fired on unmount
+    };
   }, [user, loadPatterns]);
 
   const handleSelectPattern = (pattern: BreathingPattern) => {
@@ -63,6 +72,7 @@ const Breathing = () => {
     try {
       await apiClient.logBreathingSession({ patternId, durationSeconds });
       await apiClient.recordActivity('breathing', { patternId, durationSeconds });
+      trackEngagement('breathing_box', 'completed', durationSeconds);
       toast.success('Session saved', {
         description: 'Your breathing practice has been logged and added to your streak.'
       });

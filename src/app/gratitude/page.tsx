@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowLeft, Sparkles, Trash2, WandSparkles } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from 'sonner';
+import { trackEngagement } from '@/lib/signals';
 
 import { RequireAuth } from '@/components/auth/RequireAuth';
 import { useAuth } from '@/components/providers/AuthProvider';
@@ -112,6 +113,15 @@ const GratitudePageInner = () => {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [entries, setEntries] = useState<GratitudeEntry[]>([]);
+
+  useEffect(() => {
+    trackEngagement('journal_gratitude', 'opened');
+    const start = Date.now();
+    return () => {
+      const duration = Math.round((Date.now() - start) / 1000);
+      trackEngagement('journal_gratitude', 'completed', duration);
+    };
+  }, []);
   const [composerOpen, setComposerOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [picking, setPicking] = useState(false);

@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from 'next/link';
 import { ArrowLeft, Undo2, Redo2, Trash2, Download, Pencil, Eraser, Paintbrush } from "lucide-react";
 import { toast } from "sonner";
+import { trackEngagement } from '@/lib/signals';
 
 const DoodleDreams = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -21,6 +22,15 @@ const DoodleDreams = () => {
   const symmetry = 12;
   const angleStep = (2 * Math.PI) / symmetry;
   const MAX_STACK = 25;
+
+  useEffect(() => {
+    trackEngagement('arts_mandala', 'opened');
+    const start = Date.now();
+    return () => {
+      const duration = Math.round((Date.now() - start) / 1000);
+      trackEngagement('arts_mandala', 'completed', duration);
+    };
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;

@@ -1,8 +1,17 @@
 'use client';
-import { ArrowLeft } from "lucide-react";
+import { useEffect } from "react";
 import InnerCompassComponent from "@/components/InnerCompass";
+import { trackEngagement } from '@/lib/signals';
 
 const InnerCompass = () => {
+  useEffect(() => {
+    trackEngagement('inner_compass', 'opened');
+    const start = Date.now();
+    return () => {
+      const duration = Math.round((Date.now() - start) / 1000);
+      trackEngagement('inner_compass', 'completed', duration);
+    };
+  }, []);
 
   return (
     <div className="relative min-h-screen">
