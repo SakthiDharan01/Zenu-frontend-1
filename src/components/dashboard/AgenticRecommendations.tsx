@@ -5,28 +5,28 @@ import { getRecommendations } from '@/lib/signals';
 import { useRouter } from 'next/navigation';
 
 const MODULE_ROUTES: Record<string, string> = {
-  breathing_box:        '/breathing',
-  breathing_478:        '/breathing',
-  breathing_deep:       '/breathing',
-  breathing_cyclic:     '/breathing',
-  journal_gratitude:    '/gratitude',
-  arts_mandala:         '/arts',
-  arts_scribble:        '/arts',
-  meditation_jpmr:      '/meditations',
-  meditation_imagery:   '/meditations',
+  breathing_box: '/breathing',
+  breathing_478: '/breathing',
+  breathing_deep: '/breathing',
+  breathing_cyclic: '/breathing',
+  journal_gratitude: '/gratitude',
+  arts_mandala: '/arts',
+  arts_scribble: '/arts',
+  meditation_jpmr: '/meditations',
+  meditation_imagery: '/meditations',
   meditation_grounding: '/meditations',
-  chatbot_seviyan:      '/chat',
-  mood_tracker:         '/mood',
-  bubble_simulation:    '/burst',
-  streak_garden:        '/streak',
-  inner_compass:        '/inner-compass',
-  healing_garden:       '/healing-garden',
+  chatbot_seviyan: '/chat',
+  mood_tracker: '/mood',
+  bubble_simulation: '/burst',
+  streak_garden: '/streak',
+  inner_compass: '/inner-compass',
+  healing_garden: '/healing-garden',
 };
 
 const STRESS_COLORS: Record<string, string> = {
-  high:     'bg-rose-50 border-rose-200 text-rose-700',
+  high: 'bg-rose-50 border-rose-200 text-rose-700',
   moderate: 'bg-amber-50 border-amber-200 text-amber-700',
-  low:      'bg-green-50 border-green-200 text-green-700',
+  low: 'bg-green-50 border-green-200 text-green-700',
 };
 
 export default function AgenticRecommendations() {
@@ -88,7 +88,7 @@ export default function AgenticRecommendations() {
       </div>
 
       <p className="text-xs text-gray-400 text-center">
-        Personalised by ZenU's agentic AI · Updates daily
+        Personalised by ZenU&apos;s agentic AI · Updates daily
       </p>
     </div>
   );
