@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { getRecommendations } from '@/lib/signals';
 import { useRouter } from 'next/navigation';
 
-const MODULE_ROUTES: Record<string, string> = {
+/*const MODULE_ROUTES: Record<string, string> = {
   breathing_box: '/breathing',
   breathing_478: '/breathing',
   breathing_cyclic: '/breathing',
@@ -18,6 +18,20 @@ const MODULE_ROUTES: Record<string, string> = {
   bubble_simulation: '/burst',
   inner_compass: '/innercompass',
   healing_garden: '/healing-garden',
+};*/
+
+const MODULE_ROUTES: Record<string, string> = {
+  breathing: '/breathing',
+  mindfulness: '/meditation',
+  diary: '/journal',
+  journal_gratitude: '/gratitude',
+  doodle_dreams: '/art',
+  bubble_canvas: '/bubble',
+  burst_it_out: '/burst',
+  scribble_pad: '/scribble',
+  chatbot_seviyan: '/chat',
+  healing_garden: '/healing-garden',
+  inner_compass: '/innercompass',
 };
 
 const STRESS_COLORS: Record<string, string> = {
