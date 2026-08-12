@@ -27,8 +27,9 @@ const ResetPasswordContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const email = useMemo(() => searchParams.get('email') ?? '', [searchParams]);
-  const token = useMemo(() => searchParams.get('token') ?? '', [searchParams]);
+  // ✅ Fix: use optional chaining
+  const email = useMemo(() => searchParams?.get('email') ?? '', [searchParams]);
+  const token = useMemo(() => searchParams?.get('token') ?? '', [searchParams]);
 
   const [formError, setFormError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -76,32 +77,32 @@ const ResetPasswordContent = () => {
             </p>
           </div>
 
-          {missingLinkData ? (
+          {missingLinkData && (
             <div
               className="rounded-zen-lg border border-zen-warning/25 bg-zen-warning-soft px-4 py-3 zen-body-sm text-zen-warning"
               role="alert"
             >
               This reset link is incomplete. Please request a new reset email.
             </div>
-          ) : null}
+          )}
 
-          {formError ? (
+          {formError && (
             <div
               className="rounded-zen-lg border border-zen-danger/25 bg-zen-danger-soft px-4 py-3 zen-body-sm text-zen-danger"
               role="alert"
             >
               {formError}
             </div>
-          ) : null}
+          )}
 
-          {successMessage ? (
+          {successMessage && (
             <div
               className="rounded-zen-lg border border-zen-success/25 bg-zen-success-soft px-4 py-3 zen-body-sm text-zen-success"
               role="status"
             >
               {successMessage}
             </div>
-          ) : null}
+          )}
 
           <form className="space-y-5" onSubmit={handleSubmit(onSubmit)} noValidate>
             <ZenInput

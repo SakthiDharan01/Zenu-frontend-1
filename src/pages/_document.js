@@ -4,13 +4,15 @@ export default function Document() {
     return (
         <Html lang="en">
             <Head>
-                {/* Link to manifest */}
+                {/* Manifest + PWA setup */}
                 <link rel="manifest" href="/manifest.json" />
-                {/* Theme color for status bar */}
                 <meta name="theme-color" content="#4a90e2" />
-                {/* App icons */}
-                <link rel="icon" href="/icons/icon-192.png" />
-                <link rel="apple-touch-icon" href="/icons/icon-512.png" />
+
+                {/* ✅ Custom fonts here */}
+                <link
+                    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+                    rel="stylesheet"
+                />
             </Head>
             <body>
                 <Main />
