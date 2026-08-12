@@ -2,8 +2,9 @@
 
 import PandaJar from '@/components/gratitude/PandaJar';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Sparkles, Trash2, WandSparkles } from 'lucide-react';
+import { Sparkles, Trash2, WandSparkles, ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
 import { trackEngagement } from '@/lib/signals';
 
@@ -252,7 +253,15 @@ const GratitudePageInner = () => {
 
   return (
     <ZenPage atmosphere="renewal" gradient className="min-h-[calc(100dvh-4rem)]">
-      <ZenContainer maxWidth="xl" className="pt-8 pb-10 md:pt-12">
+      <ZenContainer maxWidth="xl" className="pt-8 pb-10 md:pt-12 relative">
+        <div className="absolute top-0 left-4 md:left-0 z-20 mt-4 md:mt-0">
+          <Link href="/dashboard" tabIndex={-1}>
+            <ZenButton variant="ghost" size="sm" className="text-zen-fg-muted hover:text-zen-fg">
+              <ArrowLeft className="h-4 w-4 mr-1.5" />
+              Back
+            </ZenButton>
+          </Link>
+        </div>
         <ZenSection>
           <div className="flex flex-col sm:flex-row sm:items-center gap-5 glass rounded-zen-xl p-6 sm:p-8">
             <PandaAvatar state="gratitude" size={72} label="Panda celebrating gratitude" />
