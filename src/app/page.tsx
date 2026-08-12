@@ -32,6 +32,7 @@ import { cn } from '@/lib/utils';
 import { StreakGarden } from '@/components/StreakGarden';
 import { PSSCheck } from '@/components/PSSCheck';
 import AgenticRecommendations from '@/components/dashboard/AgenticRecommendations';
+import { shouldShowPSS, daysUntilNextPSS } from '@/lib/pssSchedule';
 
 type ModuleVisual = {
   href: string;
@@ -290,27 +291,20 @@ const HomePage = () => {
     setStreak
   } = useHomeData(Boolean(user));
   const [showMandatoryPssPrompt, setShowMandatoryPssPrompt] = useState(false);
+  const [showPSSCard, setShowPSSCard] = useState(false);
+  const [daysNextPSS, setDaysNextPSS] = useState(0);
 
   const modules = useMemo(() => overview?.modules ?? [], [overview]);
 
   useEffect(() => {
     if (!user || dashboardLoading) {
       setShowMandatoryPssPrompt(false);
+      setShowPSSCard(false);
       return;
     }
-
-    const lastCompletedStr = localStorage.getItem('zenu_pss_last_completed');
-    if (!lastCompletedStr) {
-      setShowMandatoryPssPrompt(true);
-      return;
-    }
-
-    const lastCompleted = new Date(lastCompletedStr);
-    const now = new Date();
-    const diffMs = now.getTime() - lastCompleted.getTime();
-    const diffDays = diffMs / (1000 * 60 * 60 * 24);
-
-    setShowMandatoryPssPrompt(diffDays >= 7);
+    setShowMandatoryPssPrompt(shouldShowPSS());
+    setShowPSSCard(shouldShowPSS());
+    setDaysNextPSS(daysUntilNextPSS());
   }, [user, dashboardLoading]);
 
   const handleWaterGarden = async () => {
@@ -388,10 +382,18 @@ const HomePage = () => {
           ) : (
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 animate-pulse" />
           )}
-          {pss ? (
-            <PSSCheck pssData={pss} />
+          {showPSSCard ? (
+            pss ? (
+              <PSSCheck pssData={pss} />
+            ) : (
+              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 animate-pulse" />
+            )
           ) : (
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 animate-pulse" />
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex items-center justify-center">
+              <div className="text-sm text-gray-400 text-center py-3">
+                Next stress check-in in {daysNextPSS} days
+              </div>
+            </div>
           )}
           <JournalPreview entries={entries} loading={dashboardLoading} />
         </div>

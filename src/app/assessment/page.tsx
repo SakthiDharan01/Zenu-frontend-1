@@ -4,6 +4,8 @@ import { useMemo, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { apiClient } from '@/lib/apiClient';
 import { useAuth } from '@/components/providers/AuthProvider';
+import { logPSS } from '@/lib/signals';
+import { shouldShowPSS, daysUntilNextPSS, markPSSCompleted } from '@/lib/pssSchedule';
 import { OPTIONS, PSS_QUESTIONS } from './questions';
 
 type Status = 'IDLE' | 'SUBMITTING';
@@ -21,15 +23,8 @@ export default function StressAssessmentPage() {
   const [daysUntilNext, setDaysUntilNext] = useState<number | null>(null);
 
   useEffect(() => {
-    const lastCompletedStr = localStorage.getItem('zenu_pss_last_completed');
-    if (lastCompletedStr) {
-      const lastCompleted = new Date(lastCompletedStr);
-      const now = new Date();
-      const diffMs = now.getTime() - lastCompleted.getTime();
-      const diffDays = diffMs / (1000 * 60 * 60 * 24);
-      if (diffDays < 7) {
-        setDaysUntilNext(Math.ceil(7 - diffDays));
-      }
+    if (!shouldShowPSS()) {
+      setDaysUntilNext(daysUntilNextPSS());
     }
   }, []);
 
@@ -48,9 +43,11 @@ export default function StressAssessmentPage() {
 
     try {
       const scoredAnswers = calculateScoredAnswers(finalAnswers);
+      const calculatedScore = scoredAnswers.reduce((sum, val) => sum + val, 0);
 
       await apiClient.submitPSS(scoredAnswers);
-      localStorage.setItem('zenu_pss_last_completed', new Date().toISOString());
+      await logPSS(calculatedScore);
+      markPSSCompleted();
       router.push('/');
       router.refresh();
     } catch (submitError) {
