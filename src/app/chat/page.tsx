@@ -141,12 +141,37 @@ const ChatContent = () => {
     setInput('');
 
     try {
-      const response = await apiClient.sendChatMessage({
-        message: trimmed,
-        conversationId: activeConversationId ?? undefined
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || ''}/api/chat/message`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: trimmed,
+          conversation_history: messages.map(msg => ({
+            role: msg.role,
+            content: msg.content
+          }))
+        })
       });
 
-      await loadConversations(response.conversationId);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+
+      const assistantMessage: ChatMessage = {
+        id: Date.now() + 1,
+        role: 'assistant',
+        content: data.reply,
+        createdAt: new Date().toISOString()
+      };
+
+      setMessages((prev) => [...prev, assistantMessage]);
+
+      if (data.safety_triggered) {
+        toast.warning('We noticed you might be going through a tough time. Please reach out to someone you trust.');
+      }
     } catch (error) {
       console.error('Failed to send chat message', error);
       setMessages((prev) => prev.filter((message) => message.id !== tempId));
