@@ -3,22 +3,6 @@
 import { useEffect, useState } from 'react';
 import { getRecommendations } from '@/lib/signals';
 import { useRouter } from 'next/navigation';
-const router = useRouter();
-/*const MODULE_ROUTES: Record<string, string> = {
-  breathing_box: '/breathing',
-  breathing_478: '/breathing',
-  breathing_cyclic: '/breathing',
-  journal_gratitude: '/gratitude',
-  arts_mandala: '/art',
-  arts_scribble: '/scribble',
-  meditation_jpmr: '/meditation',
-  meditation_imagery: '/meditation',
-  meditation_grounding: '/meditation',
-  chatbot_seviyan: '/chat',
-  bubble_simulation: '/burst',
-  inner_compass: '/innercompass',
-  healing_garden: '/healing-garden',
-};*/
 
 const MODULE_ROUTES: Record<string, string> = {
   breathing: '/breathing',
@@ -35,6 +19,7 @@ const MODULE_ROUTES: Record<string, string> = {
 };
 
 export default function AgenticRecommendations() {
+  const router = useRouter();   // ✅ inside component
   const [data, setData] = useState<Awaited<ReturnType<typeof getRecommendations>>>(null);
   const [loading, setLoading] = useState(true);
 
@@ -77,7 +62,10 @@ export default function AgenticRecommendations() {
             </p>
             <div className="flex flex-wrap gap-1 mt-1.5">
               {rec.tags.slice(0, 2).map(tag => (
-                <span key={tag} className="text-xs bg-white text-purple-500 border border-purple-200 px-1.5 py-0.5 rounded-full">
+                <span
+                  key={tag}
+                  className="text-xs bg-white text-purple-500 border border-purple-200 px-1.5 py-0.5 rounded-full"
+                >
                   {tag}
                 </span>
               ))}
