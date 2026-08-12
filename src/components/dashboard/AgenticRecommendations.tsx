@@ -34,12 +34,6 @@ const MODULE_ROUTES: Record<string, string> = {
   inner_compass: '/innercompass',
 };
 
-const STRESS_COLORS: Record<string, string> = {
-  high: 'bg-rose-50 border-rose-200 text-rose-700',
-  moderate: 'bg-amber-50 border-amber-200 text-amber-700',
-  low: 'bg-green-50 border-green-200 text-green-700',
-};
-
 export default function AgenticRecommendations() {
   const [data, setData] = useState<Awaited<ReturnType<typeof getRecommendations>>>(null);
   const [loading, setLoading] = useState(true);
@@ -62,15 +56,10 @@ export default function AgenticRecommendations() {
 
   if (!data) return null;
 
-  const stressColor = STRESS_COLORS[data.context.stress_level] || STRESS_COLORS.moderate;
-
   return (
     <div className="rounded-2xl border bg-white shadow-sm p-5 space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="font-semibold text-gray-800 text-sm">🤖 Recommended for you right now</h3>
-        <span className={`text-xs px-2 py-0.5 rounded-full border font-medium ${stressColor}`}>
-          {data.context.stress_level} stress · {data.context.time_of_day}
-        </span>
       </div>
 
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
