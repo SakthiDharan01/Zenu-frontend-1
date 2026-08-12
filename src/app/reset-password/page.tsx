@@ -6,21 +6,19 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { KeyRound, Loader2 } from 'lucide-react';
+import { KeyRound } from 'lucide-react';
 
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
 import { authClient } from '@/lib/authClient';
+import { ZenPage, ZenContainer, ZenButton, ZenInput, ZenSkeleton } from '@/components/zen';
 
 const resetPasswordSchema = z
   .object({
     password: z.string().min(8, 'Password must be at least 8 characters'),
-    confirmPassword: z.string().min(8, 'Please confirm your password')
+    confirmPassword: z.string().min(8, 'Please confirm your password'),
   })
   .refine((value) => value.password === value.confirmPassword, {
     message: 'Passwords do not match',
-    path: ['confirmPassword']
+    path: ['confirmPassword'],
   });
 
 type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>;
@@ -38,13 +36,10 @@ const ResetPasswordContent = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting }
+    formState: { errors, isSubmitting },
   } = useForm<ResetPasswordFormValues>({
     resolver: zodResolver(resetPasswordSchema),
-    defaultValues: {
-      password: '',
-      confirmPassword: ''
-    }
+    defaultValues: { password: '', confirmPassword: '' },
   });
 
   const missingLinkData = !email || !token;
@@ -55,7 +50,7 @@ const ResetPasswordContent = () => {
       const message = await authClient.resetPassword({
         email,
         token,
-        password: values.password
+        password: values.password,
       });
       setSuccessMessage(message);
       setTimeout(() => {
@@ -68,95 +63,97 @@ const ResetPasswordContent = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center px-4 py-16">
-      <div className="w-full max-w-md bg-white/80 backdrop-blur-lg rounded-3xl shadow-xl border border-white/40 p-8 space-y-6">
-        <div className="text-center space-y-2">
-          <div className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-purple-100 text-purple-600">
-            <KeyRound className="h-6 w-6" />
+    <ZenPage atmosphere="home" gradient className="min-h-[calc(100dvh-4rem)] flex items-center">
+      <ZenContainer maxWidth="sm" className="py-16">
+        <div className="glass-elevated rounded-zen-2xl shadow-zen-modal p-8 space-y-6">
+          <div className="text-center space-y-2">
+            <div className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-zen-secondary-soft text-zen-secondary">
+              <KeyRound className="h-6 w-6" aria-hidden="true" />
+            </div>
+            <h1 className="zen-h1 text-zen-fg">Reset your password</h1>
+            <p className="zen-body-sm text-zen-fg-muted">
+              Choose a new secure password for your ZenU account.
+            </p>
           </div>
-          <h1 className="text-3xl font-semibold text-gray-900">Reset your password</h1>
-          <p className="text-gray-500 text-sm">Choose a new secure password for your ZenU account.</p>
-        </div>
 
-        {missingLinkData ? (
-          <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
-            This reset link is incomplete. Please request a new reset email.
-          </div>
-        ) : null}
+          {missingLinkData ? (
+            <div
+              className="rounded-zen-lg border border-zen-warning/25 bg-zen-warning-soft px-4 py-3 zen-body-sm text-zen-warning"
+              role="alert"
+            >
+              This reset link is incomplete. Please request a new reset email.
+            </div>
+          ) : null}
 
-        {formError ? (
-          <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-            {formError}
-          </div>
-        ) : null}
+          {formError ? (
+            <div
+              className="rounded-zen-lg border border-zen-danger/25 bg-zen-danger-soft px-4 py-3 zen-body-sm text-zen-danger"
+              role="alert"
+            >
+              {formError}
+            </div>
+          ) : null}
 
-        {successMessage ? (
-          <div className="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
-            {successMessage}
-          </div>
-        ) : null}
+          {successMessage ? (
+            <div
+              className="rounded-zen-lg border border-zen-success/25 bg-zen-success-soft px-4 py-3 zen-body-sm text-zen-success"
+              role="status"
+            >
+              {successMessage}
+            </div>
+          ) : null}
 
-        <form className="space-y-5" onSubmit={handleSubmit(onSubmit)} noValidate>
-          <div className="space-y-2">
-            <Label htmlFor="password">New password</Label>
-            <Input
-              id="password"
+          <form className="space-y-5" onSubmit={handleSubmit(onSubmit)} noValidate>
+            <ZenInput
+              label="New password"
               type="password"
               placeholder="At least 8 characters"
               autoComplete="new-password"
+              error={errors.password?.message}
               {...register('password')}
             />
-            {errors.password ? (
-              <p className="text-sm text-red-600">{errors.password.message}</p>
-            ) : null}
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="confirmPassword">Confirm new password</Label>
-            <Input
-              id="confirmPassword"
+            <ZenInput
+              label="Confirm new password"
               type="password"
               placeholder="Repeat your new password"
               autoComplete="new-password"
+              error={errors.confirmPassword?.message}
               {...register('confirmPassword')}
             />
-            {errors.confirmPassword ? (
-              <p className="text-sm text-red-600">{errors.confirmPassword.message}</p>
-            ) : null}
-          </div>
 
-          <Button type="submit" className="w-full" disabled={isSubmitting || missingLinkData}>
-            {isSubmitting ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Updating Password
-              </>
-            ) : (
-              'Reset password'
-            )}
-          </Button>
-        </form>
+            <ZenButton type="submit" fullWidth loading={isSubmitting} disabled={missingLinkData}>
+              Reset password
+            </ZenButton>
+          </form>
 
-        <p className="text-center text-sm text-gray-600">
-          Back to{' '}
-          <Link href="/signin" className="text-blue-600 hover:text-blue-700 font-medium">
-            Sign in
-          </Link>
-        </p>
-      </div>
-    </div>
+          <p className="text-center zen-body-sm text-zen-fg-muted">
+            Back to{' '}
+            <Link
+              href="/signin"
+              className="text-zen-primary hover:text-zen-primary-hover font-medium focus-visible:outline-2 focus-visible:outline-zen-primary"
+            >
+              Sign in
+            </Link>
+          </p>
+        </div>
+      </ZenContainer>
+    </ZenPage>
   );
 };
 
 const ResetPasswordPage = () => (
   <Suspense
-    fallback={(
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center px-4 py-16">
-        <div className="w-full max-w-md bg-white/80 backdrop-blur-lg rounded-3xl shadow-xl border border-white/40 p-8 text-center text-gray-600">
-          Loading reset form...
-        </div>
-      </div>
-    )}
+    fallback={
+      <ZenPage atmosphere="home" gradient className="min-h-[calc(100dvh-4rem)] flex items-center">
+        <ZenContainer maxWidth="sm" className="py-16">
+          <div className="glass-elevated rounded-zen-2xl p-8 space-y-4">
+            <ZenSkeleton className="h-8 w-48 mx-auto" />
+            <ZenSkeleton className="h-4 w-64 mx-auto" />
+            <ZenSkeleton className="h-40 w-full" rounded="xl" />
+          </div>
+        </ZenContainer>
+      </ZenPage>
+    }
   >
     <ResetPasswordContent />
   </Suspense>

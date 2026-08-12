@@ -19,6 +19,7 @@ interface ParticleCanvasProps {
   isPaused: boolean;
   speed: number;
   onCycleComplete?: () => void;
+  onPhaseChange?: (phase: string, seconds: number) => void;
 }
 
 const DEFAULT_COLORS = {
@@ -34,7 +35,8 @@ export const ParticleCanvas = ({
   cycleDuration,
   isPaused,
   speed,
-  onCycleComplete
+  onCycleComplete,
+  onPhaseChange,
 }: ParticleCanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particlesRef = useRef<Particle[]>([]);
@@ -42,6 +44,9 @@ export const ParticleCanvas = ({
   const startTimeRef = useRef<number>(Date.now());
   const pausedTimeRef = useRef<number>(0);
   const cycleCounterRef = useRef<number>(0);
+  const lastPhaseRef = useRef<string>("");
+  const onPhaseChangeRef = useRef(onPhaseChange);
+  onPhaseChangeRef.current = onPhaseChange;
   const [currentStep, setCurrentStep] = useState<string>("Inhale");
   const [stepTime, setStepTime] = useState(pattern[0]);
   const prefersReducedMotion = useRef(false);
@@ -180,8 +185,14 @@ export const ParticleCanvas = ({
         cumulativeTime += stepDuration;
       }
 
-      setCurrentStep(stepLabels[currentStepIndex]);
-      setStepTime(pattern[currentStepIndex]);
+      const phaseLabel = stepLabels[currentStepIndex];
+      const phaseSeconds = pattern[currentStepIndex];
+      if (phaseLabel !== lastPhaseRef.current) {
+        lastPhaseRef.current = phaseLabel;
+        setCurrentStep(phaseLabel);
+        setStepTime(phaseSeconds);
+        onPhaseChangeRef.current?.(phaseLabel, phaseSeconds);
+      }
 
       let breathExpansion = 0;
       if (currentStepIndex === 0) {
@@ -211,7 +222,7 @@ export const ParticleCanvas = ({
         : "hsla(221, 83%, 53%, 0.08)";
 
       gradient.addColorStop(0, backgroundColor);
-      gradient.addColorStop(1, "rgba(0, 0, 0, 0.6)");
+      gradient.addColorStop(1, "hsla(225, 40%, 99%, 0.95)");
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -308,10 +319,10 @@ export const ParticleCanvas = ({
         style={{ width: "100%", height: "100%" }}
       />
       <div className="relative z-10 text-center">
-        <div className="text-6xl font-headline font-semibold text-blue-500 mb-2">
+        <div className="zen-display text-zen-primary mb-2">
           {currentStep}
         </div>
-        <div className="text-4xl text-gray-500">{stepTime}</div>
+        <div className="zen-metric text-zen-fg-muted">{stepTime}</div>
       </div>
     </div>
   );

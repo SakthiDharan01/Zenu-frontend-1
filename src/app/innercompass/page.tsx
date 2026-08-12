@@ -1,10 +1,15 @@
 'use client';
-import { useEffect } from "react";
-import { ArrowLeft } from "lucide-react";
-import InnerCompassComponent from "@/components/InnerCompass";
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { ArrowLeft } from 'lucide-react';
+import InnerCompassComponent from '@/components/InnerCompass';
 import { trackEngagement } from '@/lib/signals';
+import { ZenPage, ZenContainer, ZenButton } from '@/components/zen';
 
 const InnerCompass = () => {
+  const router = useRouter();
+
   useEffect(() => {
     trackEngagement('inner_compass', 'opened');
     const start = Date.now();
@@ -15,19 +20,23 @@ const InnerCompass = () => {
   }, []);
 
   return (
-    <div className="relative min-h-screen">
-      {/* Back button */}
-      <button
-        onClick={() => window.location.href = "/"}
-        className="fixed top-6 left-6 z-50 flex items-center gap-2 px-4 py-2 rounded-full bg-background/80 backdrop-blur-sm border border-border/50 text-foreground/70 hover:text-foreground hover:bg-background/90 transition-all duration-300 shadow-lg"
-      >
-        <ArrowLeft className="w-4 h-4" />
-        <span className="text-sm font-medium">Home</span>
-      </button>
-
-      {/* Inner Compass Component */}
-      <InnerCompassComponent />
-    </div>
+    <ZenPage atmosphere="reflect" gradient className="min-h-[calc(100dvh-4rem)]">
+      <ZenContainer maxWidth="xl" className="pt-6 pb-8">
+        <ZenButton
+          variant="glass"
+          size="sm"
+          className="mb-4"
+          onClick={() => router.push('/')}
+          aria-label="Return to dashboard"
+        >
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          Home
+        </ZenButton>
+        <div className="zen-serif">
+          <InnerCompassComponent />
+        </div>
+      </ZenContainer>
+    </ZenPage>
   );
 };
 

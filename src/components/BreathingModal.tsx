@@ -1,19 +1,27 @@
-import { useState, useEffect, useRef, useCallback } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { ParticleCanvas } from "./ParticleCanvas";
+"use client";
+
+import { useState, useEffect, useRef, useCallback } from 'react';
 import {
   Play,
   Pause,
   SkipForward,
   Volume2,
   VolumeX,
-  X,
   HelpCircle,
-  Plus
-} from "lucide-react";
-import { Progress } from "@/components/ui/progress";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { toast } from "sonner";
+  Plus,
+} from 'lucide-react';
+import { Progress } from '@/components/ui/progress';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { toast } from 'sonner';
+import PandaAvatar from '@/components/PandaAvatar';
+import {
+  ZenBreathingCircle,
+  ZenButton,
+  ZenDialog,
+  ZenDialogContent,
+  ZenDialogHeader,
+  ZenDialogTitle,
+} from '@/components/zen';
 
 interface BreathingModalProps {
   isOpen: boolean;
@@ -35,6 +43,7 @@ export const BreathingModal = ({ isOpen, onClose, pattern, onComplete }: Breathi
   const [elapsedTime, setElapsedTime] = useState(0);
   const [showHelp, setShowHelp] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
+  const [phase, setPhase] = useState('Inhale');
   const audioContextRef = useRef<AudioContext | null>(null);
   const startTimeRef = useRef<number>(Date.now());
   const pausedDurationRef = useRef<number>(0);
@@ -43,7 +52,6 @@ export const BreathingModal = ({ isOpen, onClose, pattern, onComplete }: Breathi
   const totalDuration = duration * 60;
   const completionLoggedRef = useRef(false);
   const progress = (elapsedTime / totalDuration) * 100;
-
   const patternId = pattern.id;
 
   useEffect(() => {
@@ -51,6 +59,7 @@ export const BreathingModal = ({ isOpen, onClose, pattern, onComplete }: Breathi
       setElapsedTime(0);
       setIsPaused(false);
       setIsComplete(false);
+      setPhase('Inhale');
       startTimeRef.current = Date.now();
       pausedDurationRef.current = 0;
       completionLoggedRef.current = false;
@@ -66,11 +75,12 @@ export const BreathingModal = ({ isOpen, onClose, pattern, onComplete }: Breathi
   }, [patternId]);
 
   const playChime = useCallback(
-    (type: "start" | "end") => {
+    (type: 'start' | 'end') => {
       if (isMuted) return;
 
       if (!audioContextRef.current) {
-        audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+        audioContextRef.current = new (window.AudioContext ||
+          (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
       }
 
       const ctx = audioContextRef.current;
@@ -80,8 +90,8 @@ export const BreathingModal = ({ isOpen, onClose, pattern, onComplete }: Breathi
       oscillator.connect(gainNode);
       gainNode.connect(ctx.destination);
 
-      oscillator.frequency.value = type === "start" ? 440 : 330;
-      oscillator.type = "sine";
+      oscillator.frequency.value = type === 'start' ? 440 : 330;
+      oscillator.type = 'sine';
 
       gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
       gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
@@ -89,7 +99,7 @@ export const BreathingModal = ({ isOpen, onClose, pattern, onComplete }: Breathi
       oscillator.start(ctx.currentTime);
       oscillator.stop(ctx.currentTime + 0.2);
     },
-    [isMuted]
+    [isMuted],
   );
 
   useEffect(() => {
@@ -102,20 +112,13 @@ export const BreathingModal = ({ isOpen, onClose, pattern, onComplete }: Breathi
 
       if (elapsed >= totalDuration) {
         setIsComplete(true);
-        playChime("end");
-        toast("Nice — you finished! How do you feel?", {
-          action: {
-            label: "Save to journal",
-            onClick: () => {
-              console.log("Saving session:", { pattern: patternId, duration: totalDuration });
-            }
-          }
-        });
+        playChime('end');
+        toast('Nice — you finished! How do you feel?');
       }
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [isPaused, isOpen, totalDuration, isComplete, playChime, patternId]);
+  }, [isPaused, isOpen, totalDuration, isComplete, playChime]);
 
   useEffect(() => {
     if (isComplete && !completionLoggedRef.current) {
@@ -135,9 +138,7 @@ export const BreathingModal = ({ isOpen, onClose, pattern, onComplete }: Breathi
 
   const togglePlayPause = () => {
     setIsPaused(!isPaused);
-    if (isPaused) {
-      playChime("start");
-    }
+    if (isPaused) playChime('start');
   };
 
   const skipCycle = () => {
@@ -165,133 +166,129 @@ export const BreathingModal = ({ isOpen, onClose, pattern, onComplete }: Breathi
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, "0")}`;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
   return (
     <TooltipProvider>
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl h-[90vh] p-0 bg-background/95 backdrop-blur-xl border-border/50">
-        <DialogHeader className="px-6 pt-6 pb-0 flex flex-row items-center justify-between border-b border-border/30">
-          <div className="flex items-center gap-3 relative" onMouseLeave={() => setShowHelp(false)}>
-            <DialogTitle className="text-2xl font-headline">{pattern.name}</DialogTitle>
+      <ZenDialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+        <ZenDialogContent className="max-w-4xl h-[90vh] p-0 overflow-hidden flex flex-col gap-0">
+          <ZenDialogHeader className="px-6 pt-6 pb-4 flex flex-row items-center justify-between border-b border-zen-border-soft space-y-0">
+            <div className="flex items-center gap-3 relative" onMouseLeave={() => setShowHelp(false)}>
+              <PandaAvatar state="breathing" size={40} label="Panda breathing with you" />
+              <div>
+                <ZenDialogTitle>{pattern.name}</ZenDialogTitle>
+                <p className="zen-caption text-zen-fg-muted mt-0.5 capitalize">{phase}</p>
+              </div>
+              <div>
+                <ZenButton
+                  variant="ghost"
+                  size="icon-sm"
+                  onClick={() => setShowHelp((s) => !s)}
+                  aria-expanded={showHelp}
+                  aria-label="Show help"
+                >
+                  <HelpCircle className="h-4 w-4" />
+                </ZenButton>
+                {showHelp ? (
+                  <div className="absolute left-0 top-full mt-2 w-80 glass-elevated rounded-zen-lg shadow-zen-elevated p-4 z-50">
+                    <h4 className="font-semibold mb-2 text-zen-fg">How breathing helps</h4>
+                    <p className="zen-body-sm text-zen-fg-muted">
+                      Slow, rhythmic breathing reduces sympathetic activity and engages the
+                      parasympathetic system — lowering heart rate and calming the body.
+                    </p>
+                  </div>
+                ) : null}
+              </div>
+            </div>
+          </ZenDialogHeader>
 
-            <div>
-              <button
-                className="h-8 w-8 rounded-full hover:bg-gray-100 transition-colors flex items-center justify-center"
-                onClick={() => setShowHelp((s) => !s)}
-                aria-expanded={showHelp}
-                aria-label="Show help"
+          <div className="flex-1 relative overflow-hidden min-h-0">
+            <ZenBreathingCircle
+              pattern={pattern.steps}
+              cycleDuration={cycleDuration}
+              isPaused={isPaused}
+              speed={speed}
+              onPhaseChange={(nextPhase) => setPhase(nextPhase)}
+            />
+          </div>
+
+          <div className="px-6 pb-6 space-y-4 border-t border-zen-border-soft pt-4">
+            <div className="flex items-center justify-between">
+              <div className="zen-metric text-zen-fg">{formatTime(totalDuration - elapsedTime)}</div>
+              <div className="zen-body-sm text-zen-fg-muted">{duration} min session</div>
+            </div>
+
+            <Progress value={progress} className="h-2" />
+
+            <div className="flex items-center justify-center gap-3">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <ZenButton
+                    variant="outline"
+                    size="icon-md"
+                    onClick={() => setIsMuted(!isMuted)}
+                    aria-label={isMuted ? 'Unmute chimes' : 'Mute chimes'}
+                  >
+                    {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+                  </ZenButton>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{isMuted ? 'Unmute' : 'Mute'} chimes</p>
+                </TooltipContent>
+              </Tooltip>
+
+              <ZenButton
+                size="icon-lg"
+                onClick={togglePlayPause}
+                disabled={isComplete}
+                aria-label={isPaused ? 'Resume' : 'Pause'}
+                className="rounded-full h-14 w-14"
               >
-                <HelpCircle className="h-4 w-4" />
-              </button>
+                {isPaused ? <Play className="h-6 w-6" /> : <Pause className="h-6 w-6" />}
+              </ZenButton>
 
-              {showHelp && (
-                <div className="absolute left-0 top-full mt-2 w-80 bg-white text-gray-800 rounded-md shadow-lg p-4 border border-gray-200 z-50">
-                  <h4 className="font-semibold mb-2">How breathing helps</h4>
-                  <p className="text-sm">
-                    Slow, rhythmic breathing reduces sympathetic activity and engages the
-                    parasympathetic system — lowering heart rate and calming the body. Try the Box
-                    for stability and 4-7-8 for deeper relaxation.
-                  </p>
-                  <div className="absolute left-4 -top-2 w-0 h-0 border-l-8 border-l-transparent border-r-8 border-r-transparent border-b-8 border-b-white" />
-                </div>
-              )}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <ZenButton
+                    variant="outline"
+                    size="icon-md"
+                    onClick={skipCycle}
+                    disabled={isComplete}
+                    aria-label="Skip cycle"
+                  >
+                    <SkipForward className="h-4 w-4" />
+                  </ZenButton>
+                </TooltipTrigger>
+                <TooltipContent>Skip cycle</TooltipContent>
+              </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <ZenButton variant="outline" size="sm" onClick={cycleSpeed} aria-label="Change speed">
+                    {speed}x
+                  </ZenButton>
+                </TooltipTrigger>
+                <TooltipContent>Change speed</TooltipContent>
+              </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <ZenButton
+                    variant="outline"
+                    size="icon-md"
+                    onClick={increaseDuration}
+                    aria-label="Change duration"
+                  >
+                    <Plus className="h-4 w-4" />
+                  </ZenButton>
+                </TooltipTrigger>
+                <TooltipContent>Change duration</TooltipContent>
+              </Tooltip>
             </div>
           </div>
-          {/* DialogPrimitive.Close is rendered inside DialogContent; no extra close button here to avoid duplicates */}
-        </DialogHeader>
-
-        <div className="flex-1 relative overflow-hidden">
-          <ParticleCanvas
-            pattern={pattern.steps}
-            cycleDuration={cycleDuration}
-            isPaused={isPaused}
-            speed={speed}
-          />
-        </div>
-
-        <div className="px-6 pb-6 space-y-4 border-t border-border/30 pt-4">
-          <div className="flex items-center justify-between">
-            <div className="text-3xl font-headline font-semibold text-foreground">
-              {formatTime(totalDuration - elapsedTime)}
-            </div>
-            <div className="text-sm text-muted-foreground">
-              {duration} min session
-            </div>
-          </div>
-
-          <Progress value={progress} className="h-2" />
-
-          <div className="flex items-center justify-center gap-3">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  onClick={() => setIsMuted(!isMuted)}
-                  className="h-10 w-10 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors flex items-center justify-center"
-                >
-                  {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>{isMuted ? "Unmute" : "Mute"} chimes</p>
-              </TooltipContent>
-            </Tooltip>
-
-            <button
-              onClick={togglePlayPause}
-              className="h-14 w-14 rounded-full bg-blue-500 hover:bg-blue-600 text-white flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              disabled={isComplete}
-            >
-              {isPaused ? <Play className="h-6 w-6" /> : <Pause className="h-6 w-6" />}
-            </button>
-
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  onClick={skipCycle}
-                  disabled={isComplete}
-                  className="h-10 w-10 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <SkipForward className="h-4 w-4" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>
-                Skip cycle
-              </TooltipContent>
-            </Tooltip>
-
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  onClick={cycleSpeed}
-                  className="h-10 px-4 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors flex items-center justify-center"
-                >
-                  {speed}x
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>
-                Change speed
-              </TooltipContent>
-            </Tooltip>
-
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  onClick={increaseDuration}
-                  className="h-10 w-10 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors flex items-center justify-center"
-                >
-                  <Plus className="h-4 w-4" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>
-                Change duration
-              </TooltipContent>
-            </Tooltip>
-          </div>
-        </div>
-      </DialogContent>
-    </Dialog>
+        </ZenDialogContent>
+      </ZenDialog>
     </TooltipProvider>
   );
 };

@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { trackEngagement } from '@/lib/signals';
 
@@ -8,16 +8,15 @@ import { BreathingSelector } from '@/components/BreathingSelector';
 import { BreathingModal } from '@/components/BreathingModal';
 import { RequireAuth } from '@/components/auth/RequireAuth';
 import { useAuth } from '@/components/providers/AuthProvider';
-import { Button } from '@/components/ui/button';
+import ZenFocusMode from '@/components/layout/ZenFocusMode';
 import { apiClient } from '@/lib/apiClient';
 import type { BreathingPattern } from '@/lib/types';
-import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import { ZenPage, ZenContainer, ZenButton } from '@/components/zen';
 
 const Breathing = () => {
   const { user } = useAuth();
   const [patterns, setPatterns] = useState<BreathingPattern[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedPattern, setSelectedPattern] = useState<BreathingPattern | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -25,7 +24,6 @@ const Breathing = () => {
   const loadPatterns = useCallback(async () => {
     setLoading(true);
     setError(null);
-
     try {
       const data = await apiClient.getBreathingPatterns();
       setPatterns(data);
@@ -39,17 +37,8 @@ const Breathing = () => {
 
   useEffect(() => {
     trackEngagement('breathing_box', 'opened');
-    const start = Date.now();
-    
-    if (!user) {
-      return;
-    }
+    if (!user) return;
     void loadPatterns();
-    
-    return () => {
-      const duration = Math.round((Date.now() - start) / 1000);
-      // Fired on unmount
-    };
   }, [user, loadPatterns]);
 
   const handleSelectPattern = (pattern: BreathingPattern) => {
@@ -63,10 +52,7 @@ const Breathing = () => {
   };
 
   const handleSessionComplete = async (durationSeconds: number) => {
-    if (!selectedPattern) {
-      return;
-    }
-
+    if (!selectedPattern) return;
     const patternId = selectedPattern.id;
 
     try {
@@ -74,7 +60,7 @@ const Breathing = () => {
       await apiClient.recordActivity('breathing', { patternId, durationSeconds });
       trackEngagement('breathing_box', 'completed', durationSeconds);
       toast.success('Session saved', {
-        description: 'Your breathing practice has been logged and added to your streak.'
+        description: 'Your breathing practice has been logged and added to your streak.',
       });
     } catch (err) {
       console.error('Failed to record breathing session', err);
@@ -87,40 +73,40 @@ const Breathing = () => {
     return user.username ?? user.fullName ?? user.email?.split('@')[0] ?? undefined;
   }, [user]);
 
-  const content = (
-    <div className="relative container mx-auto px-4 py-8">
-      <Link href="/" className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-slate-800 mb-8 transition-colors">
-        <ArrowLeft className="w-4 h-4" /> Back to Dashboard
-      </Link>
+  return (
+    <RequireAuth>
+      <ZenFocusMode title="Breathe">
+        <ZenPage atmosphere="calm" gradient className="min-h-dvh pt-16">
+          <ZenContainer maxWidth="xl" className="py-8">
+            {error ? (
+              <div className="max-w-xl mx-auto mb-8 rounded-zen-xl border border-zen-danger/25 bg-zen-danger-soft px-6 py-4 text-center text-zen-danger">
+                <p className="mb-4">{error}</p>
+                <ZenButton variant="outline" onClick={loadPatterns}>
+                  Try again
+                </ZenButton>
+              </div>
+            ) : null}
 
-      {error ? (
-        <div className="max-w-xl mx-auto mb-8 rounded-2xl border border-red-200 bg-red-50 px-6 py-4 text-center text-red-700">
-          <p className="mb-4">{error}</p>
-          <Button variant="outline" onClick={loadPatterns}>
-            Try again
-          </Button>
-        </div>
-      ) : null}
+            <BreathingSelector
+              firstName={displayName}
+              patterns={patterns}
+              loading={loading}
+              onSelectPattern={handleSelectPattern}
+            />
 
-      <BreathingSelector
-        firstName={displayName}
-        patterns={patterns}
-        loading={loading}
-        onSelectPattern={handleSelectPattern}
-      />
-
-      {selectedPattern ? (
-        <BreathingModal
-          isOpen={isModalOpen}
-          onClose={handleCloseModal}
-          pattern={selectedPattern}
-          onComplete={handleSessionComplete}
-        />
-      ) : null}
-    </div>
+            {selectedPattern ? (
+              <BreathingModal
+                isOpen={isModalOpen}
+                onClose={handleCloseModal}
+                pattern={selectedPattern}
+                onComplete={handleSessionComplete}
+              />
+            ) : null}
+          </ZenContainer>
+        </ZenPage>
+      </ZenFocusMode>
+    </RequireAuth>
   );
-
-  return <RequireAuth>{content}</RequireAuth>;
 };
 
 export default Breathing;
