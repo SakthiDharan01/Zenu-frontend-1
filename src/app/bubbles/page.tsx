@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { trackEngagement } from '@/lib/signals';
 
 // Calming pastel color palette for zen experience
@@ -17,12 +17,12 @@ const COLORS = [PALETTE.skyBlue, PALETTE.lavender, PALETTE.peach, PALETTE.mint];
 
 // Mindful affirmations that appear periodically
 const AFFIRMATIONS = [
-  "You are enough, just as you are 💛",
-  "Breathe in peace, breathe out tension 🌿",
-  "This moment is all you need ✨",
-  "You are worthy of rest and calm 🌸",
-  "Let go of what no longer serves you 🦋",
-  "Your presence is your power 🌟"
+  "You are enough, just as you are",
+  "Breathe in peace, breathe out tension",
+  "This moment is all you need",
+  "You are worthy of rest and calm",
+  "Let go of what no longer serves you",
+  "Your presence is your power"
 ];
 
 interface RGB {
@@ -655,58 +655,62 @@ const BubbleCanvas = () => {
   }, []);
 
   return (
-    <div className="relative w-full h-screen overflow-hidden bg-gradient-to-br from-[#0a0b2e] via-[#1a1b4a] to-[#2d1b69]">
-      {/* Back button */}
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={() => window.location.href = '/'}
-        className="absolute top-4 left-4 z-20 text-white/80 hover:text-white hover:bg-white/10"
+    <div className="relative w-full min-h-[calc(100dvh-4rem)] overflow-hidden" data-zen-atmosphere="release">
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{ background: 'var(--zen-atm-bg-tint)' }}
+        aria-hidden="true"
+      />
+
+      <Link
+        href="/"
+        aria-label="Back to dashboard"
+        className="absolute top-4 left-4 z-20 inline-flex items-center gap-2 px-3 py-2 rounded-zen-full glass-floating shadow-zen-floating text-sm font-medium text-zen-fg hover:bg-white/95 active:scale-[0.97] transition-all duration-zen-fast focus-visible:outline-2 focus-visible:outline-zen-primary"
       >
-        <ArrowLeft className="w-4 h-4 mr-2" />
-        Back
-      </Button>
+        <ArrowLeft className="w-4 h-4 text-zen-fg-muted" aria-hidden="true" />
+        <span className="hidden sm:inline text-zen-fg-muted">ZenU</span>
+        <span className="h-3 w-px bg-zen-border hidden sm:block" aria-hidden="true" />
+        <span>Bubbles</span>
+      </Link>
 
       {/* Header overlay - fades in and out */}
       <div
-        className={`absolute top-[40%] left-1/2 -translate-x-1/2 z-30 text-center pointer-events-none transition-opacity duration-1000 ${
+        className={`absolute top-[38%] left-1/2 -translate-x-1/2 z-30 text-center pointer-events-none transition-opacity duration-1000 ${
           headerVisible ? 'opacity-100' : 'opacity-0'
         }`}
       >
-        <h1 className="text-5xl md:text-6xl font-headline font-bold text-white mb-3 drop-shadow-2xl">
+        <h1 className="zen-display text-zen-fg mb-3 drop-shadow-sm">
           Zen Mode
         </h1>
-        <p className="text-xl md:text-2xl text-white/90 font-light drop-shadow-lg">
-          Tap to Breathe
+        <p className="zen-body text-zen-fg-muted">
+          Tap to breathe
         </p>
       </div>
 
-      {/* Canvas container */}
+      {/* Canvas container — cosmic release surface */}
       <div
         ref={wrapRef}
-        className="w-[95vw] h-[90vh] max-w-[1700px] mx-auto my-[5vh] rounded-3xl overflow-hidden shadow-2xl relative"
+        className="relative z-10 w-[95vw] h-[min(90vh,calc(100dvh-6rem))] max-w-[1700px] mx-auto my-[4vh] rounded-zen-2xl overflow-hidden shadow-zen-elevated"
         style={{
           boxShadow:
-            'inset 0 120px 180px rgba(0,0,0,0.3), 0 25px 80px rgba(0,0,0,0.5), inset 0 0 120px rgba(138,43,226,0.06)',
+            'inset 0 80px 120px rgba(30,41,90,0.12), 0 16px 40px rgba(30,41,90,0.12)',
           background:
-            'radial-gradient(ellipse 1200px 600px at 25% 15%, rgba(255,140,180,0.04), transparent 70%), radial-gradient(ellipse 800px 400px at 75% 85%, rgba(140,180,255,0.04), transparent 60%), linear-gradient(135deg, #0a0b2e 0%, #1a1b4a 25%, #2d1b69 50%, #1a0f3d 75%, #0d0a1f 100%)'
+            'radial-gradient(ellipse 1200px 600px at 25% 15%, hsl(var(--zen-secondary) / 0.08), transparent 70%), radial-gradient(ellipse 800px 400px at 75% 85%, hsl(var(--zen-primary) / 0.08), transparent 60%), linear-gradient(135deg, hsl(262 40% 18%) 0%, hsl(240 35% 22%) 50%, hsl(228 40% 16%) 100%)'
         }}
       >
         <canvas ref={canvasRef} className="w-full h-full cursor-crosshair" />
 
-        {/* Affirmation message */}
         <div className="absolute top-6 left-1/2 -translate-x-1/2 max-w-[85%] md:max-w-lg text-center">
-          <div className="text-xl md:text-2xl font-semibold text-white px-6 py-3 bg-black/40 backdrop-blur-xl rounded-2xl border border-white/10 shadow-lg animate-fade-in">
+          <div className="text-lg md:text-xl font-semibold text-white px-6 py-3 bg-black/35 backdrop-blur-xl rounded-zen-xl border border-white/10 shadow-lg">
             {currentAffirmation}
           </div>
         </div>
 
-        {/* Interaction hints */}
-        <div className="absolute left-4 bottom-4 bg-black/50 backdrop-blur-md text-white/90 px-4 py-2.5 rounded-xl text-sm font-medium border border-white/10 shadow-lg select-none">
+        <div className="absolute left-4 bottom-4 glass-floating text-zen-fg px-4 py-2.5 rounded-zen-lg text-sm font-medium shadow-zen-card select-none">
           <span className="hidden md:inline">
             Click to spawn · Drag for trails · Press{' '}
-            <strong className="text-white">Space</strong> for clusters ·{' '}
-            <strong className="text-white">Enter</strong> to pop all
+            <strong>Space</strong> for clusters ·{' '}
+            <strong>Enter</strong> to pop all
           </span>
           <span className="md:hidden">
             Tap to create bubbles · Drag for trails

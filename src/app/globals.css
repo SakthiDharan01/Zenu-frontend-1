@@ -2,247 +2,521 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Google Fonts Import */
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+/* ─────────────────────────────────────────────────────────────
+   FONTS
+   ───────────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap');
 
-/* CSS Variables for theming */
+/* ─────────────────────────────────────────────────────────────
+   ZEN DESIGN TOKENS — LIGHT MODE ONLY
+   ───────────────────────────────────────────────────────────── */
 :root {
-  --background: 0 0% 100%;
-  --foreground: 222.2 84% 4.9%;
-  --card: 0 0% 100%;
-  --card-foreground: 222.2 84% 4.9%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 222.2 84% 4.9%;
-  --primary: 221.2 83.2% 53.3%;
-  --primary-foreground: 210 40% 98%;
-  --secondary: 210 40% 96%;
-  --secondary-foreground: 222.2 84% 4.9%;
-  --muted: 210 40% 96%;
-  --muted-foreground: 215.4 16.3% 46.9%;
-  --accent: 210 40% 96%;
-  --accent-foreground: 222.2 84% 4.9%;
-  --destructive: 0 84.2% 60.2%;
-  --destructive-foreground: 210 40% 98%;
-  --border: 214.3 31.8% 91.4%;
-  --input: 214.3 31.8% 91.4%;
-  --ring: 221.2 83.2% 53.3%;
+  /* ── Background ────────────────────────────────────────────── */
+  --zen-bg:             240 20% 98%;   /* soft blue-white page base      */
+  --zen-bg-subtle:      240 15% 96%;   /* section separators             */
+  --zen-bg-muted:       240 12% 94%;   /* input fills, inactive surfaces */
+
+  /* ── Surface ───────────────────────────────────────────────── */
+  --zen-surface:        0 0% 100%;     /* white card face                */
+  --zen-surface-raised: 240 20% 99%;   /* slightly lifted card           */
+
+  /* ── Foreground ────────────────────────────────────────────── */
+  --zen-fg:             228 30% 16%;   /* deep navy — primary text       */
+  --zen-fg-muted:       228 18% 42%;   /* secondary text                 */
+  --zen-fg-subtle:      228 12% 62%;   /* placeholders, disabled         */
+  --zen-fg-inverse:     0 0% 100%;     /* text on filled/colored buttons */
+
+  /* ── Primary brand — atmospheric blue ──────────────────────── */
+  --zen-primary:        221 70% 52%;
+  --zen-primary-hover:  221 70% 46%;
+  --zen-primary-soft:   221 75% 96%;
+  --zen-primary-fg:     0 0% 100%;
+
+  /* ── Secondary — soft lavender ─────────────────────────────── */
+  --zen-secondary:      262 48% 58%;
+  --zen-secondary-soft: 262 55% 96%;
+  --zen-secondary-fg:   0 0% 100%;
+
+  /* ── Accent — teal renewal ──────────────────────────────────── */
+  --zen-accent:         172 52% 40%;
+  --zen-accent-soft:    172 55% 95%;
+  --zen-accent-fg:      0 0% 100%;
+
+  /* ── Warm gold — joy ───────────────────────────────────────── */
+  --zen-joy:            40 92% 55%;
+  --zen-joy-soft:       40 92% 96%;
+
+  /* ── Border ────────────────────────────────────────────────── */
+  --zen-border:         228 20% 88%;
+  --zen-border-soft:    228 20% 93%;
+  --zen-border-focus:   221 70% 52%;
+
+  /* ── Semantic states ───────────────────────────────────────── */
+  --zen-success:        142 62% 38%;
+  --zen-success-soft:   142 62% 95%;
+  --zen-warning:        36 88% 50%;
+  --zen-warning-soft:   36 88% 96%;
+  --zen-destructive:    0 78% 54%;
+  --zen-destructive-soft: 0 78% 96%;
+
+  /* ── Radius ─────────────────────────────────────────────────── */
+  --radius-sm:   8px;
+  --radius-md:   12px;
+  --radius-lg:   16px;
+  --radius-xl:   24px;
+  --radius-2xl:  32px;
+  --radius-full: 9999px;
+
+  /* Keep backward compat alias for Shadcn */
   --radius: 0.5rem;
-  --chart-1: 12 76% 61%;
-  --chart-2: 173 58% 39%;
-  --chart-3: 197 37% 24%;
-  --chart-4: 43 74% 66%;
-  --chart-5: 27 87% 67%;
+
+  /* ── Shadows ─────────────────────────────────────────────────── */
+  --shadow-subtle:
+    0 1px 2px rgba(30, 41, 90, 0.04),
+    0 1px 4px rgba(30, 41, 90, 0.04);
+  --shadow-card:
+    0 2px 8px rgba(30, 41, 90, 0.06),
+    0 1px 2px rgba(30, 41, 90, 0.04);
+  --shadow-elevated:
+    0 8px 24px rgba(30, 41, 90, 0.08),
+    0 2px 6px rgba(30, 41, 90, 0.04);
+  --shadow-floating:
+    0 16px 40px rgba(30, 41, 90, 0.12),
+    0 4px 12px rgba(30, 41, 90, 0.06);
+  --shadow-modal:
+    0 24px 64px rgba(30, 41, 90, 0.16),
+    0 8px 24px rgba(30, 41, 90, 0.08);
+
+  /* ── Easing curves (CSS transitions — springs used in Framer Motion) ── */
+  --ease-out:     cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out:  cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring:  cubic-bezier(0.34, 1.56, 0.64, 1);  /* micro-interactions */
+
+  /* ── Motion durations ──────────────────────────────────────── */
+  --duration-fast:   100ms;
+  --duration-base:   220ms;
+  --duration-slow:   380ms;
+
+  /* ── Shadcn backward-compat tokens (keep so Shadcn components don't break) ── */
+  --background:    hsl(var(--zen-bg));
+  --foreground:    hsl(var(--zen-fg));
+  --card:          hsl(var(--zen-surface));
+  --card-foreground: hsl(var(--zen-fg));
+  --popover:       hsl(var(--zen-surface));
+  --popover-foreground: hsl(var(--zen-fg));
+  --primary:       hsl(var(--zen-primary));
+  --primary-foreground: hsl(var(--zen-primary-fg));
+  --secondary:     hsl(var(--zen-secondary-soft));
+  --secondary-foreground: hsl(var(--zen-fg));
+  --muted:         hsl(var(--zen-bg-muted));
+  --muted-foreground: hsl(var(--zen-fg-muted));
+  --accent:        hsl(var(--zen-primary-soft));
+  --accent-foreground: hsl(var(--zen-primary));
+  --destructive:   hsl(var(--zen-destructive));
+  --destructive-foreground: hsl(var(--zen-fg-inverse));
+  --border:        hsl(var(--zen-border));
+  --input:         hsl(var(--zen-border));
+  --ring:          hsl(var(--zen-border-focus));
+  --chart-1: 221 70% 52%;
+  --chart-2: 172 52% 40%;
+  --chart-3: 262 48% 58%;
+  --chart-4: 40 92% 55%;
+  --chart-5: 0 78% 54%;
 }
 
-.dark {
-  --background: 222.2 84% 4.9%;
-  --foreground: 210 40% 98%;
-  --card: 222.2 84% 4.9%;
-  --card-foreground: 210 40% 98%;
-  --popover: 222.2 84% 4.9%;
-  --popover-foreground: 210 40% 98%;
-  --primary: 210 40% 98%;
-  --primary-foreground: 222.2 84% 4.9%;
-  --secondary: 217.2 32.6% 17.5%;
-  --secondary-foreground: 210 40% 98%;
-  --muted: 217.2 32.6% 17.5%;
-  --muted-foreground: 215 20.2% 65.1%;
-  --accent: 217.2 32.6% 17.5%;
-  --accent-foreground: 210 40% 98%;
-  --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 210 40% 98%;
-  --border: 217.2 32.6% 17.5%;
-  --input: 217.2 32.6% 17.5%;
-  --ring: 212.7 26.8% 83.9%;
-  --chart-1: 220 70% 50%;
-  --chart-2: 160 60% 45%;
-  --chart-3: 30 80% 55%;
-  --chart-4: 280 65% 60%;
-  --chart-5: 340 75% 55%;
+/* ─────────────────────────────────────────────────────────────
+   ATMOSPHERIC VARIATION
+   Applied via data-zen-atmosphere="[name]" on page containers.
+   These are accent overlays — NOT separate themes.
+   The base --zen-bg, --zen-fg, and components stay constant.
+   ───────────────────────────────────────────────────────────── */
+
+/* Dashboard — soft blue + warm gold */
+[data-zen-atmosphere="home"] {
+  --zen-atm-accent:    var(--zen-joy);
+  --zen-atm-accent-soft: var(--zen-joy-soft);
+  --zen-atm-bg-tint:   linear-gradient(135deg, hsl(228,60%,98%) 0%, hsl(240,30%,99%) 60%, hsl(260,40%,99%) 100%);
 }
 
-/* Base styles */
+/* Breathing — clean atmospheric blue */
+[data-zen-atmosphere="calm"] {
+  --zen-atm-accent:    var(--zen-primary);
+  --zen-atm-accent-soft: var(--zen-primary-soft);
+  --zen-atm-bg-tint:   linear-gradient(135deg, hsl(215,60%,97%) 0%, hsl(225,40%,99%) 100%);
+}
+
+/* Meditation — deep indigo/violet */
+[data-zen-atmosphere="focus"] {
+  --zen-atm-accent:    var(--zen-secondary);
+  --zen-atm-accent-soft: var(--zen-secondary-soft);
+  --zen-atm-bg-tint:   linear-gradient(135deg, hsl(250,40%,97%) 0%, hsl(240,30%,99%) 100%);
+}
+
+/* Journal — warm cream */
+[data-zen-atmosphere="reflect"] {
+  --zen-atm-accent:    40 35% 52%;
+  --zen-atm-accent-soft: 40 50% 96%;
+  --zen-atm-bg-tint:   linear-gradient(135deg, hsl(38,40%,98%) 0%, hsl(40,30%,99%) 100%);
+}
+
+/* Gratitude, Art — teal / renewal */
+[data-zen-atmosphere="renewal"] {
+  --zen-atm-accent:    var(--zen-accent);
+  --zen-atm-accent-soft: var(--zen-accent-soft);
+  --zen-atm-bg-tint:   linear-gradient(135deg, hsl(170,40%,97%) 0%, hsl(180,30%,99%) 100%);
+}
+
+/* Bubbles, Burst — expressive violet */
+[data-zen-atmosphere="release"] {
+  --zen-atm-accent:    260 55% 56%;
+  --zen-atm-accent-soft: 260 60% 96%;
+  --zen-atm-bg-tint:   linear-gradient(135deg, hsl(255,45%,97%) 0%, hsl(245,30%,99%) 100%);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   BASE STYLES
+   ───────────────────────────────────────────────────────────── */
 * {
-  border-color: hsl(var(--border));
+  border-color: hsl(var(--zen-border));
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-optical-sizing: auto;
+  scroll-behavior: smooth;
 }
 
 body {
-  background-color: hsl(var(--background));
-  color: hsl(var(--foreground));
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: hsl(var(--zen-bg));
+  color: hsl(var(--zen-fg));
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  letter-spacing: 0;
+  min-height: 100vh;
 }
 
-/* Custom animations for Zenu */
-@keyframes fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* ─────────────────────────────────────────────────────────────
+   GLASS MATERIAL SYSTEM
+   Never stack glass on glass.
+   ───────────────────────────────────────────────────────────── */
+.glass-subtle {
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(8px) saturate(150%);
+  -webkit-backdrop-filter: blur(8px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.40);
 }
 
-@keyframes fade-in-delayed {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes card-hover {
-  from {
-    transform: translateY(0) scale(1);
-  }
-  to {
-    transform: translateY(-8px) scale(1.02);
-  }
-}
-
-@keyframes breathe {
-  0%, 100% { 
-    transform: scale(1);
-    opacity: 0.8;
-  }
-  50% { 
-    transform: scale(1.1);
-    opacity: 1;
-  }
-}
-
-@keyframes float {
-  0%, 100% { 
-    transform: translateY(0px);
-  }
-  50% { 
-    transform: translateY(-10px);
-  }
-}
-
-@keyframes pulse-gentle {
-  0%, 100% { 
-    opacity: 1;
-  }
-  50% { 
-    opacity: 0.7;
-  }
-}
-
-@keyframes gradient-shift {
-  0%, 100% { 
-    background-position: 0% 50%;
-  }
-  50% { 
-    background-position: 100% 50%;
-  }
-}
-
-/* Custom utility classes */
-.animate-fade-in {
-  animation: fade-in 0.6s ease-out forwards;
-}
-
-.animate-fade-in-delayed {
-  animation: fade-in-delayed 0.8s ease-out forwards;
-}
-
-.animate-card-hover:hover {
-  animation: card-hover 0.3s ease-out forwards;
-}
-
-.animate-breathe {
-  animation: breathe 4s ease-in-out infinite;
-}
-
-.animate-float {
-  animation: float 6s ease-in-out infinite;
-}
-
-.animate-pulse-gentle {
-  animation: pulse-gentle 2s ease-in-out infinite;
-}
-
-.animate-gradient {
-  background-size: 200% 200%;
-  animation: gradient-shift 3s ease infinite;
-}
-
-/* Glassmorphism */
 .glass {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.68);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.52);
+  box-shadow: var(--shadow-card);
 }
 
-.glass-dark {
-  background: rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+.glass-elevated {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  box-shadow: var(--shadow-elevated);
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
+.glass-floating {
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(32px) saturate(220%);
+  -webkit-backdrop-filter: blur(32px) saturate(220%);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  box-shadow: var(--shadow-floating);
 }
 
-::-webkit-scrollbar-track {
-  background: hsl(var(--muted));
-  border-radius: 6px;
+/* Removed glass-card — was an old alias */
+.glass-card { /* backward compat — maps to .glass */
+  background: rgba(255, 255, 255, 0.68);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.52);
+  box-shadow: var(--shadow-card);
 }
 
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(45deg, hsl(var(--primary)), hsl(var(--secondary)));
-  border-radius: 6px;
+/* ─────────────────────────────────────────────────────────────
+   TYPOGRAPHY UTILITIES
+   Optical tracking changes with size — Apple Design §15
+   ───────────────────────────────────────────────────────────── */
+.zen-display {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  font-weight: 700;
+  font-optical-sizing: auto;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(45deg, hsl(var(--primary)), hsl(var(--accent)));
+.zen-h1 {
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  font-weight: 700;
 }
 
-/* Focus styles for accessibility */
-.focus-visible:focus-visible {
-  outline: 2px solid hsl(var(--ring));
+.zen-h2 {
+  font-size: clamp(1.375rem, 2.5vw, 1.75rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  font-weight: 600;
+}
+
+.zen-h3 {
+  font-size: 1.25rem;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  font-weight: 600;
+}
+
+.zen-body {
+  font-size: 1rem;
+  line-height: 1.6;
+  letter-spacing: 0;
+  font-weight: 400;
+}
+
+.zen-body-sm {
+  font-size: 0.875rem;
+  line-height: 1.55;
+  letter-spacing: 0.005em;
+  font-weight: 400;
+}
+
+.zen-caption {
+  font-size: 0.75rem;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  font-weight: 500;
+}
+
+.zen-label {
+  font-size: 0.75rem;
+  line-height: 1.4;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.zen-metric {
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+}
+
+/* Reflective / serif context — Journal, Gratitude, Inner Compass */
+.zen-serif,
+.zen-serif h1,
+.zen-serif h2,
+.zen-serif h3,
+.zen-serif h4 {
+  font-family: 'Lora', Georgia, 'Times New Roman', serif;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   FOCUS STYLES — WCAG AA
+   ───────────────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid hsl(var(--zen-border-focus));
   outline-offset: 2px;
+  border-radius: 4px;
 }
 
-/* app/globals.css */
+/* ─────────────────────────────────────────────────────────────
+   SCROLLBAR
+   ───────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: hsl(var(--zen-bg-subtle)); border-radius: 999px; }
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--zen-border));
+  border-radius: 999px;
+  transition: background var(--duration-fast) var(--ease-out);
+}
+::-webkit-scrollbar-thumb:hover { background: hsl(var(--zen-fg-subtle)); }
 
-/* Custom styles for the soundscape sliders */
+/* ─────────────────────────────────────────────────────────────
+   KEYFRAME ANIMATIONS
+   ───────────────────────────────────────────────────────────── */
+
+/* Page element entrance */
+@keyframes zen-fade-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Breathing circle expand/contract */
+@keyframes zen-breathe {
+  0%, 100% { transform: scale(1);    opacity: 0.85; }
+  50%       { transform: scale(1.12); opacity: 1; }
+}
+
+/* Gentle float for decorative elements */
+@keyframes zen-float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-8px); }
+}
+
+/* Soft pulse — Panda breathing state indicator */
+@keyframes zen-pulse-soft {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.65; }
+}
+
+/* Gradient shift for atmospheric backgrounds */
+@keyframes zen-gradient {
+  0%, 100% { background-position: 0% 50%; }
+  50%       { background-position: 100% 50%; }
+}
+
+/* Shimmer for skeleton loading */
+@keyframes zen-shimmer {
+  from { background-position: -200% 0; }
+  to   { background-position: 200% 0; }
+}
+
+/* Panda celebrate bounce */
+@keyframes zen-bounce-soft {
+  0%, 100% { transform: translateY(0); }
+  40%       { transform: translateY(-10px); }
+  60%       { transform: translateY(-4px); }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   ANIMATION UTILITY CLASSES
+   ───────────────────────────────────────────────────────────── */
+.animate-zen-fade-up {
+  animation: zen-fade-up var(--duration-slow) var(--ease-out) forwards;
+}
+
+.animate-zen-breathe {
+  animation: zen-breathe 4.5s ease-in-out infinite;
+}
+
+.animate-zen-float {
+  animation: zen-float 6s ease-in-out infinite;
+}
+
+.animate-zen-pulse-soft {
+  animation: zen-pulse-soft 2.5s ease-in-out infinite;
+}
+
+.animate-zen-gradient {
+  background-size: 200% 200%;
+  animation: zen-gradient 4s ease infinite;
+}
+
+.animate-zen-shimmer {
+  background: linear-gradient(
+    90deg,
+    hsl(var(--zen-bg-subtle)) 0%,
+    hsl(var(--zen-bg-muted)) 50%,
+    hsl(var(--zen-bg-subtle)) 100%
+  );
+  background-size: 200% 100%;
+  animation: zen-shimmer 1.6s ease-in-out infinite;
+}
+
+.animate-zen-bounce-soft {
+  animation: zen-bounce-soft 0.6s var(--ease-out) forwards;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   REDUCED MOTION — Apple Design §14
+   Replace slides/springs with short opacity cross-fades.
+   Keep brief opacity/color transitions for comprehension.
+   ───────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .animate-zen-fade-up,
+  .animate-zen-breathe,
+  .animate-zen-float,
+  .animate-zen-gradient,
+  .animate-zen-shimmer,
+  .animate-zen-bounce-soft,
+  .animate-zen-pulse-soft {
+    animation: none !important;
+  }
+
+  .animate-zen-fade-up {
+    opacity: 1;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  /* Kill transform-driven / looping motion; keep short opacity fades usable */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Explicit opt-in for comprehension fades (override the nuke above) */
+  .zen-fade,
+  .zen-fade * {
+    transition: opacity 200ms ease !important;
+    animation: none !important;
+  }
+
+  /* Soften glass materialization — no scale */
+  .glass,
+  .glass-elevated,
+  .glass-floating,
+  .glass-subtle {
+    transition: opacity 200ms ease, background-color 200ms ease !important;
+  }
+}
+
+/* Touch target helper — WCAG / Apple HIG ~44×44 */
+.zen-touch {
+  min-height: 2.75rem; /* 44px */
+  min-width: 2.75rem;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   SOUNDSCAPE SLIDERS — Meditation page
+   ───────────────────────────────────────────────────────────── */
 .slider-thumb::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  height: 16px;
-  width: 16px;
-  border-radius: 9999px;
+  height: 18px;
+  width: 18px;
+  border-radius: var(--radius-full);
   cursor: pointer;
-  border-width: 2px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  border: 2px solid transparent;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition: transform var(--duration-fast) var(--ease-out);
 }
-
+.slider-thumb::-webkit-slider-thumb:hover { transform: scale(1.15); }
 .slider-thumb::-moz-range-thumb {
-  height: 16px;
-  width: 16px;
-  border-radius: 9999px;
+  height: 18px;
+  width: 18px;
+  border-radius: var(--radius-full);
   cursor: pointer;
-  border-width: 2px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  border: 2px solid transparent;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
-.slider-fire::-webkit-slider-thumb { background-color: #fb923c; border-color: #c2410c; }
-.slider-fire::-moz-range-thumb { background-color: #fb923c; border-color: #c2410c; }
-
-.slider-rain::-webkit-slider-thumb { background-color: #60a5fa; border-color: #1d4ed8; }
-.slider-rain::-moz-range-thumb { background-color: #60a5fa; border-color: #1d4ed8; }
-
+.slider-fire::-webkit-slider-thumb   { background-color: #fb923c; border-color: #c2410c; }
+.slider-fire::-moz-range-thumb       { background-color: #fb923c; border-color: #c2410c; }
+.slider-rain::-webkit-slider-thumb   { background-color: #60a5fa; border-color: #1d4ed8; }
+.slider-rain::-moz-range-thumb       { background-color: #60a5fa; border-color: #1d4ed8; }
 .slider-forest::-webkit-slider-thumb { background-color: #4ade80; border-color: #15803d; }
-.slider-forest::-moz-range-thumb { background-color: #4ade80; border-color: #15803d; }
+.slider-forest::-moz-range-thumb     { background-color: #4ade80; border-color: #15803d; }
+.slider-ocean::-webkit-slider-thumb  { background-color: #22d3ee; border-color: #0e7490; }
+.slider-ocean::-moz-range-thumb      { background-color: #22d3ee; border-color: #0e7490; }
 
-.slider-ocean::-webkit-slider-thumb { background-color: #22d3ee; border-color: #0e7490; }
-.slider-ocean::-moz-range-thumb { background-color: #22d3ee; border-color: #0e7490; }
+/* ─────────────────────────────────────────────────────────────
+   SAFE-AREA UTILITIES (iOS notch / home indicator)
+   ───────────────────────────────────────────────────────────── */
+.pb-safe { padding-bottom: env(safe-area-inset-bottom, 0px); }
+.pt-safe { padding-top: env(safe-area-inset-top, 0px); }

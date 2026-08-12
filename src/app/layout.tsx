@@ -1,31 +1,71 @@
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-import './globals.css'
-import Navigation from '@/components/layout/Navigation'
-import { AuthProvider } from '@/components/providers/AuthProvider'
+import type { Metadata, Viewport } from 'next';
+import { Inter } from 'next/font/google';
+import './globals.css';
+import { AuthProvider } from '@/components/providers/AuthProvider';
+import ZenNavigation from '@/components/layout/ZenNavigation';
+import ZenBottomNav from '@/components/layout/ZenBottomNav';
+import { Toaster } from '@/components/ui/sonner';
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
-  title: 'Zenu - Stress Management for Students',
-  description: 'Your personal sanctuary for mental wellness. Manage stress, find balance, and cultivate inner peace.',
-  keywords: 'stress management, mental health, student wellness, meditation, mindfulness',
-  authors: [{ name: 'Zenu Team' }],
-}
+  title: {
+    default: 'ZenU — Your Student Wellness Companion',
+    template: '%s · ZenU',
+  },
+  description:
+    'ZenU is a student mental wellness platform. Manage stress, journal your thoughts, practice mindfulness, and find inner calm — all in one place.',
+  keywords: [
+    'student wellness',
+    'mental health',
+    'stress management',
+    'meditation',
+    'mindfulness',
+    'breathing exercises',
+    'gratitude journal',
+  ],
+  authors: [{ name: 'ZenU Team' }],
+};
 
-export const viewport = {
+export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-}
+  viewportFit: 'cover', // respect iOS safe areas
+};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
+    <html lang="en" className={inter.variable}>
+      <head>
+        {/* Lora — serif font for Journal, Gratitude, Inner Compass */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body className="bg-zen-bg text-zen-fg antialiased">
         <AuthProvider>
-          {children}
+          {/* Desktop + mobile navigation */}
+          <ZenNavigation />
+
+          {/* Page content — extra bottom padding on mobile for ZenBottomNav */}
+          <main className="min-h-[calc(100dvh-4rem)] pb-[calc(5rem+env(safe-area-inset-bottom,0px))] md:pb-0">
+            {children}
+          </main>
+
+          {/* Mobile fixed bottom nav */}
+          <ZenBottomNav />
+
+          {/* Toast notifications */}
+          <Toaster position="top-right" richColors />
         </AuthProvider>
       </body>
     </html>
-  )
+  );
 }

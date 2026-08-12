@@ -1,22 +1,20 @@
-import { useTheme } from "next-themes";
 import { Toaster as Sonner, toast } from "sonner";
 
 type ToasterProps = React.ComponentProps<typeof Sonner>;
 
+// ZenU 2.0 is light mode only — no theme switching needed
 const Toaster = ({ ...props }: ToasterProps) => {
-  const { theme = "system" } = useTheme();
-
   return (
     <Sonner
-      theme={theme as ToasterProps["theme"]}
+      theme="light"
       className="toaster group"
       toastOptions={{
         classNames: {
           toast:
-            "group toast group-[.toaster]:bg-background group-[.toaster]:text-foreground group-[.toaster]:border-border group-[.toaster]:shadow-lg",
-          description: "group-[.toast]:text-muted-foreground",
-          actionButton: "group-[.toast]:bg-primary group-[.toast]:text-primary-foreground",
-          cancelButton: "group-[.toast]:bg-muted group-[.toast]:text-muted-foreground",
+            "group toast group-[.toaster]:bg-white group-[.toaster]:text-zen-fg group-[.toaster]:border-zen-border group-[.toaster]:shadow-zen-elevated",
+          description: "group-[.toast]:text-zen-fg-muted",
+          actionButton: "group-[.toast]:bg-zen-primary group-[.toast]:text-white",
+          cancelButton: "group-[.toast]:bg-zen-bg-subtle group-[.toast]:text-zen-fg-muted",
         },
       }}
       {...props}

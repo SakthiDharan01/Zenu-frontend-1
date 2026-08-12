@@ -12,6 +12,7 @@ out/
 .parcel-cache/
 .cache/
 public/build/
+.agents
 
 # Logs
 npm-debug.log*

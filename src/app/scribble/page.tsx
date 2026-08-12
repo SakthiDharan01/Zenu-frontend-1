@@ -32,10 +32,11 @@ export default function Page() {
     };
   }, [loadFromLocalStorage]);
 
-  const { darkMode } = useToolStore();
-
   return (
-    <div className={`relative flex h-[calc(100vh-64px)] w-full overflow-hidden ${darkMode ? "bg-gray-900" : "bg-gradient-to-br from-blue-50 via-white to-purple-50"}`}>
+    <div
+      className="relative flex h-[calc(100dvh-4rem)] w-full overflow-hidden bg-zen-bg"
+      data-zen-atmosphere="home"
+    >
       <Sidebar />
       <div className="flex-1 flex flex-col relative">
         <CanvasArea selectedSticker={selectedSticker} />
@@ -43,7 +44,6 @@ export default function Page() {
       <ToolPalette />
       <BottomBar />
 
-      {/* Modals */}
       <StickerPanel
         isOpen={showStickerPanel}
         onClose={() => setShowStickerPanel(false)}
