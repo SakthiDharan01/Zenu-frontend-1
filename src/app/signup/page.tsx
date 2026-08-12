@@ -9,6 +9,7 @@ import { z } from 'zod';
 import { UserPlus } from 'lucide-react';
 
 import { authClient } from '@/lib/authClient';
+import { GoogleAuthButton } from '@/components/auth/GoogleAuthButton';
 import { ZenPage, ZenContainer, ZenButton, ZenInput } from '@/components/zen';
 
 const optionalFullName = z
@@ -125,6 +126,17 @@ const SignUpPage = () => {
               Create account
             </ZenButton>
           </form>
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center" aria-hidden="true">
+              <div className="w-full border-t border-zen-border-soft" />
+            </div>
+            <div className="relative flex justify-center text-xs">
+              <span className="bg-white/80 px-2 text-zen-fg-subtle">or</span>
+            </div>
+          </div>
+
+          <GoogleAuthButton label="Continue with Google" />
 
           <p className="text-center zen-body-sm text-zen-fg-muted">
             Already have an account?{' '}

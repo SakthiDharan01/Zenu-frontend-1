@@ -8,8 +8,9 @@ import ZenFocusMode from '@/components/layout/ZenFocusMode';
 import { apiClient } from '@/lib/apiClient';
 import type { Meditation } from '@/lib/types';
 import { toast } from 'sonner';
-import { Play, Headphones } from 'lucide-react';
+import { Play } from 'lucide-react';
 import { trackEngagement } from '@/lib/signals';
+import { resolveGuidedAudioUrl } from '@/lib/meditationAudio';
 import { cn } from '@/lib/utils';
 import {
   ZenPage,
@@ -21,6 +22,7 @@ import {
   ZenButton,
   ZenSkeletonCard,
   ZenSoundscapeBar,
+  ZenGuidedPlayer,
   ZenDialog,
   ZenDialogContent,
   ZenDialogHeader,
@@ -42,7 +44,6 @@ const MeditationPlayerModal = ({
   meditation,
   onSessionLogged,
 }: MeditationPlayerModalProps) => {
-  const audioRef = useRef<HTMLAudioElement>(null);
   const hasLoggedRef = useRef(false);
   const [logged, setLogged] = useState(false);
 
@@ -51,13 +52,13 @@ const MeditationPlayerModal = ({
     return Math.max(60, Math.round(minutes * 60));
   }, [meditation?.durationMinutes]);
 
+  const guidedUrl = meditation
+    ? resolveGuidedAudioUrl(meditation.title, meditation.audioUrl)
+    : null;
+
   const resetState = () => {
     hasLoggedRef.current = false;
     setLogged(false);
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
-    }
   };
 
   const ensureLogged = async () => {
@@ -65,10 +66,6 @@ const MeditationPlayerModal = ({
     hasLoggedRef.current = true;
     setLogged(true);
     await onSessionLogged(durationSeconds);
-  };
-
-  const handlePlay = async () => {
-    await ensureLogged();
   };
 
   const handleManualComplete = async () => {
@@ -85,55 +82,39 @@ const MeditationPlayerModal = ({
 
   return (
     <ZenDialog open={isOpen} onOpenChange={handleOpenChange}>
-      <ZenDialogContent className="sm:max-w-lg">
+      <ZenDialogContent className="sm:max-w-lg max-h-[90dvh] overflow-y-auto w-[calc(100vw-1.5rem)]">
         {meditation ? (
           <>
             <ZenDialogHeader>
               <ZenDialogTitle>{meditation.title}</ZenDialogTitle>
               <ZenDialogDescription>
                 {meditation.description ??
-                  'Press play to begin and we’ll save this practice for your streak.'}
+                  'Press play to begin. Ambient sounds stay available behind this dialog.'}
               </ZenDialogDescription>
             </ZenDialogHeader>
-            <div className="space-y-4">
-              <div className="rounded-zen-lg bg-zen-bg-subtle px-4 py-3 zen-body-sm text-zen-fg">
-                <p className="font-medium mb-1">Session details</p>
-                <p className="text-zen-fg-muted">
-                  {meditation.durationMinutes} min · {meditation.category}
-                </p>
-              </div>
-              {meditation.audioUrl ? (
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2 zen-body-sm text-zen-fg-muted">
-                    <Headphones className="h-4 w-4" aria-hidden="true" />
-                    Bring headphones for the full effect.
-                  </div>
-                  <audio
-                    ref={audioRef}
-                    className="w-full"
-                    controls
-                    src={meditation.audioUrl}
-                    onPlay={handlePlay}
-                    onEnded={() =>
-                      toast.success('How do you feel?', {
-                        description: 'Take a moment to journal what surfaced.',
-                      })
-                    }
-                  >
-                    Your browser does not support the audio element.
-                  </audio>
-                </div>
-              ) : (
-                <div className="rounded-zen-lg border border-dashed border-zen-accent/30 bg-zen-accent-soft px-4 py-6 text-center text-zen-accent zen-body-sm">
-                  Audio is coming soon for this session. You can still log it manually below.
-                </div>
-              )}
-            </div>
-            <ZenDialogFooter className="sm:justify-between">
-              <ZenButton variant="outline" onClick={onClose}>
+            <ZenGuidedPlayer
+              title={meditation.title}
+              audioUrl={guidedUrl}
+              category={meditation.category}
+              durationMinutes={meditation.durationMinutes}
+              onPlayStart={() => {
+                void ensureLogged();
+              }}
+              onComplete={() => {
+                toast.success('How do you feel?', {
+                  description: 'Take a moment to journal what surfaced.',
+                });
+              }}
+            />
+            <ZenDialogFooter className="sm:justify-between gap-2 flex-col-reverse sm:flex-row">
+              <ZenButton variant="outline" onClick={onClose} className="w-full sm:w-auto">
                 Close
               </ZenButton>
-              <ZenButton onClick={handleManualComplete} disabled={logged}>
+              <ZenButton
+                onClick={handleManualComplete}
+                disabled={logged}
+                className="w-full sm:w-auto"
+              >
                 {logged ? 'Logged' : 'Mark complete'}
               </ZenButton>
             </ZenDialogFooter>
@@ -177,8 +158,8 @@ const MeditationCard = ({
           ) : (
             <div className="absolute inset-0 bg-gradient-to-br from-zen-secondary-soft via-zen-primary-soft to-zen-bg" />
           )}
-          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-zen-fast bg-zen-fg/20">
-            <span className="flex items-center justify-center w-14 h-14 bg-zen-primary rounded-full text-white shadow-zen-card">
+          <div className="absolute inset-0 flex items-center justify-center opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-zen-fast bg-zen-fg/10 sm:bg-zen-fg/20">
+            <span className="flex items-center justify-center w-14 h-14 min-h-11 min-w-11 bg-zen-primary rounded-full text-white shadow-zen-card">
               <Play className="w-6 h-6 fill-current" aria-hidden="true" />
             </span>
           </div>
