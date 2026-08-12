@@ -242,7 +242,7 @@ export default function CanvasArea({ selectedSticker }: CanvasAreaProps) {
 
   const renderGrid = () => {
     if (!gridEnabled) return null;
-    const lines = [];
+    const lines: JSX.Element[] = [];
     for (let i = 0; i < stageSize.width / gridSize; i++) {
       lines.push(
         <Line

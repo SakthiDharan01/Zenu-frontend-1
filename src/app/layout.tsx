@@ -29,12 +29,23 @@ export const metadata: Metadata = {
     'gratitude journal',
   ],
   authors: [{ name: 'ZenU Team' }],
+  manifest: '/manifest.json',
+  icons: {
+    icon: '/icons/icon-192.jpeg',
+    apple: '/icons/icon-192.jpeg',
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'ZenU',
+  },
 };
 
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   viewportFit: 'cover', // respect iOS safe areas
+  themeColor: '#4a90e2',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
