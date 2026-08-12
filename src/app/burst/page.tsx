@@ -98,14 +98,14 @@ export default function BurstItOutPage() {
                 className="relative flex items-center justify-center"
                 animate={
                   phase === 'popping'
-                    ? { scale: [1, 1.3, 0], opacity: [1, 1, 0] }
+                    ? { scale: 1.1, opacity: 0 }
                     : phase === 'expanding'
                       ? { scale: 1 }
                       : { scale: 1 }
                 }
                 transition={
                   phase === 'popping'
-                    ? { duration: 0.5, times: [0, 0.4, 1] }
+                    ? { duration: 0.08, ease: "easeOut" }
                     : { type: 'spring', stiffness: 80, damping: 14 }
                 }
               >
@@ -168,20 +168,40 @@ export default function BurstItOutPage() {
           <AnimatePresence>
             {phase === 'popping' && (
               <>
-                {[...Array(10)].map((_, i) => {
-                  const angle = (i / 10) * 360;
+                {/* Shockwave ring */}
+                <motion.div
+                  className="absolute rounded-full border-2 border-white/60"
+                  style={{ width: bubbleSize, height: bubbleSize }}
+                  initial={{ scale: 1, opacity: 0.7 }}
+                  animate={{ scale: 1.15, opacity: 0 }}
+                  transition={{ duration: 0.15, ease: 'easeOut' }}
+                />
+                
+                {/* Water droplets */}
+                {[...Array(32)].map((_, i) => {
+                  const angle = (i / 32) * 360;
                   const rad = (angle * Math.PI) / 180;
-                  const x = Math.cos(rad) * 100;
-                  const y = Math.sin(rad) * 100;
-                  const colors = ['#c4b5fd', '#f0abfc', '#93c5fd', '#6ee7b7', '#fde68a', '#fca5a5'];
+                  const startRadius = bubbleSize / 2;
+                  const endRadius = startRadius + 40 + Math.random() * 60;
+                  const startX = Math.cos(rad) * startRadius;
+                  const startY = Math.sin(rad) * startRadius;
+                  const endX = Math.cos(rad) * endRadius;
+                  const endY = Math.sin(rad) * endRadius + (40 + Math.random() * 80); // gravity drop
+                  const colors = ['#c4b5fd', '#f0abfc', '#93c5fd', '#ffffff', '#a78bfa'];
+                  const size = 3 + Math.random() * 5;
+                  
                   return (
                     <motion.div
                       key={i}
-                      className="absolute w-3 h-3 rounded-full"
-                      style={{ backgroundColor: colors[i % colors.length] }}
-                      initial={{ x: 0, y: 0, scale: 1, opacity: 1 }}
-                      animate={{ x, y, scale: 0, opacity: 0 }}
-                      transition={{ duration: 0.6, ease: 'easeOut' }}
+                      className="absolute rounded-full"
+                      style={{ 
+                        backgroundColor: colors[i % colors.length],
+                        width: size,
+                        height: size,
+                      }}
+                      initial={{ x: startX, y: startY, scale: 1, opacity: 0.9 }}
+                      animate={{ x: endX, y: endY, scale: 0, opacity: 0 }}
+                      transition={{ duration: 0.3 + Math.random() * 0.25, ease: 'easeOut' }}
                     />
                   );
                 })}
