@@ -94,6 +94,22 @@ export const authClient = {
     return user;
   },
 
+  async completeGoogleSession(ticket: string): Promise<AuthUser> {
+    const response = await apiFetch('/api/auth/google/session', {
+      method: 'POST',
+      body: JSON.stringify({ ticket }),
+    });
+
+    const data = await ensureOk(response).then(parseJson);
+    const user = data?.user as AuthUser | undefined;
+    if (!user) {
+      throw new Error('Google session response missing user');
+    }
+
+    emitAuthChange();
+    return user;
+  },
+
   async signUp(input: SignUpInput): Promise<AuthUser> {
     const response = await apiFetch('/api/auth/sign-up', {
       method: 'POST',
