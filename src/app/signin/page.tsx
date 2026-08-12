@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
@@ -9,6 +9,7 @@ import { z } from 'zod';
 import { LogIn } from 'lucide-react';
 
 import { authClient } from '@/lib/authClient';
+import { GoogleAuthButton } from '@/components/auth/GoogleAuthButton';
 import { ZenPage, ZenContainer, ZenButton, ZenInput } from '@/components/zen';
 
 const signInSchema = z.object({
@@ -21,6 +22,14 @@ type SignInFormValues = z.infer<typeof signInSchema>;
 const SignInPage = () => {
   const router = useRouter();
   const [formError, setFormError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const oauthError = params.get('oauth_error');
+    if (oauthError) {
+      setFormError(`Google sign-in did not complete (${oauthError}). Please try again.`);
+    }
+  }, []);
 
   const {
     register,
@@ -101,6 +110,17 @@ const SignInPage = () => {
               Sign in
             </ZenButton>
           </form>
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center" aria-hidden="true">
+              <div className="w-full border-t border-zen-border-soft" />
+            </div>
+            <div className="relative flex justify-center text-xs">
+              <span className="bg-white/80 px-2 text-zen-fg-subtle">or</span>
+            </div>
+          </div>
+
+          <GoogleAuthButton label="Continue with Google" />
 
           <p className="text-center zen-body-sm text-zen-fg-muted">
             Don&apos;t have an account?{' '}

@@ -320,9 +320,9 @@ export default function CanvasArea({ selectedSticker }: CanvasAreaProps) {
   });
 
   return (
-    <div className="flex flex-1 justify-center items-center h-[calc(100vh-4rem)]">
+    <div className="flex flex-1 justify-center items-center h-[calc(100dvh-8rem)] md:h-[calc(100dvh-4rem)] touch-none overflow-hidden">
       <div
-        className={`rounded-2xl shadow-lg relative w-[90vw] h-[calc(90vh-4rem)] ${darkMode ? "bg-gray-800" : "bg-gradient-to-br from-blue-50 to-purple-50"}`}
+        className={`rounded-2xl shadow-lg relative w-[90vw] h-[calc(90dvh-8rem)] md:h-[calc(90vh-4rem)] ${darkMode ? "bg-gray-800" : "bg-gradient-to-br from-blue-50 to-purple-50"}`}
         style={{
           backgroundImage: darkMode
             ? "none"
@@ -336,10 +336,17 @@ export default function CanvasArea({ selectedSticker }: CanvasAreaProps) {
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
+          onTouchStart={handleMouseDown as unknown as (e: Konva.KonvaEventObject<TouchEvent>) => void}
+          onTouchMove={handleMouseMove as unknown as (e: Konva.KonvaEventObject<TouchEvent>) => void}
+          onTouchEnd={handleMouseUp}
+          onPointerDown={handleMouseDown as unknown as (e: Konva.KonvaEventObject<PointerEvent>) => void}
+          onPointerMove={handleMouseMove as unknown as (e: Konva.KonvaEventObject<PointerEvent>) => void}
+          onPointerUp={handleMouseUp}
           style={{
             cursor: getCursor(),
             transform: `scale(${zoom})`,
             transformOrigin: "top left",
+            touchAction: "none",
           }}
         >
           <Layer>

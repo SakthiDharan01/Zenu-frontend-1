@@ -82,8 +82,9 @@ function NavDropdown({
       onMouseLeave={onClose}
     >
       <button
+        type="button"
         className={cn(
-          'flex items-center gap-1 px-3 py-2 text-[0.9rem] font-medium rounded-zen-md',
+          'flex items-center gap-1 px-3 py-2 min-h-11 text-[0.9rem] font-medium rounded-zen-md',
           'transition-colors duration-100',
           isGroupActive
             ? 'text-zen-primary bg-zen-primary-soft'
@@ -91,6 +92,7 @@ function NavDropdown({
         )}
         aria-haspopup="true"
         aria-expanded={isOpen}
+        onClick={() => (isOpen ? onClose() : onOpen())}
       >
         {group.label}
         <ChevronDown
@@ -168,15 +170,15 @@ function AvatarDropdown({
   const initial = displayName.charAt(0).toUpperCase();
 
   return (
-    <div
-      className="relative"
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
-    >
+    <div className="relative">
       <button
+        type="button"
         aria-label="Account menu"
+        aria-expanded={open}
+        aria-haspopup="menu"
+        onClick={() => setOpen((v) => !v)}
         className={cn(
-          'flex items-center gap-2 pl-1 pr-3 py-1 rounded-full',
+          'flex items-center gap-2 pl-1 pr-3 py-1 min-h-11 rounded-full',
           'transition-colors duration-100',
           open ? 'bg-zen-bg-subtle' : 'hover:bg-zen-bg-subtle',
         )}
@@ -202,7 +204,9 @@ function AvatarDropdown({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 4, scale: 0.97 }}
             transition={springMenu}
-            className="absolute top-full right-0 mt-2 w-48 glass-floating rounded-zen-xl overflow-hidden"
+            className="absolute top-full right-0 mt-2 w-48 glass-floating rounded-zen-xl overflow-hidden z-50"
+            role="menu"
+            onMouseLeave={() => setOpen(false)}
           >
             <div className="p-3 border-b border-white/60">
               <div className="text-xs text-zen-fg-subtle font-medium uppercase tracking-wider mb-0.5">Signed in as</div>
