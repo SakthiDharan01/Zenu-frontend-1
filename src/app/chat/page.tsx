@@ -139,9 +139,22 @@ const ChatContent = () => {
     setLoadingMessages(true);
     setChatError(null);
     try {
-      const data = await apiClient.getChatMessages(conversationId);
-      data.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
-      setMessages(data);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || ''}/api/chat/conversations/${conversationId}/messages`, {
+        credentials: 'include'
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const msgList = data.messages || [];
+        msgList.sort((a: any, b: any) => new Date(a.created_at || a.createdAt).getTime() - new Date(b.created_at || b.createdAt).getTime());
+        setMessages(msgList.map((m: any) => ({
+          id: m.id,
+          role: m.role,
+          content: m.content,
+          createdAt: m.created_at || m.createdAt || new Date().toISOString(),
+        })));
+      } else {
+        throw new Error('Failed to fetch messages');
+      }
     } catch (error) {
       console.error('Failed to load chat messages', error);
       setChatError('We could not load this conversation. Please try again.');
@@ -215,9 +228,7 @@ const ChatContent = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: trimmed,
-          conversation_history: updatedHistory
-            .slice(-10)
-            .map((m) => ({ role: m.role, content: m.content })),
+          session_id: activeConversationId,
         }),
       });
 
@@ -226,6 +237,18 @@ const ChatContent = () => {
       }
 
       const data = await res.json();
+      
+      if (data.session_id && !activeConversationId) {
+        setActiveConversationId(data.session_id);
+        const convRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || ''}/api/chat/conversations`, {
+          credentials: 'include',
+        });
+        if (convRes.ok) {
+          const convData = await convRes.json();
+          setConversations(convData.conversations || []);
+        }
+      }
+
       const reply = data.reply || "I'm here for you. Can you tell me more?";
 
       const assistantMessage: ChatMessage = {
