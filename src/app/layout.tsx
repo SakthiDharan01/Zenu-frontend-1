@@ -30,6 +30,15 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: 'ZenU Team' }],
   manifest: '/manifest.json',
+  icons: {
+    icon: '/icons/icon-192.jpeg',
+    apple: '/icons/icon-192.jpeg',
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'ZenU',
+  },
 };
 
 export const viewport: Viewport = {
