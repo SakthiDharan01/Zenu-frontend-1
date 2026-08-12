@@ -70,42 +70,26 @@ const ChatContent = () => {
     }
   }, []);
 
-  const loadConversations = useCallback(async (preferredId?: string | null) => {
-    setConversationsLoading(true);
-    setChatError(null);
-    try {
-      const list = await apiClient.listChatConversations();
-      setConversations(list);
-
-      let nextId = preferredId ?? activeConversationId;
-      if (nextId && !list.some((item) => item.id === nextId)) {
-        nextId = null;
-      }
-      if (!nextId && list.length) {
-        nextId = list[0].id;
-      }
-
-      setActiveConversationId(nextId ?? null);
-
-      if (nextId) {
-        await loadMessages(nextId);
-      } else {
-        setMessages([]);
-      }
-    } catch (error) {
-      console.error('Failed to load conversations', error);
-      setChatError('We could not load your conversations. Please refresh.');
-      setConversations([]);
-      setMessages([]);
-      setActiveConversationId(null);
-    } finally {
-      setConversationsLoading(false);
-    }
-  }, [activeConversationId, loadMessages]);
-
   useEffect(() => {
+    const loadConversations = async () => {
+      setConversationsLoading(true);
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || ''}/api/chat/conversations`, {
+          credentials: 'include',
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setConversations(data.conversations || []);
+        }
+      } catch {
+        // Fail silently — conversations are optional UI
+        setConversations([]);
+      } finally {
+        setConversationsLoading(false);
+      }
+    };
     void loadConversations();
-  }, [loadConversations]);
+  }, []);
 
   const handleSelectConversation = async (conversationId: string) => {
     if (conversationId === 'new') {
@@ -122,60 +106,63 @@ const ChatContent = () => {
   const handleSendMessage = async (event: React.FormEvent) => {
     event.preventDefault();
     const trimmed = input.trim();
-    if (!trimmed || isSending) {
-      return;
-    }
+    if (!trimmed || isSending) return;
 
     setIsSending(true);
     setChatError(null);
 
-    const tempId = Date.now();
-    const optimisticMessage: ChatMessage = {
-      id: tempId,
+    const newUserMsg: ChatMessage = {
+      id: Date.now(),
       role: 'user',
       content: trimmed,
       createdAt: new Date().toISOString()
     };
 
-    setMessages((prev) => [...prev, optimisticMessage]);
+    const updatedHistory = [...messages, newUserMsg];
+    setMessages(updatedHistory);
     setInput('');
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || ''}/api/chat/message`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || ''}/api/chat/message`, {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: trimmed,
-          conversation_history: messages.map(msg => ({
-            role: msg.role,
-            content: msg.content
-          }))
+          conversation_history: updatedHistory
+            .slice(-10)  // last 10 messages for context
+            .map(m => ({ role: m.role, content: m.content }))
         })
       });
 
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
       }
 
-      const data = await response.json();
+      const data = await res.json();
+      const reply = data.reply || "I'm here for you. Can you tell me more?";
 
       const assistantMessage: ChatMessage = {
         id: Date.now() + 1,
         role: 'assistant',
-        content: data.reply,
+        content: reply,
         createdAt: new Date().toISOString()
       };
 
       setMessages((prev) => [...prev, assistantMessage]);
 
       if (data.safety_triggered) {
+        console.log('Safety response triggered');
         toast.warning('We noticed you might be going through a tough time. Please reach out to someone you trust.');
       }
     } catch (error) {
       console.error('Failed to send chat message', error);
-      setMessages((prev) => prev.filter((message) => message.id !== tempId));
-      toast.error('Unable to send your message. Please try again.');
+      setMessages((prev) => [...prev, {
+        id: Date.now() + 1,
+        role: 'assistant',
+        content: "I had trouble connecting. Please try again — I'm here for you. 💙",
+        createdAt: new Date().toISOString()
+      }]);
     } finally {
       setIsSending(false);
     }
