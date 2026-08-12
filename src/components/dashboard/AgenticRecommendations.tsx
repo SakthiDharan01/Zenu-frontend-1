@@ -5,6 +5,7 @@ import { getRecommendations } from '@/lib/signals';
 import { useRouter } from 'next/navigation';
 
 const MODULE_ROUTES: Record<string, string> = {
+  // Common/New IDs
   breathing: '/breathing',
   mindfulness: '/meditation',
   diary: '/journal',
@@ -49,9 +50,12 @@ export default function AgenticRecommendations() {
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
         {data.recommendations.map((rec, i) => (
           <button
-            key={rec.module_id}
-            onClick={() => router.push(MODULE_ROUTES[rec.module_id] || '/')}
-            className="text-left p-3 rounded-xl border border-purple-100 bg-purple-50 hover:bg-purple-100 transition-colors group"
+            key={rec.module_id || (rec as any).id}
+            onClick={() => {
+              const targetId = rec.module_id || (rec as any).id;
+              router.push(MODULE_ROUTES[targetId] || '/');
+            }}
+            className="text-left p-3 rounded-xl border border-purple-100 bg-purple-50 hover:bg-purple-100 transition-colors group cursor-pointer"
           >
             <div className="flex items-center justify-between mb-1">
               <span className="text-xs font-bold text-purple-500">#{i + 1}</span>
