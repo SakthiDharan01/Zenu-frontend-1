@@ -2,16 +2,15 @@
 
 import { useEffect, useState } from 'react';
 import { getRecommendations } from '@/lib/signals';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 const MODULE_ROUTES: Record<string, string> = {
-  // Common/New IDs
   breathing: '/breathing',
   mindfulness: '/meditation',
   diary: '/journal',
   journal_gratitude: '/gratitude',
   doodle_dreams: '/art',
-  bubble_canvas: '/bubble',
+  bubble_canvas: '/bubbles',
   burst_it_out: '/burst',
   scribble_pad: '/scribble',
   chatbot_seviyan: '/chat',
@@ -20,7 +19,6 @@ const MODULE_ROUTES: Record<string, string> = {
 };
 
 export default function AgenticRecommendations() {
-  const router = useRouter();   // ✅ inside component
   const [data, setData] = useState<Awaited<ReturnType<typeof getRecommendations>>>(null);
   const [loading, setLoading] = useState(true);
 
@@ -48,14 +46,14 @@ export default function AgenticRecommendations() {
       </div>
 
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
-        {data.recommendations.map((rec, i) => (
-          <button
-            key={rec.module_id || (rec as any).id}
-            onClick={() => {
-              const targetId = rec.module_id || (rec as any).id;
-              router.push(MODULE_ROUTES[targetId] || '/');
-            }}
-            className="text-left p-3 rounded-xl border border-purple-100 bg-purple-50 hover:bg-purple-100 transition-colors group cursor-pointer"
+        {data.recommendations.map((rec, i) => {
+          const targetId = rec.module_id || (rec as any).id;
+          const route = MODULE_ROUTES[targetId] || '/';
+          return (
+          <Link
+            key={targetId}
+            href={route}
+            className="text-left p-3 rounded-xl border border-purple-100 bg-purple-50 hover:bg-purple-100 transition-colors group cursor-pointer block"
           >
             <div className="flex items-center justify-between mb-1">
               <span className="text-xs font-bold text-purple-500">#{i + 1}</span>
@@ -74,8 +72,9 @@ export default function AgenticRecommendations() {
                 </span>
               ))}
             </div>
-          </button>
-        ))}
+          </Link>
+        );
+      })}
       </div>
 
       <p className="text-xs text-gray-400 text-center">
