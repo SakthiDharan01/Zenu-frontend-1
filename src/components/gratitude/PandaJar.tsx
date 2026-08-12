@@ -102,8 +102,8 @@ export default function PandaJar({ notes, onPickRandom, onAddNew, selectedNote, 
         {/* Ground */}
         <div className="absolute bottom-10 left-0 right-0 h-0.5 bg-amber-200 rounded-full opacity-60" />
 
-        {/* JAR — fixed right side */}
-        <div className="absolute bottom-10 right-8 flex flex-col items-center" style={{ width: 130 }}>
+        {/* JAR — anchored to center-right */}
+        <div className="absolute bottom-10 left-1/2 flex flex-col items-center" style={{ width: 130, marginLeft: 25 }}>
 
           {/* Lid */}
           <motion.div
@@ -166,12 +166,12 @@ export default function PandaJar({ notes, onPickRandom, onAddNew, selectedNote, 
           )}
         </div>
 
-        {/* ── PANDA ── */}
+        {/* ── PANDA ── anchored to center-left */}
         <motion.div
-          className="absolute bottom-10 left-6 drop-shadow-sm" // Added drop shadow here for overall depth
+          className="absolute bottom-10 left-1/2 drop-shadow-sm" 
           animate={{ x: pandaX }}
           transition={{ type: 'spring', stiffness: 90, damping: 18, mass: 1.4 }}
-          style={{ scaleX: facingRight ? -1 : 1 }}
+          style={{ marginLeft: -155, scaleX: facingRight ? -1 : 1 }}
         >
           <PandaCharacter
             phase={phase}
