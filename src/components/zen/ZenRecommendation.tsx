@@ -26,12 +26,6 @@ const MODULE_ROUTES: Record<string, string> = {
 
 };
 
-const STRESS_VARIANT: Record<string, 'danger' | 'warning' | 'success'> = {
-  high: 'danger',
-  moderate: 'warning',
-  low: 'success',
-};
-
 export function ZenRecommendation({ className }: { className?: string }) {
   const [data, setData] = useState<Awaited<ReturnType<typeof getRecommendations>>>(null);
   const [loading, setLoading] = useState(true);
@@ -59,8 +53,6 @@ export function ZenRecommendation({ className }: { className?: string }) {
 
   if (!data) return null;
 
-  const stressVariant = STRESS_VARIANT[data.context.stress_level] ?? 'warning';
-
   return (
     <ZenCard variant="feature" className={cn(className)} padding="md">
       <ZenCardHeader className="mb-3">
@@ -72,9 +64,6 @@ export function ZenRecommendation({ className }: { className?: string }) {
               For you right now
             </ZenCardTitle>
           </div>
-          <ZenBadge variant={stressVariant} size="sm">
-            {data.context.stress_level} stress · {data.context.time_of_day}
-          </ZenBadge>
         </div>
       </ZenCardHeader>
 
