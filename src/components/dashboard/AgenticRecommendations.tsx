@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { getRecommendations } from '@/lib/signals';
 import { useRouter } from 'next/navigation';
-
 const router = useRouter();
 /*const MODULE_ROUTES: Record<string, string> = {
   breathing_box: '/breathing',
@@ -38,7 +37,6 @@ const MODULE_ROUTES: Record<string, string> = {
 export default function AgenticRecommendations() {
   const [data, setData] = useState<Awaited<ReturnType<typeof getRecommendations>>>(null);
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
 
   useEffect(() => {
     getRecommendations().then(d => {
