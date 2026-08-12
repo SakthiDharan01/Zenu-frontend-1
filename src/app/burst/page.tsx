@@ -19,9 +19,9 @@ const AFFIRMATIONS = [
 type Phase = 'typing' | 'traveling' | 'expanding' | 'popping' | 'affirming';
 
 export default function BurstItOutPage() {
-  const [thought, setThought]   = useState('');
-  const [phase, setPhase]       = useState<Phase>('typing');
-  const [affirmation, setAff]   = useState('');
+  const [thought, setThought] = useState('');
+  const [phase, setPhase] = useState<Phase>('typing');
+  const [affirmation, setAff] = useState('');
   const [bubbleSize, setBubbleSize] = useState(80);
   const startTime = useRef(Date.now());
   const router = useRouter();
@@ -100,8 +100,8 @@ export default function BurstItOutPage() {
                   phase === 'popping'
                     ? { scale: [1, 1.3, 0], opacity: [1, 1, 0] }
                     : phase === 'expanding'
-                    ? { scale: 1 }
-                    : { scale: 1 }
+                      ? { scale: 1 }
+                      : { scale: 1 }
                 }
                 transition={
                   phase === 'popping'
@@ -118,8 +118,8 @@ export default function BurstItOutPage() {
                 >
                   <defs>
                     <radialGradient id="bubbleGrad" cx="35%" cy="30%">
-                      <stop offset="0%"   stopColor="white"   stopOpacity="0.9" />
-                      <stop offset="40%"  stopColor="#c4b5fd" stopOpacity="0.5" />
+                      <stop offset="0%" stopColor="white" stopOpacity="0.9" />
+                      <stop offset="40%" stopColor="#c4b5fd" stopOpacity="0.5" />
                       <stop offset="100%" stopColor="#8b5cf6" stopOpacity="0.35" />
                     </radialGradient>
                   </defs>
@@ -127,14 +127,14 @@ export default function BurstItOutPage() {
                   <circle cx="100" cy="100" r="95" fill="url(#bubbleGrad)" stroke="#a78bfa" strokeWidth="2" />
                   {/* Shine spots */}
                   <ellipse cx="70" cy="60" rx="18" ry="10" fill="white" opacity="0.55" transform="rotate(-30 70 60)" />
-                  <ellipse cx="85" cy="48" rx="7" ry="4"  fill="white" opacity="0.4"  transform="rotate(-30 85 48)" />
+                  <ellipse cx="85" cy="48" rx="7" ry="4" fill="white" opacity="0.4" transform="rotate(-30 85 48)" />
                   {/* Rainbow rim */}
                   <circle cx="100" cy="100" r="93" fill="none" stroke="url(#rainbowStroke)" strokeWidth="3" opacity="0.4" />
                   <defs>
                     <linearGradient id="rainbowStroke" x1="0" y1="0" x2="1" y2="1">
-                      <stop offset="0%"   stopColor="#f0abfc" />
-                      <stop offset="33%"  stopColor="#93c5fd" />
-                      <stop offset="66%"  stopColor="#6ee7b7" />
+                      <stop offset="0%" stopColor="#f0abfc" />
+                      <stop offset="33%" stopColor="#93c5fd" />
+                      <stop offset="66%" stopColor="#6ee7b7" />
                       <stop offset="100%" stopColor="#fde68a" />
                     </linearGradient>
                   </defs>
@@ -173,7 +173,7 @@ export default function BurstItOutPage() {
                   const rad = (angle * Math.PI) / 180;
                   const x = Math.cos(rad) * 100;
                   const y = Math.sin(rad) * 100;
-                  const colors = ['#c4b5fd','#f0abfc','#93c5fd','#6ee7b7','#fde68a','#fca5a5'];
+                  const colors = ['#c4b5fd', '#f0abfc', '#93c5fd', '#6ee7b7', '#fde68a', '#fca5a5'];
                   return (
                     <motion.div
                       key={i}
@@ -228,7 +228,7 @@ export default function BurstItOutPage() {
               <textarea
                 value={thought}
                 onChange={e => setThought(e.target.value)}
-                placeholder="What's on your mind? Pour it all out here..."
+                placeholder="What&apos;s on your mind? Pour it all out here..."
                 rows={4}
                 maxLength={300}
                 className="w-full rounded-2xl border-2 border-purple-200 bg-white/80 backdrop-blur p-4 text-gray-700 text-sm resize-none focus:outline-none focus:border-purple-400 transition-colors shadow-sm"
