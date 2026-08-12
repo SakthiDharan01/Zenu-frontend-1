@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { getRecommendations } from '@/lib/signals';
 import { useRouter } from 'next/navigation';
 
+const router = useRouter();
 /*const MODULE_ROUTES: Record<string, string> = {
   breathing_box: '/breathing',
   breathing_478: '/breathing',
