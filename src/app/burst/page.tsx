@@ -81,7 +81,7 @@ export default function BurstItOutPage() {
 
       <h1 className="text-3xl font-bold text-gray-800 mb-2 text-center">Burst It OUT</h1>
       <p className="text-gray-500 text-sm text-center mb-10 max-w-sm">
-        Type what's weighing on you. Watch it go into the bubble. Then pop it.
+        Type what&apos;s weighing on you. Watch it go into the bubble. Then pop it.
       </p>
 
       {/* Main scene */}
