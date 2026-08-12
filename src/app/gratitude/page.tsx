@@ -255,7 +255,7 @@ const GratitudePageInner = () => {
     <ZenPage atmosphere="renewal" gradient className="min-h-[calc(100dvh-4rem)]">
       <ZenContainer maxWidth="xl" className="pt-8 pb-10 md:pt-12 relative">
         <div className="absolute top-0 left-4 md:left-0 z-20 mt-4 md:mt-0">
-          <Link href="/dashboard" tabIndex={-1}>
+          <Link href="/" tabIndex={-1}>
             <ZenButton variant="ghost" size="sm" className="text-zen-fg-muted hover:text-zen-fg">
               <ArrowLeft className="h-4 w-4 mr-1.5" />
               Back
