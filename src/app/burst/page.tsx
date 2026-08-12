@@ -10,8 +10,8 @@ const AFFIRMATIONS = [
   "You are not your thoughts. You are the one who notices them. ✨",
   "Every exhale is a letting go. You did that. 🍃",
   "Lighter now. That burden was never yours to keep forever. 💫",
-  "You faced it, you felt it, you freed it. That's courage. 🌊",
-  "Releasing is not weakness — it's wisdom. Well done. 🌻",
+  "You faced it, you felt it, you freed it. That&apos;s courage. 🌊",
+  "Releasing is not weakness — it&apos;s wisdom. Well done. 🌻",
   "The thought is gone. You remain. Strong, whole, enough. 🌙",
   "You just made space for something better. 🦋",
 ];
