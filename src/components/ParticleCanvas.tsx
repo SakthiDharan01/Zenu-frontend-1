@@ -318,8 +318,8 @@ export const ParticleCanvas = ({
         className="absolute inset-0 w-full h-full"
         style={{ width: "100%", height: "100%" }}
       />
-      <div className="relative z-10 text-center">
-        <div className="zen-display text-zen-primary mb-2">
+      <div className="absolute top-8 left-0 right-0 z-10 text-center pointer-events-none">
+        <div className="zen-display text-zen-primary drop-shadow-sm">
           {currentStep}
         </div>
       </div>
