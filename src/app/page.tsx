@@ -70,7 +70,7 @@ const moduleVisuals: Record<string, ModuleVisual> = {
   burst: { href: '/burst', tint: 'bg-zen-danger-soft text-zen-danger', icon: PartyPopper },
   scribble: { href: '/scribble', tint: 'bg-zen-secondary-soft text-zen-secondary', icon: PenTool },
   chatbot: { href: '/chat', tint: 'bg-zen-accent-soft text-zen-accent', icon: Bot },
-  garden: { href: '/meditation', tint: 'bg-zen-success-soft text-zen-success', icon: TreeDeciduous },
+  garden: { href: '/healing-garden', tint: 'bg-zen-success-soft text-zen-success', icon: TreeDeciduous },
   compass: { href: '/innercompass', tint: 'bg-zen-bg-muted text-zen-fg-muted', icon: Compass },
 };
 
