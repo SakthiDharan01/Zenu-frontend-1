@@ -240,12 +240,12 @@ const JournalPreview = ({ entries, loading }: { entries: JournalEntry[]; loading
     return (
       <ZenCard variant="standard" className="h-full">
         <ZenCardHeader>
-          <ZenCardTitle>Recent reflections</ZenCardTitle>
+          <ZenCardTitle>Recent Reflections</ZenCardTitle>
           <ZenCardDescription>Your next entry awaits.</ZenCardDescription>
         </ZenCardHeader>
         <ZenCardContent>
           <ZenButton asChild variant="outline" size="sm">
-            <Link href="/journal">Open journal</Link>
+            <Link href="/journal">Open Journal</Link>
           </ZenButton>
         </ZenCardContent>
       </ZenCard>
@@ -256,7 +256,7 @@ const JournalPreview = ({ entries, loading }: { entries: JournalEntry[]; loading
     <ZenCard variant="standard" className="h-full">
       <ZenCardHeader>
         <div className="flex items-center justify-between gap-2">
-          <ZenCardTitle>Recent reflections</ZenCardTitle>
+          <ZenCardTitle>Recent Reflections</ZenCardTitle>
           <Link
             href="/journal"
             className="text-sm text-zen-primary hover:text-zen-primary-hover font-medium"
