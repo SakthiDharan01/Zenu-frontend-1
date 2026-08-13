@@ -455,7 +455,7 @@ const HomePage = () => {
         </ZenSection>
 
         <ZenSection>
-          <h2 className="zen-h2 text-zen-fg text-center mb-8">Your wellness toolkit</h2>
+          <h2 className="zen-h2 text-zen-fg text-center mb-8">Your Wellness Space</h2>
           {dashboardLoading && !modules.length ? (
             <ZenGrid cols={3}>
               {Array.from({ length: 6 }).map((_, idx) => (
