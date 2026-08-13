@@ -322,7 +322,6 @@ export const ParticleCanvas = ({
         <div className="zen-display text-zen-primary mb-2">
           {currentStep}
         </div>
-        <div className="zen-metric text-zen-fg-muted">{stepTime}</div>
       </div>
     </div>
   );
