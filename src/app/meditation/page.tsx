@@ -1,196 +1,260 @@
 'use client';
 
-import Image from 'next/image';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { RequireAuth } from '@/components/auth/RequireAuth';
 import { useAuth } from '@/components/providers/AuthProvider';
 import ZenFocusMode from '@/components/layout/ZenFocusMode';
 import { apiClient } from '@/lib/apiClient';
 import type { Meditation } from '@/lib/types';
 import { toast } from 'sonner';
-import { Play } from 'lucide-react';
 import { trackEngagement } from '@/lib/signals';
-import { resolveGuidedAudioUrl } from '@/lib/meditationAudio';
 import { cn } from '@/lib/utils';
 import {
   ZenPage,
   ZenContainer,
   ZenSection,
-  ZenGrid,
-  ZenCard,
-  ZenCardTitle,
   ZenButton,
-  ZenSkeletonCard,
   ZenSoundscapeBar,
-  ZenGuidedPlayer,
-  ZenDialog,
-  ZenDialogContent,
-  ZenDialogHeader,
-  ZenDialogTitle,
-  ZenDialogDescription,
-  ZenDialogFooter,
 } from '@/components/zen';
+import { resolveGuidedAudioUrl } from '@/lib/meditationAudio';
 
-interface MeditationPlayerModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  meditation: Meditation | null;
-  onSessionLogged: (durationSeconds: number) => Promise<void>;
-}
+function JPMRPlayer({ session }: { session: Meditation }) {
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [playing, setPlaying] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [loaded, setLoaded] = useState(false);
+  const [completed, setCompleted] = useState(false);
+  const startedRef = useRef(false);
+  const startTime = useRef(Date.now());
 
-const MeditationPlayerModal = ({
-  isOpen,
-  onClose,
-  meditation,
-  onSessionLogged,
-}: MeditationPlayerModalProps) => {
-  const hasLoggedRef = useRef(false);
-  const [logged, setLogged] = useState(false);
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
 
-  const durationSeconds = useMemo(() => {
-    const minutes = meditation?.durationMinutes ?? 0;
-    return Math.max(60, Math.round(minutes * 60));
-  }, [meditation?.durationMinutes]);
+    const onLoaded = () => setLoaded(true);
+    const onTimeUpdate = () => {
+      setCurrentTime(audio.currentTime);
+      setProgress(audio.duration ? (audio.currentTime / audio.duration) * 100 : 0);
+    };
+    const onDurationChange = () => setDuration(audio.duration);
+    const onEnded = () => {
+      setPlaying(false);
+      setCompleted(true);
+      trackEngagement('meditation_jpmr', 'completed',
+        Math.round((Date.now() - startTime.current) / 1000));
+      apiClient.logMeditationSession({
+          meditationId: session.id,
+          durationSeconds: Math.round(audio.duration || (session.durationMinutes * 60)),
+      }).catch(console.error);
+    };
 
-  const guidedUrl = meditation
-    ? resolveGuidedAudioUrl(meditation.title, meditation.audioUrl)
-    : null;
+    audio.addEventListener('loadeddata', onLoaded);
+    audio.addEventListener('timeupdate', onTimeUpdate);
+    audio.addEventListener('durationchange', onDurationChange);
+    audio.addEventListener('ended', onEnded);
 
-  const resetState = () => {
-    hasLoggedRef.current = false;
-    setLogged(false);
-  };
+    return () => {
+      audio.removeEventListener('loadeddata', onLoaded);
+      audio.removeEventListener('timeupdate', onTimeUpdate);
+      audio.removeEventListener('durationchange', onDurationChange);
+      audio.removeEventListener('ended', onEnded);
+    };
+  }, [session.id, session.durationMinutes]);
 
-  const ensureLogged = async () => {
-    if (!meditation || hasLoggedRef.current) return;
-    hasLoggedRef.current = true;
-    setLogged(true);
-    await onSessionLogged(durationSeconds);
-  };
-
-  const handleManualComplete = async () => {
-    await ensureLogged();
-    toast.success('Session marked complete');
-  };
-
-  const handleOpenChange = (open: boolean) => {
-    if (!open) {
-      resetState();
-      onClose();
+  const togglePlay = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (!startedRef.current) {
+      trackEngagement('meditation_jpmr', 'opened');
+      startedRef.current = true;
+    }
+    if (playing) {
+      audio.pause();
+      setPlaying(false);
+    } else {
+      audio.play();
+      setPlaying(true);
     }
   };
 
-  return (
-    <ZenDialog open={isOpen} onOpenChange={handleOpenChange}>
-      <ZenDialogContent className="sm:max-w-lg max-h-[90dvh] overflow-y-auto w-[calc(100vw-1.5rem)]">
-        {meditation ? (
-          <>
-            <ZenDialogHeader>
-              <ZenDialogTitle>{meditation.title}</ZenDialogTitle>
-              <ZenDialogDescription>
-                {meditation.description ??
-                  'Press play to begin. Ambient sounds stay available behind this dialog.'}
-              </ZenDialogDescription>
-            </ZenDialogHeader>
-            <ZenGuidedPlayer
-              title={meditation.title}
-              audioUrl={guidedUrl}
-              category={meditation.category}
-              durationMinutes={meditation.durationMinutes}
-              onPlayStart={() => {
-                void ensureLogged();
-              }}
-              onComplete={() => {
-                toast.success('How do you feel?', {
-                  description: 'Take a moment to journal what surfaced.',
-                });
-              }}
-            />
-            <ZenDialogFooter className="sm:justify-between gap-2 flex-col-reverse sm:flex-row">
-              <ZenButton variant="outline" onClick={onClose} className="w-full sm:w-auto">
-                Close
-              </ZenButton>
-              <ZenButton
-                onClick={handleManualComplete}
-                disabled={logged}
-                className="w-full sm:w-auto"
-              >
-                {logged ? 'Logged' : 'Mark complete'}
-              </ZenButton>
-            </ZenDialogFooter>
-          </>
-        ) : null}
-      </ZenDialogContent>
-    </ZenDialog>
-  );
-};
+  const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
+    const audio = audioRef.current;
+    if (!audio || !duration) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const pct = (e.clientX - rect.left) / rect.width;
+    audio.currentTime = pct * duration;
+  };
 
-const MeditationCard = ({
-  meditation,
-  onStart,
-}: {
-  meditation: Meditation;
-  onStart: (meditation: Meditation) => void;
-}) => {
-  const image = meditation.imageUrl;
+  const formatTime = (s: number) => {
+    if (!s || isNaN(s)) return '0:00';
+    const m = Math.floor(s / 60);
+    const sec = Math.floor(s % 60);
+    return `${m}:${sec.toString().padStart(2, '0')}`;
+  };
+
+  const steps = [
+    { muscle: 'Hands & Forearms', instruction: 'Clench your fists tightly for 5 seconds, then release completely' },
+    { muscle: 'Upper Arms', instruction: 'Flex your biceps, hold for 5 seconds, then let go' },
+    { muscle: 'Shoulders', instruction: 'Raise shoulders to ears, hold for 5 seconds, then drop' },
+    { muscle: 'Face', instruction: 'Scrunch all facial muscles tightly, hold, then relax' },
+    { muscle: 'Chest & Stomach', instruction: 'Take a deep breath, hold and tighten core, then exhale fully' },
+    { muscle: 'Legs & Feet', instruction: 'Tense thighs, calves and curl toes, hold, then release' },
+  ];
+
+  const audioUrl = resolveGuidedAudioUrl(session.title, session.audioUrl);
 
   return (
-    <button
-      type="button"
-      onClick={() => onStart(meditation)}
-      className="group text-left w-full"
-      aria-label={`Start ${meditation.title}`}
-    >
-      <ZenCard
-        variant="interactive"
-        padding="none"
-        className="overflow-hidden pointer-events-none"
-      >
-        <div className="relative h-40 w-full bg-zen-secondary-soft">
-          {image ? (
-            <Image
-              src={image}
-              alt=""
-              fill
-              className="object-cover opacity-80 group-hover:opacity-95 transition-opacity"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            />
-          ) : (
-            <div className="absolute inset-0 bg-gradient-to-br from-zen-secondary-soft via-zen-primary-soft to-zen-bg" />
-          )}
-          <div className="absolute inset-0 flex items-center justify-center opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-zen-fast bg-zen-fg/10 sm:bg-zen-fg/20">
-            <span className="flex items-center justify-center w-14 h-14 min-h-11 min-w-11 bg-zen-primary rounded-full text-white shadow-zen-card">
-              <Play className="w-6 h-6 fill-current" aria-hidden="true" />
-            </span>
+    <div className="max-w-xl mx-auto">
+      {/* Audio element */}
+      <audio ref={audioRef} src={audioUrl || ''} preload="metadata" />
+
+      {/* Main player card */}
+      <div className="rounded-3xl overflow-hidden shadow-2xl mb-6"
+        style={{ background: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e3a5f 100%)' }}>
+
+        {/* Visual: breathing orb */}
+        <div className="flex items-center justify-center" style={{ height: 260 }}>
+          <div className="relative flex items-center justify-center">
+            {/* Outer pulse rings */}
+            {playing && [1, 2, 3].map(i => (
+              <motion.div
+                key={i}
+                className="absolute rounded-full border border-purple-300"
+                style={{ width: 80 + i * 50, height: 80 + i * 50 }}
+                animate={{ scale: [1, 1.15, 1], opacity: [0.3, 0, 0.3] }}
+                transition={{ duration: 4, repeat: Infinity, delay: i * 1.2 }}
+              />
+            ))}
+
+            {/* Play/pause button orb */}
+            <motion.button
+              onClick={togglePlay}
+              className="relative z-10 flex items-center justify-center rounded-full shadow-2xl"
+              style={{
+                width: 90, height: 90,
+                background: 'linear-gradient(135deg, #7c3aed, #4f46e5)',
+              }}
+              whileHover={{ scale: 1.06 }}
+              whileTap={{ scale: 0.94 }}
+            >
+              {playing ? (
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
+                  <rect x="6" y="4" width="4" height="16" rx="1"/>
+                  <rect x="14" y="4" width="4" height="16" rx="1"/>
+                </svg>
+              ) : (
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
+                  <polygon points="5,3 19,12 5,21"/>
+                </svg>
+              )}
+            </motion.button>
           </div>
         </div>
-        <div className="p-4">
-          <ZenCardTitle className="text-base">{meditation.title}</ZenCardTitle>
-          <p className="zen-caption text-zen-fg-muted mt-1">
-            {meditation.durationMinutes} min · {meditation.category}
-          </p>
+
+        {/* Track info */}
+        <div className="px-6 pb-2 text-center">
+          <h2 className="text-lg font-semibold text-white mb-0.5">{session.title}</h2>
+          <p className="text-xs text-purple-200">{session.durationMinutes} min · Relaxation · Beginner</p>
         </div>
-      </ZenCard>
-    </button>
+
+        {/* Progress bar */}
+        <div className="px-6 pb-6 mt-4">
+          <div
+            className="w-full rounded-full cursor-pointer mb-2"
+            style={{ height: 6, background: 'rgba(255,255,255,0.15)' }}
+            onClick={handleSeek}
+          >
+            <motion.div
+              className="h-full rounded-full"
+              style={{
+                width: `${progress}%`,
+                background: 'linear-gradient(90deg, #a78bfa, #818cf8)',
+              }}
+            />
+          </div>
+          <div className="flex justify-between text-xs text-purple-200">
+            <span>{formatTime(currentTime)}</span>
+            <span>{formatTime(duration)}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Description */}
+      <div className="rounded-2xl p-5 mb-6"
+        style={{ background: '#f8f6ff', border: '1px solid #e5e7eb' }}>
+        <h3 className="text-sm font-semibold text-gray-800 mb-2">About this practice</h3>
+        <p className="text-sm text-gray-600 leading-relaxed">{session.description}</p>
+      </div>
+
+      {/* Step guide */}
+      <div className="rounded-2xl p-5 mb-6"
+        style={{ background: '#f8f6ff', border: '1px solid #e5e7eb' }}>
+        <h3 className="text-sm font-semibold text-gray-800 mb-4">Muscle group sequence</h3>
+        <div className="space-y-3">
+          {steps.map((step, i) => (
+            <div key={i} className="flex gap-3">
+              <div
+                className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white mt-0.5"
+                style={{ background: '#7c3aed' }}
+              >
+                {i + 1}
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-800">{step.muscle}</p>
+                <p className="text-xs text-gray-500 mt-0.5">{step.instruction}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Completion message */}
+      <AnimatePresence>
+        {completed && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="rounded-2xl p-5 text-center mb-6"
+            style={{ background: 'linear-gradient(135deg, #f0fdf4, #dcfce7)', border: '1px solid #bbf7d0' }}
+          >
+            <div className="text-3xl mb-2">🌿</div>
+            <h3 className="font-semibold text-green-800 mb-1">Session complete</h3>
+            <p className="text-sm text-green-700">Your body has been heard and released. Rest in this stillness for a moment.</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Tips */}
+      <div className="rounded-2xl p-5"
+        style={{ background: '#fffbeb', border: '1px solid #fde68a' }}>
+        <h3 className="text-sm font-semibold text-amber-800 mb-3">Tips for best results</h3>
+        <ul className="space-y-1.5">
+          {[
+            'Lie down or sit in a comfortable chair',
+            'Find a quiet space where you won\'t be disturbed',
+            'Remove glasses or contacts if comfortable',
+            'Practice daily for 2 weeks to see lasting results',
+            'Best done before sleep or after a stressful event',
+          ].map((tip, i) => (
+            <li key={i} className="flex items-start gap-2 text-xs text-amber-700">
+              <span className="mt-0.5">✦</span>
+              <span>{tip}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
   );
-};
+}
 
 const MeditationPageInner = () => {
   const { user } = useAuth();
   const [meditations, setMeditations] = useState<Meditation[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedMeditation, setSelectedMeditation] = useState<Meditation | null>(null);
-  const [modalOpen, setModalOpen] = useState(false);
-
-  useEffect(() => {
-    trackEngagement('meditation_jpmr', 'opened');
-    const start = Date.now();
-    return () => {
-      const duration = Math.round((Date.now() - start) / 1000);
-      trackEngagement('meditation_jpmr', 'completed', duration);
-    };
-  }, []);
 
   const loadMeditations = useCallback(async () => {
     setLoading(true);
@@ -211,41 +275,6 @@ const MeditationPageInner = () => {
     void loadMeditations();
   }, [user, loadMeditations]);
 
-  const handleStartMeditation = (meditation: Meditation) => {
-    setSelectedMeditation(meditation);
-    setModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setModalOpen(false);
-    setSelectedMeditation(null);
-  };
-
-  const handleSessionLogged = useCallback(
-    async (durationSeconds: number) => {
-      if (!selectedMeditation) return;
-
-      try {
-        await apiClient.logMeditationSession({
-          meditationId: selectedMeditation.id,
-          durationSeconds,
-        });
-        await apiClient.recordActivity('meditation', {
-          meditationId: selectedMeditation.id,
-          durationSeconds,
-        });
-        toast.success('Meditation saved', {
-          description: 'Session added to your streak and insights.',
-        });
-        handleCloseModal();
-      } catch (error) {
-        console.error('Failed to record meditation session', error);
-        toast.error('We could not save this meditation. Please try again.');
-      }
-    },
-    [selectedMeditation],
-  );
-
   const displayName = useMemo(() => {
     if (!user) return 'traveler';
     return user.username ?? user.fullName ?? user.email?.split('@')[0] ?? 'traveler';
@@ -257,7 +286,7 @@ const MeditationPageInner = () => {
         <ZenSoundscapeBar />
         <ZenContainer maxWidth="xl" className={cn('py-8 md:pl-56')}>
           <ZenSection>
-            <header className="text-center mb-2">
+            <header className="text-center mb-6">
               <p className="zen-label text-zen-secondary">Guided stillness for {displayName}</p>
               <h1 className="zen-h1 text-zen-fg mt-2">Find your inner peace</h1>
               <p className="mt-3 max-w-2xl mx-auto zen-body text-zen-fg-muted">
@@ -279,21 +308,9 @@ const MeditationPageInner = () => {
 
           <ZenSection>
             {loading ? (
-              <ZenGrid cols={3} gap="lg">
-                {Array.from({ length: 6 }).map((_, index) => (
-                  <ZenSkeletonCard key={index} className="min-h-[14rem]" />
-                ))}
-              </ZenGrid>
-            ) : meditations.length ? (
-              <ZenGrid cols={3} gap="lg">
-                {meditations.map((meditation) => (
-                  <MeditationCard
-                    key={meditation.id}
-                    meditation={meditation}
-                    onStart={handleStartMeditation}
-                  />
-                ))}
-              </ZenGrid>
+              <div className="text-center text-zen-fg-muted py-20">Loading session...</div>
+            ) : meditations.length > 0 ? (
+              <JPMRPlayer session={meditations[0]} />
             ) : (
               <div className="rounded-zen-xl border border-dashed border-zen-secondary/30 bg-zen-secondary-soft px-8 py-12 text-center text-zen-secondary">
                 No guided meditations are available yet. Check back soon.
@@ -301,13 +318,6 @@ const MeditationPageInner = () => {
             )}
           </ZenSection>
         </ZenContainer>
-
-        <MeditationPlayerModal
-          isOpen={modalOpen}
-          onClose={handleCloseModal}
-          meditation={selectedMeditation}
-          onSessionLogged={handleSessionLogged}
-        />
       </ZenPage>
     </ZenFocusMode>
   );
