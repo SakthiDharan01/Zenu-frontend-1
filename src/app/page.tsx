@@ -35,8 +35,6 @@ import { cn } from '@/lib/utils';
 import { shouldShowPSS, daysUntilNextPSS } from '@/lib/pssSchedule';
 import { PSSCheck } from '@/components/PSSCheck';
 import PandaAvatar from '@/components/PandaAvatar';
-import ModulePage from '@/components/ui/ModulePage';
-import { getTheme } from '@/lib/moduleThemes';
 import {
   ZenPage,
   ZenContainer,
@@ -377,12 +375,12 @@ const HomePage = () => {
 
   if (!user) return <LandingHero />;
 
-  const theme = getTheme('home');
-
   return (
-    <ModulePage theme={theme}>
-      <ZenPage atmosphere="none" className="min-h-[calc(100dvh-4rem)]">
-        <ZenContainer maxWidth="xl" className="pt-8 pb-10 md:pt-12">
+    <ZenPage atmosphere="none" className="min-h-[calc(100dvh-4rem)] relative">
+      <div className="absolute inset-0 flex items-center justify-center opacity-[0.04] pointer-events-none z-0" aria-hidden="true">
+        <Image src="/icons/panda_logo.jpeg" alt="Panda watermark" width={800} height={800} className="object-contain" priority />
+      </div>
+      <ZenContainer maxWidth="xl" className="pt-8 pb-10 md:pt-12 relative z-10">
         <ZenSection>
           <div className="flex flex-col sm:flex-row sm:items-center gap-5 mb-6">
             <PandaAvatar state="idle" size={72} label="Panda greeting" />
@@ -480,8 +478,7 @@ const HomePage = () => {
           )}
         </ZenSection>
       </ZenContainer>
-      </ZenPage>
-    </ModulePage>
+    </ZenPage>
   );
 };
 
