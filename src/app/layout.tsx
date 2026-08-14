@@ -2,8 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { AuthProvider } from '@/components/providers/AuthProvider';
-import ZenNavigation from '@/components/layout/ZenNavigation';
-import ZenBottomNav from '@/components/layout/ZenBottomNav';
+import ZenLayoutWrapper from '@/components/layout/ZenLayoutWrapper';
 import { Toaster } from '@/components/ui/sonner';
 
 const inter = Inter({
@@ -60,18 +59,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
       </head>
-      <body className="bg-zen-bg text-zen-fg antialiased md:flex md:h-[100dvh] md:overflow-hidden">
+      <body className="bg-zen-bg text-zen-fg antialiased">
         <AuthProvider>
-          {/* Desktop sidebar navigation */}
-          <ZenNavigation />
-
-          {/* Page content */}
-          <main className="flex-1 min-h-[calc(100dvh-4rem)] md:min-h-0 md:h-full md:overflow-y-auto pb-[calc(5rem+env(safe-area-inset-bottom,0px))] md:pb-0 relative flex flex-col">
+          <ZenLayoutWrapper>
             {children}
-          </main>
-
-          {/* Mobile fixed bottom nav */}
-          <ZenBottomNav />
+          </ZenLayoutWrapper>
 
           {/* Toast notifications */}
           <Toaster position="top-right" richColors />

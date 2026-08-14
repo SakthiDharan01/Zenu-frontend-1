@@ -174,6 +174,38 @@ export default function ZenNavigation() {
 
   if (isZenFocusRoute(pathname)) return null;
 
+  if (!user) {
+    return (
+      <nav className="sticky top-0 z-50 h-16 glass border-b border-white/50 w-full" aria-label="Main navigation">
+        <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between gap-6">
+          <Link href="/" className="flex items-center gap-2.5 flex-shrink-0 group" aria-label="ZenU home">
+            <div className="relative h-8 w-8">
+              <Image src="/icons/icon-192.jpeg" alt="ZenU Logo" fill className="rounded-full object-cover shadow-zen-subtle" />
+              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-zen-primary to-zen-secondary opacity-0 blur-md group-hover:opacity-40 transition-opacity duration-300" />
+            </div>
+            <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-zen-primary to-zen-secondary bg-clip-text text-transparent">
+              ZenU
+            </span>
+          </Link>
+          <div className="flex items-center gap-3 flex-shrink-0">
+            <Link
+              href="/signin"
+              className="px-3 py-1.5 text-sm font-medium text-zen-fg-muted hover:text-zen-fg transition-colors"
+            >
+              Sign in
+            </Link>
+            <Link
+              href="/signup"
+              className="px-4 py-1.5 text-sm font-semibold bg-zen-primary text-white rounded-zen-full hover:bg-zen-primary-hover transition-colors shadow-zen-subtle"
+            >
+              Get started
+            </Link>
+          </div>
+        </div>
+      </nav>
+    );
+  }
+
   return (
     <>
       {/* Mobile Top Navbar (Fallback when sidebar is hidden on small screens) */}
@@ -184,16 +216,12 @@ export default function ZenNavigation() {
             ZenU
           </span>
         </Link>
-        {user ? (
-          <button
-            onClick={handleSignOut}
-            className="text-zen-fg-muted hover:text-zen-danger p-2"
-          >
-            <LogOut className="h-5 w-5" />
-          </button>
-        ) : (
-          <Link href="/signin" className="text-sm font-medium text-zen-primary">Sign in</Link>
-        )}
+        <button
+          onClick={handleSignOut}
+          className="text-zen-fg-muted hover:text-zen-danger p-2"
+        >
+          <LogOut className="h-5 w-5" />
+        </button>
       </nav>
 
       {/* Desktop Sidebar */}
