@@ -1,7 +1,8 @@
-"use client";
+'use client';
 
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -15,19 +16,17 @@ import {
   Palette,
   PenTool,
   Sparkles,
-  User,
   Wind,
   Zap,
-  Compass
+  Compass,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from 'lucide-react';
 import { authClient } from '@/lib/authClient';
 import { useAuth } from '@/components/providers/AuthProvider';
 import { cn } from '@/lib/utils';
 import { isZenFocusRoute } from '@/lib/zenFocus';
 
-/* ─────────────────────────────────────────────────────────────
-   Navigation data
-   ───────────────────────────────────────────────────────────── */
 const NAV_GROUPS = [
   {
     label: 'Wellness',
@@ -56,93 +55,82 @@ const NAV_GROUPS = [
   },
 ] as const;
 
-const springMenu = { type: 'spring' as const, stiffness: 320, damping: 28 };
-
-/* ─────────────────────────────────────────────────────────────
-   Dropdown sub-menu
-   ───────────────────────────────────────────────────────────── */
-function NavDropdown({
+function AccordionGroup({
   group,
   isOpen,
-  onOpen,
-  onClose,
+  onToggle,
+  isCollapsed,
 }: {
   group: typeof NAV_GROUPS[number];
   isOpen: boolean;
-  onOpen: () => void;
-  onClose: () => void;
+  onToggle: () => void;
+  isCollapsed: boolean;
 }) {
   const pathname = usePathname();
   const isGroupActive = group.items.some(i => pathname?.startsWith(i.href));
 
+  if (isCollapsed) {
+    return (
+      <div className="flex flex-col items-center gap-2 mb-4">
+        <div className="h-px w-8 bg-zen-border-soft mb-2" />
+        {group.items.map((item) => {
+          const isActive = pathname?.startsWith(item.href);
+          const Icon = item.icon;
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              title={item.label}
+              className={cn(
+                'flex items-center justify-center w-10 h-10 rounded-zen-md transition-colors',
+                isActive ? 'text-zen-primary bg-zen-primary-soft' : 'text-zen-fg-muted hover:bg-zen-bg-subtle hover:text-zen-fg'
+              )}
+            >
+              <Icon className="h-5 w-5" />
+            </Link>
+          );
+        })}
+      </div>
+    );
+  }
+
   return (
-    <div
-      className="relative"
-      onMouseEnter={onOpen}
-      onMouseLeave={onClose}
-    >
+    <div className="mb-2">
       <button
-        type="button"
+        onClick={onToggle}
         className={cn(
-          'flex items-center gap-1 px-3 py-2 min-h-11 text-[0.9rem] font-medium rounded-zen-md',
-          'transition-colors duration-100',
-          isGroupActive
-            ? 'text-zen-primary bg-zen-primary-soft'
-            : 'text-zen-fg-muted hover:text-zen-fg hover:bg-zen-bg-subtle',
+          'w-full flex items-center justify-between px-3 py-2 text-[0.9rem] font-medium rounded-zen-md transition-colors',
+          isGroupActive ? 'text-zen-fg font-semibold' : 'text-zen-fg-muted hover:bg-zen-bg-subtle hover:text-zen-fg'
         )}
-        aria-haspopup="true"
-        aria-expanded={isOpen}
-        onClick={() => (isOpen ? onClose() : onOpen())}
       >
-        {group.label}
+        <span>{group.label}</span>
         <ChevronDown
-          className={cn(
-            'h-3.5 w-3.5 transition-transform duration-200',
-            isOpen && 'rotate-180',
-          )}
+          className={cn('h-4 w-4 transition-transform duration-200', isOpen && 'rotate-180')}
         />
       </button>
-
-      <AnimatePresence>
+      <AnimatePresence initial={false}>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: 6, scale: 0.97 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 4, scale: 0.97 }}
-            transition={springMenu}
-            className="absolute top-full left-0 mt-2 w-56 glass-floating rounded-zen-xl overflow-hidden"
-            role="menu"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="overflow-hidden"
           >
-            <div className="p-1.5">
+            <div className="flex flex-col gap-1 pl-3 py-1">
               {group.items.map((item) => {
+                const isActive = pathname?.startsWith(item.href);
                 const Icon = item.icon;
-                const active = pathname === item.href || pathname?.startsWith(item.href + '/');
                 return (
                   <Link
                     key={item.href}
                     href={item.href}
-                    role="menuitem"
-                    onClick={onClose}
                     className={cn(
-                      'flex items-start gap-3 w-full px-3 py-2.5 rounded-zen-md',
-                      'transition-colors duration-100',
-                      active
-                        ? 'bg-zen-primary-soft text-zen-primary'
-                        : 'text-zen-fg hover:bg-zen-bg-subtle',
+                      'flex items-center gap-3 px-3 py-2 rounded-zen-md transition-colors text-sm',
+                      isActive ? 'text-zen-primary bg-zen-primary-soft font-medium' : 'text-zen-fg-muted hover:text-zen-fg hover:bg-zen-bg-subtle'
                     )}
                   >
-                    <div
-                      className={cn(
-                        'flex-shrink-0 p-1.5 rounded-zen-sm mt-0.5',
-                        active ? 'bg-zen-primary text-white' : 'bg-zen-bg-muted text-zen-fg-muted',
-                      )}
-                    >
-                      <Icon className="h-3.5 w-3.5" />
-                    </div>
-                    <div>
-                      <div className="text-sm font-medium leading-tight">{item.label}</div>
-                      <div className="text-xs text-zen-fg-subtle mt-0.5">{item.description}</div>
-                    </div>
+                    <Icon className="h-4 w-4 shrink-0" />
+                    <span>{item.label}</span>
                   </Link>
                 );
               })}
@@ -154,88 +142,22 @@ function NavDropdown({
   );
 }
 
-/* ─────────────────────────────────────────────────────────────
-   Avatar dropdown
-   ───────────────────────────────────────────────────────────── */
-function AvatarDropdown({
-  displayName,
-  onSignOut,
-  loading,
-}: {
-  displayName: string;
-  onSignOut: () => void;
-  loading: boolean;
-}) {
-  const [open, setOpen] = useState(false);
-  const initial = displayName.charAt(0).toUpperCase();
-
-  return (
-    <div className="relative">
-      <button
-        type="button"
-        aria-label="Account menu"
-        aria-expanded={open}
-        aria-haspopup="menu"
-        onClick={() => setOpen((v) => !v)}
-        className={cn(
-          'flex items-center gap-2 pl-1 pr-3 py-1 min-h-11 rounded-full',
-          'transition-colors duration-100',
-          open ? 'bg-zen-bg-subtle' : 'hover:bg-zen-bg-subtle',
-        )}
-      >
-        <div className="h-8 w-8 rounded-full bg-gradient-to-br from-zen-primary to-zen-secondary flex items-center justify-center text-white text-sm font-semibold shadow-zen-subtle">
-          {initial}
-        </div>
-        <span className="text-sm font-medium text-zen-fg hidden xl:block max-w-[100px] truncate">
-          {displayName}
-        </span>
-        <ChevronDown
-          className={cn(
-            'h-3.5 w-3.5 text-zen-fg-muted transition-transform duration-200',
-            open && 'rotate-180',
-          )}
-        />
-      </button>
-
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0, y: 6, scale: 0.97 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 4, scale: 0.97 }}
-            transition={springMenu}
-            className="absolute top-full right-0 mt-2 w-48 glass-floating rounded-zen-xl overflow-hidden z-50"
-            role="menu"
-            onMouseLeave={() => setOpen(false)}
-          >
-            <div className="p-3 border-b border-white/60">
-              <div className="text-xs text-zen-fg-subtle font-medium uppercase tracking-wider mb-0.5">Signed in as</div>
-              <div className="text-sm font-semibold text-zen-fg truncate">{displayName}</div>
-            </div>
-            <div className="p-1.5">
-              <button
-                onClick={() => { onSignOut(); setOpen(false); }}
-                disabled={loading}
-                className="flex items-center gap-2.5 w-full px-3 py-2.5 rounded-zen-md text-zen-danger hover:bg-zen-danger-soft transition-colors duration-100 text-sm font-medium"
-              >
-                <LogOut className="h-4 w-4" />
-                Sign out
-              </button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-}
-
-/* ─────────────────────────────────────────────────────────────
-   ZenNavigation — main export
-   ───────────────────────────────────────────────────────────── */
 export default function ZenNavigation() {
   const { user, loading } = useAuth();
   const pathname = usePathname();
-  const [openGroup, setOpenGroup] = useState<string | null>(null);
+  // Expanded by default
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  
+  // Track open accordions. Expand all by default
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
+    'Wellness': true,
+    'Create': true,
+    'Explore': true,
+  });
+
+  const toggleGroup = (label: string) => {
+    setOpenGroups(prev => ({ ...prev, [label]: !prev[label] }));
+  };
 
   const handleSignOut = useCallback(async () => {
     try {
@@ -253,94 +175,158 @@ export default function ZenNavigation() {
   if (isZenFocusRoute(pathname)) return null;
 
   return (
-    <nav
-      className="sticky top-0 z-50 h-16 glass border-b border-white/50"
-      aria-label="Main navigation"
-    >
-      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between gap-6">
-
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-2.5 flex-shrink-0 group" aria-label="ZenU home">
-          <div className="relative h-8 w-8">
-            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-zen-primary to-zen-secondary flex items-center justify-center shadow-zen-subtle">
-              <Heart className="h-4 w-4 text-white fill-white" />
-            </div>
-            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-zen-primary to-zen-secondary opacity-0 blur-md group-hover:opacity-40 transition-opacity duration-300" />
-          </div>
+    <>
+      {/* Mobile Top Navbar (Fallback when sidebar is hidden on small screens) */}
+      <nav className="md:hidden sticky top-0 z-50 h-16 glass border-b border-white/50 w-full flex items-center justify-between px-4 shrink-0">
+        <Link href="/" className="flex items-center gap-2">
+          <Image src="/icons/icon-192.jpeg" alt="ZenU Logo" width={32} height={32} className="rounded-full shadow-zen-subtle" />
           <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-zen-primary to-zen-secondary bg-clip-text text-transparent">
             ZenU
           </span>
         </Link>
-
-        {/* Desktop nav — authenticated only */}
-        {user && (
-          <div className="hidden md:flex items-center gap-1 flex-1">
-            {/* Home */}
-            <Link
-              href="/"
-              className={cn(
-                'px-3 py-2 text-[0.9rem] font-medium rounded-zen-md transition-colors duration-100',
-                pathname === '/'
-                  ? 'text-zen-primary bg-zen-primary-soft'
-                  : 'text-zen-fg-muted hover:text-zen-fg hover:bg-zen-bg-subtle',
-              )}
-            >
-              Home
-            </Link>
-
-            {/* Group dropdowns */}
-            {NAV_GROUPS.map((group) => (
-              <NavDropdown
-                key={group.label}
-                group={group}
-                isOpen={openGroup === group.label}
-                onOpen={() => setOpenGroup(group.label)}
-                onClose={() => setOpenGroup(null)}
-              />
-            ))}
-
-            {/* Seviyan — top level */}
-            <Link
-              href="/chat"
-              className={cn(
-                'flex items-center gap-1.5 px-3 py-2 text-[0.9rem] font-medium rounded-zen-md transition-colors duration-100',
-                pathname?.startsWith('/chat')
-                  ? 'text-zen-primary bg-zen-primary-soft'
-                  : 'text-zen-fg-muted hover:text-zen-fg hover:bg-zen-bg-subtle',
-              )}
-            >
-              <Bot className="h-4 w-4" />
-              Seviyan
-            </Link>
-          </div>
+        {user ? (
+          <button
+            onClick={handleSignOut}
+            className="text-zen-fg-muted hover:text-zen-danger p-2"
+          >
+            <LogOut className="h-5 w-5" />
+          </button>
+        ) : (
+          <Link href="/signin" className="text-sm font-medium text-zen-primary">Sign in</Link>
         )}
+      </nav>
 
-        {/* Right slot */}
-        <div className="flex items-center gap-3 flex-shrink-0">
+      {/* Desktop Sidebar */}
+      <motion.aside
+        initial={false}
+        animate={{ width: isCollapsed ? 80 : 260 }}
+        className="hidden md:flex flex-col h-full bg-zen-bg glass border-r border-white/50 z-40 transition-all duration-300 shrink-0 overflow-hidden"
+      >
+        <div className="flex items-center justify-between p-4 h-16 shrink-0 border-b border-transparent">
+          <AnimatePresence>
+            {!isCollapsed && (
+              <motion.div
+                initial={{ opacity: 0, width: 0 }}
+                animate={{ opacity: 1, width: 'auto' }}
+                exit={{ opacity: 0, width: 0 }}
+                className="overflow-hidden flex items-center gap-3 shrink-0"
+              >
+                <Link href="/" className="flex items-center gap-3 group shrink-0">
+                  <div className="relative h-10 w-10 shrink-0">
+                    <Image src="/icons/icon-192.jpeg" alt="ZenU Logo" fill className="rounded-full object-cover shadow-zen-subtle" />
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-zen-primary to-zen-secondary opacity-0 blur-md group-hover:opacity-40 transition-opacity duration-300" />
+                  </div>
+                  <span className="text-2xl font-bold tracking-tight bg-gradient-to-r from-zen-primary to-zen-secondary bg-clip-text text-transparent">
+                    ZenU
+                  </span>
+                </Link>
+              </motion.div>
+            )}
+          </AnimatePresence>
+          
+          <button
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            className="p-2 rounded-zen-md text-zen-fg-muted hover:bg-zen-bg-subtle hover:text-zen-fg transition-colors mx-auto"
+            title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+          >
+            {isCollapsed ? <PanelLeftOpen className="h-5 w-5" /> : <PanelLeftClose className="h-5 w-5" />}
+          </button>
+        </div>
+
+        <div className="flex-1 overflow-y-auto overflow-x-hidden px-3 py-4 custom-scrollbar">
           {user ? (
-            <AvatarDropdown
-              displayName={displayName}
-              onSignOut={handleSignOut}
-              loading={loading}
-            />
+            <div className="flex flex-col gap-2">
+              <Link
+                href="/"
+                className={cn(
+                  'flex items-center gap-3 rounded-zen-md transition-colors',
+                  isCollapsed ? 'justify-center w-10 h-10 mx-auto' : 'px-3 py-2',
+                  pathname === '/' ? 'text-zen-primary bg-zen-primary-soft font-medium' : 'text-zen-fg-muted hover:bg-zen-bg-subtle hover:text-zen-fg'
+                )}
+                title="Home"
+              >
+                <Heart className={cn('shrink-0', isCollapsed ? 'h-5 w-5' : 'h-4 w-4')} />
+                {!isCollapsed && <span>Home</span>}
+              </Link>
+
+              <Link
+                href="/chat"
+                className={cn(
+                  'flex items-center gap-3 rounded-zen-md transition-colors mb-4',
+                  isCollapsed ? 'justify-center w-10 h-10 mx-auto' : 'px-3 py-2',
+                  pathname?.startsWith('/chat') ? 'text-zen-primary bg-zen-primary-soft font-medium' : 'text-zen-fg-muted hover:bg-zen-bg-subtle hover:text-zen-fg'
+                )}
+                title="Seviyan"
+              >
+                <Bot className={cn('shrink-0', isCollapsed ? 'h-5 w-5' : 'h-4 w-4')} />
+                {!isCollapsed && <span>Seviyan</span>}
+              </Link>
+
+              {NAV_GROUPS.map((group) => (
+                <AccordionGroup
+                  key={group.label}
+                  group={group}
+                  isOpen={openGroups[group.label]}
+                  onToggle={() => toggleGroup(group.label)}
+                  isCollapsed={isCollapsed}
+                />
+              ))}
+            </div>
           ) : (
-            <div className="flex items-center gap-2">
-              <Link
-                href="/signin"
-                className="px-3 py-1.5 text-sm font-medium text-zen-fg-muted hover:text-zen-fg transition-colors"
-              >
-                Sign in
+            <div className="flex flex-col gap-3 px-2">
+              {!isCollapsed && <p className="text-sm text-zen-fg-muted mb-2">Welcome to ZenU</p>}
+              <Link href="/signin" className={cn('flex justify-center px-4 py-2 text-sm font-medium text-zen-fg hover:bg-zen-bg-subtle rounded-zen-md', isCollapsed && 'px-0')}>
+                {isCollapsed ? <LogOut className="h-5 w-5 rotate-180" /> : 'Sign in'}
               </Link>
-              <Link
-                href="/signup"
-                className="px-4 py-1.5 text-sm font-semibold bg-zen-primary text-white rounded-zen-full hover:bg-zen-primary-hover transition-colors shadow-zen-subtle"
-              >
-                Get started
-              </Link>
+              {!isCollapsed && (
+                <Link href="/signup" className="px-4 py-2 text-sm text-center font-semibold bg-zen-primary text-white rounded-zen-md hover:bg-zen-primary-hover shadow-zen-subtle">
+                  Get started
+                </Link>
+              )}
             </div>
           )}
         </div>
-      </div>
-    </nav>
+
+        {user && (
+          <div className="shrink-0 p-3 border-t border-zen-border-soft overflow-hidden">
+            {isCollapsed ? (
+              <div className="flex flex-col gap-2 items-center">
+                <div className="h-10 w-10 rounded-full bg-gradient-to-br from-zen-primary to-zen-secondary flex items-center justify-center text-white text-sm font-semibold shadow-zen-subtle shrink-0">
+                  {displayName.charAt(0).toUpperCase()}
+                </div>
+                <button
+                  onClick={handleSignOut}
+                  disabled={loading}
+                  className="p-2 rounded-full text-zen-fg-muted hover:text-zen-danger hover:bg-zen-danger-soft transition-colors"
+                  title="Sign out"
+                >
+                  <LogOut className="h-5 w-5" />
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center justify-between gap-3 p-2 rounded-zen-xl bg-zen-bg-subtle border border-transparent hover:border-zen-border-soft transition-colors w-full">
+                <div className="flex items-center gap-3 overflow-hidden">
+                  <div className="h-10 w-10 rounded-full bg-gradient-to-br from-zen-primary to-zen-secondary flex items-center justify-center text-white text-sm font-semibold shadow-zen-subtle shrink-0">
+                    {displayName.charAt(0).toUpperCase()}
+                  </div>
+                  <div className="flex flex-col overflow-hidden">
+                    <span className="text-sm font-semibold text-zen-fg truncate">{displayName}</span>
+                    <span className="text-xs text-zen-fg-muted truncate">Student</span>
+                  </div>
+                </div>
+                <button
+                  onClick={handleSignOut}
+                  disabled={loading}
+                  className="p-2 shrink-0 rounded-full text-zen-fg-muted hover:text-zen-danger hover:bg-zen-danger-soft transition-colors"
+                  title="Sign out"
+                >
+                  <LogOut className="h-4 w-4" />
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+      </motion.aside>
+    </>
   );
 }

@@ -60,13 +60,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
       </head>
-      <body className="bg-zen-bg text-zen-fg antialiased">
+      <body className="bg-zen-bg text-zen-fg antialiased md:flex md:h-[100dvh] md:overflow-hidden">
         <AuthProvider>
-          {/* Desktop + mobile navigation */}
+          {/* Desktop sidebar navigation */}
           <ZenNavigation />
 
-          {/* Page content — extra bottom padding on mobile for ZenBottomNav */}
-          <main className="min-h-[calc(100dvh-4rem)] pb-[calc(5rem+env(safe-area-inset-bottom,0px))] md:pb-0">
+          {/* Page content */}
+          <main className="flex-1 min-h-[calc(100dvh-4rem)] md:min-h-0 md:h-full md:overflow-y-auto pb-[calc(5rem+env(safe-area-inset-bottom,0px))] md:pb-0 relative flex flex-col">
             {children}
           </main>
 
