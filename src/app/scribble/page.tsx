@@ -11,8 +11,6 @@ import { useCanvasStore } from "./store/canvasStore";
 import { useToolStore } from "./store/toolStore";
 import { useAutosave } from "./utils/autosave";
 import { useShortcuts } from "./utils/shortcuts";
-import ModulePage from '@/components/ui/ModulePage';
-import { getTheme } from '@/lib/moduleThemes';
 
 export default function Page() {
   const { setTool } = useToolStore();
@@ -34,15 +32,11 @@ export default function Page() {
     };
   }, [loadFromLocalStorage]);
 
-  const theme = getTheme('scribble');
-
   return (
-    <ModulePage theme={theme}>
-      <div
-        className="relative flex h-[calc(100dvh-4rem)] w-full overflow-hidden"
-        data-zen-atmosphere="none"
-        style={{ background: 'transparent' }}
-      >
+    <div
+      className="relative flex h-[calc(100dvh-4rem)] w-full overflow-hidden bg-zen-bg"
+      data-zen-atmosphere="home"
+    >
       <Sidebar />
       <div className="flex-1 flex flex-col relative">
         <CanvasArea selectedSticker={selectedSticker} />
@@ -64,7 +58,6 @@ export default function Page() {
           setShowStickerPanel(false);
         }}
       />
-      </div>
-    </ModulePage>
+    </div>
   );
 }
