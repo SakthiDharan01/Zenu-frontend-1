@@ -140,10 +140,10 @@ const LandingHero = () => {
             aria-hidden="true"
           />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--zen-primary)/0.12),transparent_55%)]" aria-hidden="true" />
-          <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none" aria-hidden="true">
+          <div className="fixed inset-0 flex items-center justify-center opacity-[0.08] pointer-events-none z-0" aria-hidden="true">
             <Image src="/icons/panda_logo.jpeg" alt="Panda watermark" width={800} height={800} className="object-contain" priority />
           </div>
-          <div className="absolute top-8 right-8 opacity-90 hidden sm:block" aria-hidden="true">
+          <div className="absolute top-8 right-8 opacity-90 hidden sm:block z-10" aria-hidden="true">
             <PandaAvatar state="idle" size={120} />
           </div>
 
@@ -377,7 +377,7 @@ const HomePage = () => {
 
   return (
     <ZenPage atmosphere="none" className="min-h-[calc(100dvh-4rem)] relative">
-      <div className="absolute inset-0 flex items-center justify-center opacity-[0.04] pointer-events-none z-0" aria-hidden="true">
+      <div className="fixed inset-0 flex items-center justify-center opacity-[0.08] pointer-events-none z-0" aria-hidden="true">
         <Image src="/icons/panda_logo.jpeg" alt="Panda watermark" width={800} height={800} className="object-contain" priority />
       </div>
       <ZenContainer maxWidth="xl" className="pt-8 pb-10 md:pt-12 relative z-10">
