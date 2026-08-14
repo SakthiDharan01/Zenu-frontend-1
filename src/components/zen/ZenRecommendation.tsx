@@ -9,6 +9,7 @@ import { ZenCard, ZenCardContent, ZenCardHeader, ZenCardTitle } from './ZenCard'
 import { ZenBadge } from './ZenBadge';
 import { ZenSkeleton } from './ZenSkeleton';
 import PandaAvatar from '@/components/PandaAvatar';
+import { getTheme } from '@/lib/moduleThemes';
 
 const MODULE_ROUTES: Record<string, string> = {
   // New API IDs
@@ -29,6 +30,7 @@ const MODULE_ROUTES: Record<string, string> = {
 export function ZenRecommendation({ className }: { className?: string }) {
   const [data, setData] = useState<Awaited<ReturnType<typeof getRecommendations>>>(null);
   const [loading, setLoading] = useState(true);
+  const theme = getTheme('home');
 
   useEffect(() => {
     getRecommendations().then((d) => {
@@ -54,7 +56,12 @@ export function ZenRecommendation({ className }: { className?: string }) {
   if (!data) return null;
 
   return (
-    <ZenCard variant="feature" className={cn(className)} padding="md">
+    <ZenCard 
+      variant="feature" 
+      className={cn(className, 'border')} 
+      padding="md"
+      style={{ background: theme.cardBg, borderColor: theme.cardBorder, backdropFilter: 'blur(12px)' }}
+    >
       <ZenCardHeader className="mb-3">
         <div className="flex items-center justify-between gap-3 flex-wrap">
           <div className="flex items-center gap-3">
@@ -77,18 +84,21 @@ export function ZenRecommendation({ className }: { className?: string }) {
                 key={targetId + i}
                 href={route}
                 className={cn(
-                  'block text-left p-3 rounded-zen-lg border border-zen-border-soft bg-zen-primary-soft/40',
-                  'hover:bg-zen-primary-soft hover:border-zen-primary/25',
-                  'active:scale-[0.98] transition-all duration-zen-fast ease-zen-out',
-                  'focus-visible:outline-2 focus-visible:outline-zen-primary focus-visible:outline-offset-2',
-                  'min-h-11',
+                  'block text-left p-3 rounded-zen-lg border transition-all duration-zen-fast ease-zen-out',
+                  'active:scale-[0.98]',
+                  'focus-visible:outline-2 focus-visible:outline-offset-2',
+                  'min-h-11'
                 )}
+                style={{ 
+                  background: 'rgba(255,255,255,0.05)', 
+                  borderColor: theme.cardBorder 
+                }}
               >
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs font-bold text-zen-primary">#{i + 1}</span>
-                  <span className="text-xs text-zen-fg-subtle">{rec.duration_min} min</span>
+                  <span className="text-xs font-bold" style={{ color: theme.accentColor }}>#{i + 1}</span>
+                  <span className="text-xs text-white/50">{rec.duration_min} min</span>
                 </div>
-                <p className="text-sm font-semibold text-zen-fg group-hover:text-zen-primary transition-colors">
+                <p className="text-sm font-semibold text-white transition-colors">
                   {rec.name}
                 </p>
                 <div className="flex flex-wrap gap-1 mt-1.5">

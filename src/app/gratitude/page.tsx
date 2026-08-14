@@ -28,6 +28,8 @@ import {
   ZenDialogDescription,
   ZenDialogFooter,
 } from '@/components/zen';
+import ModulePage from '@/components/ui/ModulePage';
+import { getTheme } from '@/lib/moduleThemes';
 
 const EntryComposer = ({
   open,
@@ -251,9 +253,12 @@ const GratitudePageInner = () => {
     return user.username ?? user.fullName ?? user.email?.split('@')[0] ?? 'friend';
   }, [user]);
 
+  const theme = getTheme('gratitude');
+
   return (
-    <ZenPage atmosphere="renewal" gradient className="min-h-[calc(100dvh-4rem)]">
-      <ZenContainer maxWidth="xl" className="pt-8 pb-10 md:pt-12 relative">
+    <ModulePage theme={theme}>
+      <ZenPage atmosphere="none" className="min-h-[calc(100dvh-4rem)]">
+        <ZenContainer maxWidth="xl" className="pt-8 pb-10 md:pt-12 relative">
         <div className="absolute top-0 left-4 md:left-0 z-20 mt-4 md:mt-0">
           <Link href="/" tabIndex={-1}>
             <ZenButton variant="ghost" size="sm" className="text-zen-fg-muted hover:text-zen-fg">
@@ -402,7 +407,8 @@ const GratitudePageInner = () => {
           )}
         </ZenDialogContent>
       </ZenDialog>
-    </ZenPage>
+      </ZenPage>
+    </ModulePage>
   );
 };
 

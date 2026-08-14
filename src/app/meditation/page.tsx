@@ -17,6 +17,8 @@ import {
   ZenButton,
   ZenSoundscapeBar,
 } from '@/components/zen';
+import ModulePage from '@/components/ui/ModulePage';
+import { getTheme } from '@/lib/moduleThemes';
 import { resolveGuidedAudioUrl } from '@/lib/meditationAudio';
 
 function JPMRPlayer({ session }: { session: Meditation }) {
@@ -280,9 +282,12 @@ const MeditationPageInner = () => {
     return user.username ?? user.fullName ?? user.email?.split('@')[0] ?? 'traveler';
   }, [user]);
 
+  const theme = getTheme('mindfulness');
+
   return (
-    <ZenFocusMode title="Meditate">
-      <ZenPage atmosphere="focus" gradient className="min-h-dvh pt-16">
+    <ZenFocusMode title="Mindfulness Studio">
+      <ModulePage theme={theme}>
+        <ZenPage atmosphere="none" className="min-h-dvh pt-8 pb-32 md:pt-16 md:pb-16">
         <ZenSoundscapeBar />
         <ZenContainer maxWidth="xl" className={cn('py-8 md:pl-56')}>
           <ZenSection>
@@ -317,8 +322,9 @@ const MeditationPageInner = () => {
               </div>
             )}
           </ZenSection>
-        </ZenContainer>
-      </ZenPage>
+          </ZenContainer>
+        </ZenPage>
+      </ModulePage>
     </ZenFocusMode>
   );
 };

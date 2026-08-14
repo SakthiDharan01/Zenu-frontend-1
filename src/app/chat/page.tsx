@@ -17,6 +17,8 @@ import {
   ZenBadge,
   ZenInput,
 } from '@/components/zen';
+import ModulePage from '@/components/ui/ModulePage';
+import { getTheme } from '@/lib/moduleThemes';
 
 const initialGreeting: ChatMessage = {
   id: -1,
@@ -134,8 +136,11 @@ const ChatContent = () => {
   const visibleMessages = filterVisibleMessages(messages);
   const hasConversation = visibleMessages.length > 0;
 
+  const theme = getTheme('chat');
+
   return (
-    <ZenPage atmosphere="calm" gradient className="h-[calc(100dvh-4rem)]">
+    <ModulePage theme={theme}>
+      <ZenPage atmosphere="none" className="h-[calc(100dvh-4rem)]">
       <div className="flex h-full max-w-4xl mx-auto">
         <div className="flex flex-1 flex-col min-w-0">
           <header className="flex items-center justify-between gap-3 px-4 py-3 border-b border-zen-border-soft glass">
@@ -250,7 +255,8 @@ const ChatContent = () => {
           </div>
         </div>
       </div>
-    </ZenPage>
+      </ZenPage>
+    </ModulePage>
   );
 };
 

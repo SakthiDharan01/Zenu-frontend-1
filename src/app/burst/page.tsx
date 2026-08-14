@@ -6,6 +6,8 @@ import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { trackEngagement } from '@/lib/signals';
 import { ZenPage, ZenContainer, ZenButton, ZenTextarea } from '@/components/zen';
+import ModulePage from '@/components/ui/ModulePage';
+import { getTheme } from '@/lib/moduleThemes';
 
 const AFFIRMATIONS = [
   'That feeling no longer owns you. You released it.',
@@ -70,8 +72,11 @@ export default function BurstItOutPage() {
     startTime.current = Date.now();
   };
 
+  const theme = getTheme('burst');
+
   return (
-    <ZenPage atmosphere="release" gradient className="min-h-[calc(100dvh-4rem)]">
+    <ModulePage theme={theme}>
+      <ZenPage atmosphere="none" className="min-h-[calc(100dvh-4rem)]">
       <ZenContainer maxWidth="md" className="relative py-10 flex flex-col items-center">
         <Link
           href="/"
@@ -318,7 +323,8 @@ export default function BurstItOutPage() {
           </AnimatePresence>
         </div>
       </ZenContainer>
-    </ZenPage>
+      </ZenPage>
+    </ModulePage>
   );
 }
 

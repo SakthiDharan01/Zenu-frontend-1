@@ -12,6 +12,8 @@ import ZenFocusMode from '@/components/layout/ZenFocusMode';
 import { apiClient } from '@/lib/apiClient';
 import type { BreathingPattern } from '@/lib/types';
 import { ZenPage, ZenContainer, ZenButton } from '@/components/zen';
+import ModulePage from '@/components/ui/ModulePage';
+import { getTheme } from '@/lib/moduleThemes';
 
 const Breathing = () => {
   const { user } = useAuth();
@@ -73,10 +75,13 @@ const Breathing = () => {
     return user.username ?? user.fullName ?? user.email?.split('@')[0] ?? undefined;
   }, [user]);
 
+  const theme = getTheme('breathing');
+
   return (
     <RequireAuth>
       <ZenFocusMode title="Breathe">
-        <ZenPage atmosphere="calm" gradient className="min-h-dvh pt-16">
+        <ModulePage theme={theme}>
+          <ZenPage atmosphere="none" className="min-h-dvh pt-16">
           <ZenContainer maxWidth="xl" className="py-8">
             {error ? (
               <div className="max-w-xl mx-auto mb-8 rounded-zen-xl border border-zen-danger/25 bg-zen-danger-soft px-6 py-4 text-center text-zen-danger">
@@ -103,7 +108,8 @@ const Breathing = () => {
               />
             ) : null}
           </ZenContainer>
-        </ZenPage>
+          </ZenPage>
+        </ModulePage>
       </ZenFocusMode>
     </RequireAuth>
   );

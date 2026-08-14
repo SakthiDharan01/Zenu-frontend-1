@@ -34,6 +34,8 @@ import { cn } from '@/lib/utils';
 import { shouldShowPSS, daysUntilNextPSS } from '@/lib/pssSchedule';
 import { PSSCheck } from '@/components/PSSCheck';
 import PandaAvatar from '@/components/PandaAvatar';
+import ModulePage from '@/components/ui/ModulePage';
+import { getTheme } from '@/lib/moduleThemes';
 import {
   ZenPage,
   ZenContainer,
@@ -371,9 +373,12 @@ const HomePage = () => {
 
   if (!user) return <LandingHero />;
 
+  const theme = getTheme('home');
+
   return (
-    <ZenPage atmosphere="home" gradient className="min-h-[calc(100dvh-4rem)]">
-      <ZenContainer maxWidth="xl" className="pt-8 pb-10 md:pt-12">
+    <ModulePage theme={theme}>
+      <ZenPage atmosphere="none" className="min-h-[calc(100dvh-4rem)]">
+        <ZenContainer maxWidth="xl" className="pt-8 pb-10 md:pt-12">
         <ZenSection>
           <div className="flex flex-col sm:flex-row sm:items-center gap-5 mb-6">
             <PandaAvatar state="idle" size={72} label="Panda greeting" />
@@ -471,7 +476,8 @@ const HomePage = () => {
           )}
         </ZenSection>
       </ZenContainer>
-    </ZenPage>
+      </ZenPage>
+    </ModulePage>
   );
 };
 

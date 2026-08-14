@@ -4,6 +4,8 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { trackEngagement } from '@/lib/signals';
+import ModulePage from '@/components/ui/ModulePage';
+import { getTheme } from '@/lib/moduleThemes';
 
 const API = process.env.NEXT_PUBLIC_API_URL || '';
 
@@ -230,9 +232,12 @@ export default function HealingGardenPage() {
     }
   };
 
+  const theme = getTheme('healing-garden');
+
   return (
-    <div className="min-h-screen" style={{ background: '#141e27', color: '#ede4d3' }}>
-      <div className="max-w-3xl mx-auto px-5 py-10 pb-20">
+    <ModulePage theme={theme}>
+      <div className="min-h-screen" style={{ background: 'transparent', color: theme.textPrimary }}>
+        <div className="max-w-3xl mx-auto px-5 py-10 pb-20">
 
         {/* Back */}
         <button
@@ -500,6 +505,7 @@ export default function HealingGardenPage() {
           </div>
         )}
       </div>
-    </div>
+      </div>
+    </ModulePage>
   );
 }

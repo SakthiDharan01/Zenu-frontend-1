@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { trackEngagement } from '@/lib/signals';
+import ModulePage from '@/components/ui/ModulePage';
+import { getTheme } from '@/lib/moduleThemes';
 
 // Calming pastel color palette for zen experience
 const PALETTE = {
@@ -654,14 +656,11 @@ const BubbleCanvas = () => {
     };
   }, []);
 
-  return (
-    <div className="relative w-full min-h-[calc(100dvh-4rem)] overflow-hidden" data-zen-atmosphere="release">
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{ background: 'var(--zen-atm-bg-tint)' }}
-        aria-hidden="true"
-      />
+  const theme = getTheme('bubble');
 
+  return (
+    <ModulePage theme={theme}>
+      <div className="relative w-full min-h-[calc(100dvh-4rem)] overflow-hidden" data-zen-atmosphere="none" style={{ background: 'transparent' }}>
       <Link
         href="/"
         aria-label="Back to dashboard"
@@ -718,6 +717,7 @@ const BubbleCanvas = () => {
         </div>
       </div>
     </div>
+    </ModulePage>
   );
 };
 

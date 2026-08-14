@@ -28,6 +28,8 @@ import {
   ZenDialogDescription,
   ZenDialogFooter,
 } from '@/components/zen';
+import ModulePage from '@/components/ui/ModulePage';
+import { getTheme } from '@/lib/moduleThemes';
 import {
   Select,
   SelectContent,
@@ -296,8 +298,11 @@ const JournalContent = () => {
     </div>
   );
 
+  const theme = getTheme('diary');
+
   return (
-    <ZenPage atmosphere="reflect" gradient className="min-h-[calc(100dvh-4rem)]">
+    <ModulePage theme={theme}>
+      <ZenPage atmosphere="none" className="min-h-[calc(100dvh-4rem)] flex flex-col pt-8">
       <ZenContainer maxWidth="xl" className="pt-8 pb-10 md:pt-12 relative">
         <div className="absolute top-0 left-4 md:left-0 z-20 mt-4 md:mt-0">
           <Link href="/" tabIndex={-1}>
@@ -497,7 +502,8 @@ const JournalContent = () => {
           </ZenDialogFooter>
         </ZenDialogContent>
       </ZenDialog>
-    </ZenPage>
+      </ZenPage>
+    </ModulePage>
   );
 };
 

@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { ArrowLeft, Undo2, Redo2, Trash2, Download, Pencil, Eraser, Paintbrush } from "lucide-react";
 import { toast } from "sonner";
 import { trackEngagement } from '@/lib/signals';
+import ModulePage from '@/components/ui/ModulePage';
+import { getTheme } from '@/lib/moduleThemes';
 
 const DoodleDreams = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -280,8 +282,11 @@ const DoodleDreams = () => {
     isDrawingRef.current = false;
   };
 
+  const theme = getTheme('doodle');
+
   return (
-    <div className="relative min-h-[calc(100dvh-4rem)] bg-zen-bg" data-zen-atmosphere="home">
+    <ModulePage theme={theme}>
+      <div className="relative min-h-[calc(100dvh-4rem)]" data-zen-atmosphere="none" style={{ background: 'transparent' }}>
       {/* Glass floating chrome — normal shell (nav remains) */}
       <Link
         href="/"
@@ -489,7 +494,8 @@ const DoodleDreams = () => {
           </div>
         </main>
       </div>
-    </div>
+      </div>
+    </ModulePage>
   );
 };
 

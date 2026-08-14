@@ -6,6 +6,8 @@ import { ArrowLeft } from 'lucide-react';
 import InnerCompassComponent from '@/components/InnerCompass';
 import { trackEngagement } from '@/lib/signals';
 import { ZenPage, ZenContainer, ZenButton } from '@/components/zen';
+import ModulePage from '@/components/ui/ModulePage';
+import { getTheme } from '@/lib/moduleThemes';
 
 const InnerCompass = () => {
   const router = useRouter();
@@ -19,8 +21,11 @@ const InnerCompass = () => {
     };
   }, []);
 
+  const theme = getTheme('inner-compass');
+
   return (
-    <ZenPage atmosphere="reflect" gradient className="min-h-[calc(100dvh-4rem)]">
+    <ModulePage theme={theme}>
+      <ZenPage atmosphere="none" className="min-h-[calc(100dvh-4rem)]">
       <ZenContainer maxWidth="xl" className="pt-6 pb-8">
         <ZenButton
           variant="glass"
@@ -36,7 +41,8 @@ const InnerCompass = () => {
           <InnerCompassComponent />
         </div>
       </ZenContainer>
-    </ZenPage>
+      </ZenPage>
+    </ModulePage>
   );
 };
 
