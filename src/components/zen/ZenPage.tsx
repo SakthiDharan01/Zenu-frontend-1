@@ -110,11 +110,11 @@ function ZenSection({ as: Tag = 'section', className, ...props }: ZenSectionProp
    ZenContainer — max-width constraint
    ───────────────────────────────────────────────────────────── */
 const MAX_WIDTHS = {
-  sm:  'max-w-screen-sm',   // 640
-  md:  'max-w-screen-md',   // 768
-  lg:  'max-w-screen-lg',   // 1024
-  xl:  'max-w-screen-xl',   // 1280
-  '2xl': 'max-w-screen-2xl', // 1536
+  sm:  'max-w-screen-sm',
+  md:  'max-w-screen-md',
+  lg:  'max-w-screen-lg',
+  xl:  'max-w-[1600px]', // Expanded from screen-xl
+  '2xl': 'max-w-[1920px]',
   full: 'max-w-full',
 } as const;
 

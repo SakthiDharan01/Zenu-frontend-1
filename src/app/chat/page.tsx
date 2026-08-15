@@ -141,7 +141,7 @@ const ChatContent = () => {
   return (
     <ModulePage theme={theme}>
       <ZenPage atmosphere="none" className="h-[calc(100dvh-4rem)]">
-      <div className="flex h-full max-w-4xl mx-auto">
+      <div className="flex h-full w-full max-w-[1600px] mx-auto px-2 lg:px-4">
         <div className="flex flex-1 flex-col min-w-0">
           <header className="flex items-center justify-between gap-3 px-4 py-3 border-b border-zen-border-soft glass">
             <div className="flex items-center gap-3 min-w-0">
@@ -163,7 +163,7 @@ const ChatContent = () => {
           </header>
 
           <div className="flex-1 overflow-y-auto px-4 py-6">
-            <div className="mx-auto flex w-full max-w-3xl flex-col gap-5">
+            <div className="mx-auto flex w-full max-w-5xl flex-col gap-5">
               {hasConversation ? (
                 visibleMessages.map((message) => (
                   <motion.div
@@ -173,13 +173,13 @@ const ChatContent = () => {
                   >
                     <div
                       className={cn(
-                        'relative max-w-lg rounded-zen-xl px-4 py-3 shadow-zen-subtle',
+                        'relative max-w-[85%] lg:max-w-[75%] rounded-zen-xl px-5 py-4 shadow-zen-subtle',
                         message.role === 'user'
-                          ? 'bg-zen-primary text-white ml-10'
-                          : 'bg-white border border-zen-border mr-10 text-zen-fg',
+                          ? 'bg-zen-primary text-white ml-6 lg:ml-12'
+                          : 'bg-white border border-zen-border mr-6 lg:mr-12 text-zen-fg',
                       )}
                     >
-                      <p className="whitespace-pre-wrap leading-relaxed zen-body-sm">{message.content}</p>
+                      <p className="whitespace-pre-wrap leading-relaxed zen-body md:text-lg">{message.content}</p>
                     </div>
                   </motion.div>
                 ))
@@ -202,8 +202,8 @@ const ChatContent = () => {
                   {...enterMotion}
                   className="flex justify-start"
                 >
-                  <div className="max-w-lg rounded-zen-xl border border-zen-border bg-white px-4 py-3 shadow-zen-subtle mr-10">
-                    <p className="text-zen-fg whitespace-pre-wrap leading-relaxed zen-body-sm">
+                  <div className="max-w-[85%] lg:max-w-[75%] rounded-zen-xl border border-zen-border bg-white px-5 py-4 shadow-zen-subtle mr-6 lg:mr-12">
+                    <p className="text-zen-fg whitespace-pre-wrap leading-relaxed zen-body md:text-lg">
                       {initialGreeting.content}
                     </p>
                   </div>
@@ -215,7 +215,7 @@ const ChatContent = () => {
           </div>
 
           <div className="border-t border-zen-border-soft glass px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
-            <div className="mx-auto w-full max-w-3xl space-y-3">
+            <div className="mx-auto w-full max-w-5xl space-y-3">
               <div className="flex flex-wrap gap-2">
                 {QUICK_PROMPTS.map((prompt) => (
                   <ZenBadge

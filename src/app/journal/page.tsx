@@ -320,7 +320,7 @@ const JournalContent = () => {
               <h1 className="zen-h1 text-zen-fg font-serif mt-1">
                 {greetingName}&apos;s private space
               </h1>
-              <p className="zen-body-sm text-zen-fg-muted mt-2 max-w-xl">
+              <p className="zen-body-sm text-zen-fg-muted mt-2 max-w-4xl">
                 Reflect on your day, record your thoughts, and release what&apos;s on your mind.
               </p>
             </div>
@@ -360,7 +360,7 @@ const JournalContent = () => {
               ) : (
                 <motion.div
                   key="open-diary"
-                  className="relative w-full max-w-4xl"
+                  className="relative w-full max-w-[1400px]"
                   initial={{ opacity: 0, scale: 0.96 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0 }}

@@ -90,11 +90,11 @@ export default function BurstItOutPage() {
         </Link>
 
         <h1 className="zen-h1 text-zen-fg text-center mt-10 mb-2">Burst it out</h1>
-        <p className="zen-body-sm text-zen-fg-muted text-center mb-10 max-w-sm">
+        <p className="zen-body-sm text-zen-fg-muted text-center mb-10 max-w-2xl">
           Type what&apos;s weighing on you. Watch it go into the bubble. Then pop it.
         </p>
 
-        <div className="relative flex flex-col items-center w-full max-w-md">
+        <div className="relative flex flex-col items-center w-full max-w-3xl">
           <div className="relative flex items-center justify-center mb-6" style={{ minHeight: 260 }}>
             <AnimatePresence>
               {phase !== 'affirming' && (

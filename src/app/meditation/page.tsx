@@ -109,7 +109,7 @@ function JPMRPlayer({ session }: { session: Meditation }) {
   const audioUrl = resolveGuidedAudioUrl(session.title, session.audioUrl);
 
   return (
-    <div className="max-w-xl mx-auto">
+    <div className="w-full max-w-5xl mx-auto px-4 lg:px-8">
       {/* Audio element */}
       <audio ref={audioRef} src={audioUrl || ''} preload="metadata" />
 
@@ -294,7 +294,7 @@ const MeditationPageInner = () => {
             <header className="text-center mb-6">
               <p className="zen-label text-zen-secondary">Guided stillness for {displayName}</p>
               <h1 className="zen-h1 text-zen-fg mt-2">Find your inner peace</h1>
-              <p className="mt-3 max-w-2xl mx-auto zen-body text-zen-fg-muted">
+              <p className="mt-3 max-w-4xl mx-auto zen-body text-zen-fg-muted">
                 Choose a guided practice or layer ambient sounds for the atmosphere you need.
               </p>
             </header>
@@ -302,7 +302,7 @@ const MeditationPageInner = () => {
 
           {error ? (
             <ZenSection>
-              <div className="max-w-xl mx-auto rounded-zen-xl border border-zen-danger/25 bg-zen-danger-soft px-6 py-4 text-center text-zen-danger">
+              <div className="max-w-3xl mx-auto rounded-zen-xl border border-zen-danger/25 bg-zen-danger-soft px-6 py-4 text-center text-zen-danger">
                 <p className="mb-4">{error}</p>
                 <ZenButton variant="outline" onClick={loadMeditations}>
                   Try again

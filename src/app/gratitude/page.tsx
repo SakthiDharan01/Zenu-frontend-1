@@ -273,7 +273,7 @@ const GratitudePageInner = () => {
             <div className="min-w-0 flex-1">
               <p className="zen-label text-zen-accent">Hello {greetingName}</p>
               <h1 className="zen-h1 text-zen-fg font-serif mt-1">Your gratitude jar</h1>
-              <p className="zen-body-sm text-zen-fg-muted mt-2 max-w-xl">
+              <p className="zen-body-sm text-zen-fg-muted mt-2 max-w-4xl">
                 Add one thankful note at a time. Tap the jar to rediscover a moment you saved.
               </p>
               <div className="mt-5 flex flex-wrap gap-3">

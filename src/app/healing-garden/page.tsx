@@ -237,7 +237,7 @@ export default function HealingGardenPage() {
   return (
     <ModulePage theme={theme}>
       <div className="min-h-screen" style={{ background: 'transparent', color: theme.textPrimary }}>
-        <div className="max-w-3xl mx-auto px-5 py-10 pb-20">
+        <div className="max-w-5xl mx-auto px-5 py-10 pb-20">
 
         {/* Back */}
         <button
@@ -256,7 +256,7 @@ export default function HealingGardenPage() {
           <h1 className="text-4xl mb-2" style={{ fontFamily: 'Georgia, serif', fontWeight: 400 }}>
             The Healing Garden
           </h1>
-          <p className="text-sm leading-relaxed max-w-md mx-auto" style={{ color: '#c7bca7' }}>
+          <p className="text-sm leading-relaxed max-w-3xl mx-auto" style={{ color: '#c7bca7' }}>
             Plant a task when you start it. Mark it done, and watch it grow into a tree —
             a living record of everything you have accomplished.
           </p>
