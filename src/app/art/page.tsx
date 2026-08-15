@@ -291,10 +291,10 @@ const DoodleDreams = () => {
       <Link
         href="/"
         aria-label="Back to dashboard"
-        className="fixed top-20 left-4 z-40 inline-flex items-center gap-2 px-3 py-2 rounded-zen-full glass-floating shadow-zen-floating text-sm font-medium text-zen-fg hover:bg-white/95 active:scale-[0.97] transition-all duration-zen-fast focus-visible:outline-2 focus-visible:outline-zen-primary"
+        className="absolute top-6 left-6 lg:left-8 z-40 inline-flex items-center gap-2 px-3 py-2 rounded-zen-full glass-floating shadow-zen-floating text-sm font-medium text-white hover:bg-white/95 active:scale-[0.97] transition-all duration-zen-fast focus-visible:outline-2 focus-visible:outline-zen-primary"
       >
-        <ArrowLeft className="w-4 h-4 text-zen-fg-muted" aria-hidden="true" />
-        <span className="hidden sm:inline text-zen-fg-muted">ZenU</span>
+        <ArrowLeft className="w-4 h-4 text-white/70" aria-hidden="true" />
+        <span className="hidden sm:inline text-white/70">ZenU</span>
         <span className="h-3 w-px bg-zen-border hidden sm:block" aria-hidden="true" />
         <span>Art</span>
       </Link>
@@ -302,10 +302,10 @@ const DoodleDreams = () => {
       <div className="pt-8 pb-4 md:pt-10 md:pb-8">
         <div className="container mx-auto px-4">
           <div className="text-center">
-            <h1 className="zen-h1 text-zen-fg font-serif tracking-wide mb-3">
+            <h1 className="zen-h1 text-white font-serif tracking-wide mb-3">
               Doodle Dreams Studio
             </h1>
-            <p className="zen-body-sm text-zen-fg-muted max-w-2xl mx-auto">
+            <p className="zen-body-sm text-white/70 max-w-2xl mx-auto">
               12-fold symmetry mandala creator
             </p>
           </div>
@@ -317,7 +317,7 @@ const DoodleDreams = () => {
         <aside className="w-full lg:w-72 lg:sticky lg:top-24 space-y-4 shrink-0 flex flex-col">
           {/* Tool Selection */}
           <div className="glass rounded-zen-xl p-3 shadow-zen-subtle">
-            <h3 className="zen-caption text-zen-fg mb-2">Tools</h3>
+            <h3 className="zen-caption text-white mb-2">Tools</h3>
             <div className="grid grid-cols-3 lg:grid-cols-1 gap-2">
               <button
                 onClick={() => {
@@ -327,7 +327,7 @@ const DoodleDreams = () => {
                 className={`w-full flex items-center px-4 py-2 rounded-zen-md min-h-11 transition-all duration-zen-fast active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-zen-primary ${
                   activeTool === 'draw' 
                     ? 'bg-zen-primary text-white' 
-                    : 'border border-zen-border hover:border-zen-primary hover:text-zen-primary'
+                    : 'border border-white/20 hover:border-white/50 text-white/80 hover:text-white'
                 }`}
               >
                 <Pencil className="w-4 h-4 lg:mr-2" />
@@ -341,7 +341,7 @@ const DoodleDreams = () => {
                 className={`w-full flex items-center px-4 py-2 rounded-zen-md min-h-11 transition-all duration-zen-fast active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-zen-primary ${
                   activeTool === 'eraser'
                     ? 'bg-zen-primary text-white'
-                    : 'border border-zen-border hover:border-zen-primary hover:text-zen-primary'
+                    : 'border border-white/20 hover:border-white/50 text-white/80 hover:text-white'
                 }`}
               >
                 <Eraser className="w-4 h-4 lg:mr-2" />
@@ -355,7 +355,7 @@ const DoodleDreams = () => {
                 className={`w-full flex items-center px-4 py-2 rounded-zen-md min-h-11 transition-all duration-zen-fast active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-zen-primary ${
                   activeTool === 'fill'
                     ? 'bg-zen-primary text-white'
-                    : 'border border-zen-border hover:border-zen-primary hover:text-zen-primary'
+                    : 'border border-white/20 hover:border-white/50 text-white/80 hover:text-white'
                 }`}
               >
                 <Paintbrush className="w-4 h-4 lg:mr-2" />
@@ -367,7 +367,7 @@ const DoodleDreams = () => {
           {/* Color & Size Controls */}
           <div className="glass rounded-zen-xl p-3 space-y-3 shadow-zen-subtle">
             <div>
-              <h3 className="zen-caption text-zen-fg mb-2 flex items-center gap-1.5">
+              <h3 className="zen-caption text-white mb-2 flex items-center gap-1.5">
                 <Paintbrush className="w-3.5 h-3.5" aria-hidden="true" />
                 Color
               </h3>
@@ -379,19 +379,19 @@ const DoodleDreams = () => {
                     setColor(e.target.value);
                     toast.success("Color changed", { duration: 500 });
                   }}
-                  className="w-16 h-16 rounded-lg cursor-pointer border-2 border-border/50 hover:border-zen-primary/50 transition-all duration-300 hover:scale-105 active:scale-95"
+                  className="w-16 h-16 rounded-lg cursor-pointer border-2 border-white/20 hover:border-zen-primary/50 transition-all duration-300 hover:scale-105 active:scale-95"
                 />
                 <div className="flex-1">
-                  <div className="text-[10px] text-muted-foreground font-mono bg-muted/30 px-2 py-1.5 rounded">
+                  <div className="text-[10px] text-white/60 font-mono bg-white/10 px-2 py-1.5 rounded">
                     {color.toUpperCase()}
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="space-y-2 pt-2 border-t border-border/50">
+            <div className="space-y-2 pt-2 border-t border-white/20">
               <div>
-                <label className="text-[10px] font-medium text-foreground/80 flex items-center justify-between mb-1.5">
+                <label className="text-[10px] font-medium text-white/80 flex items-center justify-between mb-1.5">
                   <span className="flex items-center gap-1">
                     <Pencil className="w-3 h-3" />
                     Brush
@@ -410,7 +410,7 @@ const DoodleDreams = () => {
               </div>
 
               <div>
-                <label className="text-[10px] font-medium text-foreground/80 flex items-center justify-between mb-1.5">
+                <label className="text-[10px] font-medium text-white/80 flex items-center justify-between mb-1.5">
                   <span className="flex items-center gap-1">
                     <Eraser className="w-3 h-3" />
                     Eraser
@@ -432,13 +432,13 @@ const DoodleDreams = () => {
 
           {/* Actions */}
           <div className="glass rounded-zen-xl p-3 space-y-2 shadow-zen-subtle">
-            <h3 className="zen-caption text-zen-fg mb-2">Actions</h3>
+            <h3 className="zen-caption text-white mb-2">Actions</h3>
             <div className="grid grid-cols-2 gap-2">
               <button
                 onClick={handleUndo}
                 disabled={!canUndo}
                 aria-label="Undo"
-                className="w-full flex items-center justify-center px-4 py-2 rounded-zen-md min-h-11 bg-zen-bg-muted hover:bg-zen-bg-subtle disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-zen-fast active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-zen-primary"
+                className="w-full flex items-center justify-center px-4 py-2 rounded-zen-md min-h-11 bg-white/10 hover:bg-white/20 text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-zen-fast active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-zen-primary"
               >
                 <Undo2 className="w-4 h-4 mr-1.5" aria-hidden="true" />
                 Undo
@@ -447,7 +447,7 @@ const DoodleDreams = () => {
                 onClick={handleRedo}
                 disabled={!canRedo}
                 aria-label="Redo"
-                className="w-full flex items-center justify-center px-4 py-2 rounded-zen-md min-h-11 bg-zen-bg-muted hover:bg-zen-bg-subtle disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-zen-fast active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-zen-primary"
+                className="w-full flex items-center justify-center px-4 py-2 rounded-zen-md min-h-11 bg-white/10 hover:bg-white/20 text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-zen-fast active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-zen-primary"
               >
                 <Redo2 className="w-4 h-4 mr-1.5" aria-hidden="true" />
                 Redo
@@ -456,7 +456,7 @@ const DoodleDreams = () => {
             <button
               onClick={handleClear}
               aria-label="Clear canvas"
-              className="w-full flex items-center justify-center px-4 py-2 rounded-zen-md min-h-11 bg-zen-bg-muted hover:bg-zen-bg-subtle transition-all duration-zen-fast active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-zen-primary"
+              className="w-full flex items-center justify-center px-4 py-2 rounded-zen-md min-h-11 bg-white/10 hover:bg-white/20 text-white transition-all duration-zen-fast active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-zen-primary"
             >
               <Trash2 className="w-4 h-4 mr-1.5" aria-hidden="true" />
               Clear Canvas
@@ -471,9 +471,9 @@ const DoodleDreams = () => {
             </button>
           </div>
 
-          <div className="bg-zen-primary-soft border border-zen-primary/20 rounded-zen-xl p-3">
-            <p className="text-[10px] text-zen-fg-muted leading-relaxed">
-              <span className="font-semibold text-zen-fg">Tip:</span> Draw from the center outward for best results.
+          <div className="bg-white/10 border border-white/20 rounded-zen-xl p-3">
+            <p className="text-[10px] text-white/70 leading-relaxed">
+              <span className="font-semibold text-white">Tip:</span> Draw from the center outward for best results.
             </p>
           </div>
         </aside>
@@ -486,7 +486,7 @@ const DoodleDreams = () => {
               onPointerMove={handlePointerMove}
               onPointerUp={handlePointerUp}
               onPointerLeave={handlePointerUp}
-              className="w-full rounded-zen-xl shadow-zen-subtle cursor-crosshair touch-none border-2 border-zen-border-soft"
+              className="w-full rounded-zen-xl shadow-zen-subtle cursor-crosshair touch-none border-2 border-white/20"
               style={{
                 aspectRatio: '1/1'
               }}
