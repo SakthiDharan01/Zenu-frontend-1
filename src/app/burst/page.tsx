@@ -77,7 +77,7 @@ export default function BurstItOutPage() {
   return (
     <ModulePage theme={theme}>
       <ZenPage atmosphere="none" className="min-h-[calc(100dvh-4rem)]">
-      <ZenContainer maxWidth="md" className="relative py-10 flex flex-col items-center">
+      <ZenContainer maxWidth="xl" className="relative py-10 flex flex-col items-center">
         <Link
           href="/"
           aria-label="Back to dashboard"
@@ -94,7 +94,7 @@ export default function BurstItOutPage() {
           Type what&apos;s weighing on you. Watch it go into the bubble. Then pop it.
         </p>
 
-        <div className="relative flex flex-col items-center w-full max-w-3xl">
+        <div className="relative flex flex-col items-center w-full max-w-4xl">
           <div className="relative flex items-center justify-center mb-6" style={{ minHeight: 260 }}>
             <AnimatePresence>
               {phase !== 'affirming' && (
@@ -276,7 +276,7 @@ export default function BurstItOutPage() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="zen-body-sm text-zen-secondary italic mt-4"
+                className="zen-body-sm text-purple-300 italic mt-4"
               >
                 Sending your thought into the bubble…
               </motion.p>
@@ -287,7 +287,7 @@ export default function BurstItOutPage() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="zen-body-sm text-zen-secondary italic mt-4"
+                className="zen-body-sm text-purple-300 italic mt-4"
               >
                 The bubble is filling up… ready to pop?
               </motion.p>

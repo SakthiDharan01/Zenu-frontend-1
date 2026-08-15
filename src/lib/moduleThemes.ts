@@ -102,17 +102,17 @@ export const MODULE_THEMES: Record<string, ModuleTheme> = {
     particles: { color: '#94d2bd', count: 18, size: [8, 24], speed: 0.3 },
     liveEffect: 'bubbles',
   },
-  // BURST IT OUT — dramatic volcanic release
+  // BURST IT OUT — deep cosmic release
   burst: {
-    gradient: 'linear-gradient(160deg, #0d0000 0%, #3b0014 35%, #7f1d1d 65%, #991b1b 100%)',
-    accentColor: '#f87171',
-    accentLight: 'rgba(248,113,113,0.12)',
-    textPrimary: '#fff1f1',
-    textSecondary: '#fca5a5',
-    cardBg: 'rgba(60,0,20,0.4)',
-    cardBorder: 'rgba(248,113,113,0.25)',
-    particles: { color: '#fca5a5', count: 15, size: [2, 4], speed: 0.4 },
-    liveEffect: 'fireflies',
+    gradient: 'linear-gradient(160deg, #0a0514 0%, #1e1035 35%, #3b1c7a 70%, #2d1b69 100%)',
+    accentColor: '#c084fc',
+    accentLight: 'rgba(192,132,252,0.12)',
+    textPrimary: '#faf5ff',
+    textSecondary: '#d8b4fe',
+    cardBg: 'rgba(30,16,53,0.5)',
+    cardBorder: 'rgba(192,132,252,0.25)',
+    particles: { color: '#e9d5ff', count: 45, size: [1, 3], speed: 0.8 },
+    liveEffect: 'stars',
   },
   // SCRIBBLE PAD — warm cream with ink
   scribble: {
