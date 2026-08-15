@@ -89,8 +89,8 @@ export default function BurstItOutPage() {
           <span>Burst</span>
         </Link>
 
-        <h1 className="zen-h1 text-zen-fg text-center mt-10 mb-2">Burst it out</h1>
-        <p className="zen-body-sm text-zen-fg-muted text-center mb-10 max-w-2xl">
+        <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-white text-center mt-10 mb-3">Burst it out</h1>
+        <p className="text-lg md:text-xl text-purple-200 text-center mb-10 max-w-2xl">
           Type what&apos;s weighing on you. Watch it go into the bubble. Then pop it.
         </p>
 
@@ -173,7 +173,7 @@ export default function BurstItOutPage() {
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.8, ease: 'easeInOut' }}
                       >
-                        <p className="text-center text-xs text-zen-fg font-medium leading-snug max-w-[80%] break-words">
+                        <p className="text-center text-sm md:text-base text-white font-medium leading-snug max-w-[80%] break-words">
                           {thought.length > 80 ? `${thought.slice(0, 80)}…` : thought}
                         </p>
                       </motion.div>
@@ -227,7 +227,7 @@ export default function BurstItOutPage() {
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   transition={{ type: 'spring', stiffness: 280, damping: 24, delay: 0.15 }}
                 >
-                  <p className="zen-h3 text-zen-fg leading-relaxed mb-6 max-w-xs font-serif">
+                  <p className="text-2xl md:text-3xl text-white font-medium leading-relaxed mb-6 max-w-lg font-serif">
                     {affirmation}
                   </p>
                   <ZenButton variant="secondary" onClick={handleReset}>
@@ -256,7 +256,7 @@ export default function BurstItOutPage() {
                   aria-label="Thought to release"
                 />
                 <div className="flex items-center justify-between mt-3">
-                  <span className="zen-caption text-zen-fg-subtle">{thought.length}/300</span>
+                  <span className="text-sm text-purple-300 font-medium">{thought.length}/300</span>
                   <ZenButton
                     variant="secondary"
                     onClick={handleRelease}
