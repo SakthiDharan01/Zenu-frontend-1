@@ -366,7 +366,7 @@ const DoodleDreams = () => {
 
           {/* Color & Size Controls */}
           <div className="glass rounded-zen-xl p-3 space-y-3 shadow-zen-subtle">
-            <ModulePage theme={theme}>
+            <div>
               <h3 className="zen-caption text-zen-fg mb-2 flex items-center gap-1.5">
                 <Paintbrush className="w-3.5 h-3.5" aria-hidden="true" />
                 Color
@@ -390,7 +390,7 @@ const DoodleDreams = () => {
             </div>
 
             <div className="space-y-2 pt-2 border-t border-border/50">
-              <ModulePage theme={theme}>
+              <div>
                 <label className="text-[10px] font-medium text-foreground/80 flex items-center justify-between mb-1.5">
                   <span className="flex items-center gap-1">
                     <Pencil className="w-3 h-3" />
@@ -409,7 +409,7 @@ const DoodleDreams = () => {
                 />
               </div>
 
-              <ModulePage theme={theme}>
+              <div>
                 <label className="text-[10px] font-medium text-foreground/80 flex items-center justify-between mb-1.5">
                   <span className="flex items-center gap-1">
                     <Eraser className="w-3 h-3" />
@@ -495,7 +495,7 @@ const DoodleDreams = () => {
         </main>
       </div>
       </div>
-    </div>
+    </ModulePage>
   );
 };
 
