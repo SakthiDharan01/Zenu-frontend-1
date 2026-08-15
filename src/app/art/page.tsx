@@ -291,7 +291,7 @@ const DoodleDreams = () => {
       <Link
         href="/"
         aria-label="Back to dashboard"
-        className="absolute top-6 left-6 lg:left-8 z-40 inline-flex items-center gap-2 px-3 py-2 rounded-zen-full glass-floating shadow-zen-floating text-sm font-medium text-white hover:bg-white/95 active:scale-[0.97] transition-all duration-zen-fast focus-visible:outline-2 focus-visible:outline-zen-primary"
+        className="absolute top-6 left-6 lg:left-8 z-40 inline-flex items-center gap-2 px-3 py-2 rounded-zen-full bg-black/20 backdrop-blur-md border border-white/10 shadow-zen-floating text-sm font-medium text-white hover:bg-black/40 active:scale-[0.97] transition-all duration-zen-fast focus-visible:outline-2 focus-visible:outline-zen-primary"
       >
         <ArrowLeft className="w-4 h-4 text-white/70" aria-hidden="true" />
         <span className="hidden sm:inline text-white/70">ZenU</span>
@@ -316,7 +316,7 @@ const DoodleDreams = () => {
         {/* Left Sidebar - Tools */}
         <aside className="w-full lg:w-72 lg:sticky lg:top-24 space-y-4 shrink-0 flex flex-col">
           {/* Tool Selection */}
-          <div className="glass rounded-zen-xl p-3 shadow-zen-subtle">
+          <div className="bg-black/20 backdrop-blur-xl border border-white/10 rounded-zen-xl p-3 shadow-zen-subtle">
             <h3 className="zen-caption text-white mb-2">Tools</h3>
             <div className="grid grid-cols-3 lg:grid-cols-1 gap-2">
               <button
@@ -327,7 +327,7 @@ const DoodleDreams = () => {
                 className={`w-full flex items-center px-4 py-2 rounded-zen-md min-h-11 transition-all duration-zen-fast active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-zen-primary ${
                   activeTool === 'draw' 
                     ? 'bg-zen-primary text-white' 
-                    : 'border border-white/20 hover:border-white/50 text-white/80 hover:text-white'
+                    : 'border border-white/30 hover:border-white/60 text-white/80 hover:text-white'
                 }`}
               >
                 <Pencil className="w-4 h-4 lg:mr-2" />
@@ -341,7 +341,7 @@ const DoodleDreams = () => {
                 className={`w-full flex items-center px-4 py-2 rounded-zen-md min-h-11 transition-all duration-zen-fast active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-zen-primary ${
                   activeTool === 'eraser'
                     ? 'bg-zen-primary text-white'
-                    : 'border border-white/20 hover:border-white/50 text-white/80 hover:text-white'
+                    : 'border border-white/30 hover:border-white/60 text-white/80 hover:text-white'
                 }`}
               >
                 <Eraser className="w-4 h-4 lg:mr-2" />
@@ -355,7 +355,7 @@ const DoodleDreams = () => {
                 className={`w-full flex items-center px-4 py-2 rounded-zen-md min-h-11 transition-all duration-zen-fast active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-zen-primary ${
                   activeTool === 'fill'
                     ? 'bg-zen-primary text-white'
-                    : 'border border-white/20 hover:border-white/50 text-white/80 hover:text-white'
+                    : 'border border-white/30 hover:border-white/60 text-white/80 hover:text-white'
                 }`}
               >
                 <Paintbrush className="w-4 h-4 lg:mr-2" />
@@ -365,7 +365,7 @@ const DoodleDreams = () => {
           </div>
 
           {/* Color & Size Controls */}
-          <div className="glass rounded-zen-xl p-3 space-y-3 shadow-zen-subtle">
+          <div className="bg-black/20 backdrop-blur-xl border border-white/10 rounded-zen-xl p-3 space-y-3 shadow-zen-subtle">
             <div>
               <h3 className="zen-caption text-white mb-2 flex items-center gap-1.5">
                 <Paintbrush className="w-3.5 h-3.5" aria-hidden="true" />
@@ -431,14 +431,14 @@ const DoodleDreams = () => {
           </div>
 
           {/* Actions */}
-          <div className="glass rounded-zen-xl p-3 space-y-2 shadow-zen-subtle">
+          <div className="bg-black/20 backdrop-blur-xl border border-white/10 rounded-zen-xl p-3 space-y-2 shadow-zen-subtle">
             <h3 className="zen-caption text-white mb-2">Actions</h3>
             <div className="grid grid-cols-2 gap-2">
               <button
                 onClick={handleUndo}
                 disabled={!canUndo}
                 aria-label="Undo"
-                className="w-full flex items-center justify-center px-4 py-2 rounded-zen-md min-h-11 bg-white/10 hover:bg-white/20 text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-zen-fast active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-zen-primary"
+                className="w-full flex items-center justify-center px-4 py-2 rounded-zen-md min-h-11 bg-white/15 hover:bg-white/25 text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-zen-fast active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-zen-primary"
               >
                 <Undo2 className="w-4 h-4 mr-1.5" aria-hidden="true" />
                 Undo
@@ -447,7 +447,7 @@ const DoodleDreams = () => {
                 onClick={handleRedo}
                 disabled={!canRedo}
                 aria-label="Redo"
-                className="w-full flex items-center justify-center px-4 py-2 rounded-zen-md min-h-11 bg-white/10 hover:bg-white/20 text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-zen-fast active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-zen-primary"
+                className="w-full flex items-center justify-center px-4 py-2 rounded-zen-md min-h-11 bg-white/15 hover:bg-white/25 text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-zen-fast active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-zen-primary"
               >
                 <Redo2 className="w-4 h-4 mr-1.5" aria-hidden="true" />
                 Redo
@@ -456,7 +456,7 @@ const DoodleDreams = () => {
             <button
               onClick={handleClear}
               aria-label="Clear canvas"
-              className="w-full flex items-center justify-center px-4 py-2 rounded-zen-md min-h-11 bg-white/10 hover:bg-white/20 text-white transition-all duration-zen-fast active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-zen-primary"
+              className="w-full flex items-center justify-center px-4 py-2 rounded-zen-md min-h-11 bg-white/15 hover:bg-white/25 text-white transition-all duration-zen-fast active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-zen-primary"
             >
               <Trash2 className="w-4 h-4 mr-1.5" aria-hidden="true" />
               Clear Canvas
