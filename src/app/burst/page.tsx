@@ -254,6 +254,7 @@ export default function BurstItOutPage() {
                   rows={4}
                   maxLength={300}
                   aria-label="Thought to release"
+                  className="text-lg md:text-xl p-4 md:p-5 text-gray-900 placeholder:text-gray-500 bg-white/95 backdrop-blur-sm leading-relaxed"
                 />
                 <div className="flex items-center justify-between mt-3">
                   <span className="text-sm text-purple-300 font-medium">{thought.length}/300</span>
