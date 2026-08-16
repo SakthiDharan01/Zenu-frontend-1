@@ -1,0 +1,257 @@
+/* ZenU Panda — calm motion helpers (transform/opacity only) */
+
+.zenu-panda {
+  position: relative;
+  display: inline-flex;
+  align-items: flex-end;
+  justify-content: center;
+  flex-shrink: 0;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.zenu-panda__shadow {
+  position: absolute;
+  bottom: 2%;
+  left: 50%;
+  width: 58%;
+  height: 10%;
+  transform: translateX(-50%);
+  border-radius: 9999px;
+  background: rgba(15, 23, 42, 0.12);
+  filter: blur(6px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.zenu-panda__stage {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  will-change: transform;
+}
+
+.zenu-panda__svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+
+.zenu-panda[data-mode='ambient'] .zenu-panda__stage {
+  opacity: 0.96;
+}
+
+.zenu-panda[data-interactive='true']:active .zenu-panda__stage {
+  transform: scale(0.97);
+  transition: transform 100ms ease-out;
+}
+
+/* Quiet floating companion — non-interactive, avoids bottom nav */
+.zenu-panda-companion {
+  position: fixed;
+  right: max(0.75rem, env(safe-area-inset-right));
+  bottom: max(5.5rem, calc(4.5rem + env(safe-area-inset-bottom)));
+  z-index: 40;
+  pointer-events: none;
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media (min-width: 768px) {
+  .zenu-panda-companion {
+    bottom: max(1.25rem, env(safe-area-inset-bottom));
+    right: max(1.25rem, env(safe-area-inset-right));
+  }
+}
+
+.zenu-panda-companion__stage {
+  width: 48px;
+  height: 48px;
+}
+
+.zenu-panda-companion__stage .zenu-panda {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+@media (min-width: 768px) {
+  .zenu-panda-companion__stage {
+    width: 64px;
+    height: 64px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zenu-panda__stage {
+    animation: none !important;
+  }
+}
+
+/* Proactive host */
+.zenu-panda-notify {
+  position: fixed;
+  right: max(1rem, env(safe-area-inset-right));
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.75rem;
+  pointer-events: none;
+  max-width: min(20rem, calc(100vw - 2rem));
+}
+
+.zenu-panda-notify > * {
+  pointer-events: auto;
+}
+
+.zenu-panda-message {
+  position: relative;
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(22px) saturate(170%);
+  -webkit-backdrop-filter: blur(22px) saturate(170%);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  border-radius: 1.35rem 1.35rem 1.35rem 0.55rem;
+  box-shadow:
+    0 12px 32px rgba(43, 42, 63, 0.1),
+    0 1px 0 rgba(255, 255, 255, 0.7) inset;
+  padding: 0.95rem 1.05rem;
+  color: var(--zen-fg, #1e293b);
+}
+
+.zenu-panda-message::before {
+  content: '';
+  position: absolute;
+  right: 1.4rem;
+  bottom: -7px;
+  width: 14px;
+  height: 14px;
+  background: inherit;
+  border-right: 1px solid rgba(255, 255, 255, 0.65);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.65);
+  transform: rotate(45deg);
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .zenu-panda-message {
+    background: #ffffff;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+/* ========== Activity-local SVG motion (inner groups only) ========== */
+/* Animate *motion* children so composed/SVG transforms on parents stay intact. */
+
+.zenu-panda[data-local-motion='true'][data-animation='writing'] [data-part='writing-hand'] {
+  transform-box: fill-box;
+  transform-origin: 70% 80%;
+  animation: panda-write-hand 1.85s ease-in-out infinite;
+}
+
+.zenu-panda[data-local-motion='true'][data-animation='writing'] [data-part='pen-motion'] {
+  transform-box: fill-box;
+  transform-origin: 40% 90%;
+  animation: panda-write-pen 1.85s ease-in-out infinite;
+}
+
+.zenu-panda[data-local-motion='true'][data-activity='drawing'] [data-part='drawing-hand'] {
+  transform-box: fill-box;
+  transform-origin: 50% 85%;
+  animation: panda-draw-stroke 2.1s ease-in-out infinite;
+}
+
+.zenu-panda[data-local-motion='true'][data-activity='drawing'] [data-part='brush-motion'] {
+  transform-box: fill-box;
+  transform-origin: 50% 90%;
+  animation: panda-draw-stroke 2.1s ease-in-out infinite;
+  animation-delay: 0.08s;
+}
+
+.zenu-panda[data-local-motion='true'][data-animation='talk'] [data-part='speech-bubble-motion'] {
+  transform-box: fill-box;
+  transform-origin: 30% 90%;
+  animation: panda-bubble-bob 2.4s ease-in-out infinite;
+}
+
+@keyframes panda-write-hand {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  40% {
+    transform: translate(1.2px, 1.5px) rotate(2deg);
+  }
+  70% {
+    transform: translate(-0.6px, 0.8px) rotate(-1deg);
+  }
+}
+
+@keyframes panda-write-pen {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  35% {
+    transform: translate(1.5px, 2px) rotate(3deg);
+  }
+  65% {
+    transform: translate(-0.8px, 1px) rotate(-1.5deg);
+  }
+}
+
+@keyframes panda-draw-stroke {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate(1.5px, 2px) rotate(2.5deg);
+  }
+}
+
+@keyframes panda-bubble-bob {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(0, -2px) scale(1.02);
+  }
+}
+
+.zenu-panda[data-activity='breathing'] [data-accessory='breathing'] circle {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: panda-breath-ring 5.2s ease-in-out infinite;
+}
+
+.zenu-panda[data-activity='breathing'] [data-accessory='breathing'] circle:nth-child(2) {
+  animation-delay: 0.35s;
+}
+
+@keyframes panda-breath-ring {
+  0%,
+  100% {
+    opacity: 0.2;
+    transform: scale(0.96);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(1.04);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zenu-panda[data-local-motion='true'] [data-part='writing-hand'],
+  .zenu-panda[data-local-motion='true'] [data-part='pen-motion'],
+  .zenu-panda[data-local-motion='true'] [data-part='drawing-hand'],
+  .zenu-panda[data-local-motion='true'] [data-part='brush-motion'],
+  .zenu-panda[data-local-motion='true'] [data-part='speech-bubble-motion'],
+  .zenu-panda[data-activity='breathing'] [data-accessory='breathing'] circle {
+    animation: none !important;
+  }
+}

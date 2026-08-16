@@ -5,20 +5,45 @@
 /* ─────────────────────────────────────────────────────────────
    FONTS
    ───────────────────────────────────────────────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lora:ital,wght@0,400..700;1,400..700&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
 
 /* ─────────────────────────────────────────────────────────────
    ZEN DESIGN TOKENS — LIGHT MODE ONLY
    ───────────────────────────────────────────────────────────── */
 :root {
   /* ── Background ────────────────────────────────────────────── */
-  --zen-bg:             240 20% 98%;   /* soft blue-white page base      */
-  --zen-bg-subtle:      240 15% 96%;   /* section separators             */
-  --zen-bg-muted:       240 12% 94%;   /* input fills, inactive surfaces */
+  --zen-bg:             250 28% 98%;   /* warm off-white / pale lavender */
+  --zen-bg-subtle:      250 22% 96%;   /* section separators             */
+  --zen-bg-muted:       250 16% 94%;   /* input fills, inactive surfaces */
 
   /* ── Surface ───────────────────────────────────────────────── */
   --zen-surface:        0 0% 100%;     /* white card face                */
-  --zen-surface-raised: 240 20% 99%;   /* slightly lifted card           */
+  --zen-surface-raised: 250 30% 99%;   /* slightly lifted card           */
+  --zen-surface-elevated: 0 0% 100%;   /* elevated interactive surface   */
+
+  /* ── Typography families ───────────────────────────────────── */
+  --zen-font-display: 'Lora', Georgia, 'Times New Roman', serif;
+  --zen-font-ui: 'Plus Jakarta Sans', Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+
+  /* ── Emotional accents (mood / selection only) ─────────────── */
+  --zen-emotion-sadness:       210 70% 58%;
+  --zen-emotion-sadness-soft:  210 70% 96%;
+  --zen-emotion-okay:          172 48% 42%;
+  --zen-emotion-okay-soft:     172 48% 95%;
+  --zen-emotion-calm:          262 48% 58%;
+  --zen-emotion-calm-soft:     262 55% 96%;
+  --zen-emotion-joy:           42 92% 55%;
+  --zen-emotion-joy-soft:      42 92% 96%;
+  --zen-emotion-great:         350 72% 62%;
+  --zen-emotion-great-soft:    350 72% 96%;
+  --zen-emotion-surprise:      24 90% 58%;
+  --zen-emotion-surprise-soft: 24 90% 96%;
+  --zen-emotion-anger:         8 78% 56%;
+  --zen-emotion-anger-soft:    8 78% 96%;
+  --zen-emotion-fear:          275 45% 55%;
+  --zen-emotion-fear-soft:     275 45% 96%;
+  --zen-emotion-disgust:       142 40% 42%;
+  --zen-emotion-disgust-soft:  142 40% 95%;
 
   /* ── Foreground ────────────────────────────────────────────── */
   --zen-fg:             228 30% 16%;   /* deep navy — primary text       */
@@ -131,11 +156,17 @@
    The base --zen-bg, --zen-fg, and components stay constant.
    ───────────────────────────────────────────────────────────── */
 
-/* Dashboard — soft blue + warm gold */
+/* Home — warm off-white / pale lavender, almost white */
 [data-zen-atmosphere="home"] {
-  --zen-atm-accent:    var(--zen-joy);
-  --zen-atm-accent-soft: var(--zen-joy-soft);
-  --zen-atm-bg-tint:   linear-gradient(135deg, hsl(228,60%,98%) 0%, hsl(240,30%,99%) 60%, hsl(260,40%,99%) 100%);
+  --zen-atm-accent:    var(--zen-secondary);
+  --zen-atm-accent-soft: var(--zen-secondary-soft);
+  --zen-atm-bg-tint:   linear-gradient(180deg, hsl(250, 32%, 98.5%) 0%, hsl(40, 40%, 99%) 55%, hsl(250, 25%, 98%) 100%);
+  font-family: var(--zen-font-ui);
+}
+
+[data-zen-atmosphere="home"] .zen-display,
+[data-zen-atmosphere="home"] .zen-home-display {
+  font-family: var(--zen-font-display);
 }
 
 /* Breathing — clean atmospheric blue */
@@ -252,6 +283,24 @@ body {
   letter-spacing: -0.04em;
   font-weight: 700;
   font-optical-sizing: auto;
+}
+
+/* Home editorial display — calmer than marketing display */
+.zen-home-display {
+  font-size: clamp(1.85rem, 3.6vw, 2.75rem);
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+  font-weight: 600;
+  font-optical-sizing: auto;
+}
+
+.zen-eyebrow {
+  font-size: 0.6875rem;
+  line-height: 1.4;
+  letter-spacing: 0.12em;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-family: var(--zen-font-ui);
 }
 
 .zen-h1 {
@@ -520,3 +569,25 @@ body {
    ───────────────────────────────────────────────────────────── */
 .pb-safe { padding-bottom: env(safe-area-inset-bottom, 0px); }
 .pt-safe { padding-top: env(safe-area-inset-top, 0px); }
+
+/* ─────────────────────────────────────────────────────────────
+   HOME 2.0 — soft atmosphere helpers (almost-white base)
+   ───────────────────────────────────────────────────────────── */
+.zen-home-atmosphere {
+  position: relative;
+  isolation: isolate;
+}
+
+.zen-home-glow {
+  pointer-events: none;
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(48px);
+  opacity: 0.45;
+  z-index: 0;
+}
+
+.zen-home-section {
+  position: relative;
+  z-index: 1;
+}

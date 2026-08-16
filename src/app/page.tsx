@@ -1,84 +1,41 @@
-"use client";
+'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import {
   ArrowRight,
-  Bot,
-  BookOpen,
-  Brain,
-  ClipboardList,
-  Compass,
-  Heart,
-  PartyPopper,
-  PenTool,
-  Sparkles,
   Sprout,
   TreeDeciduous,
-  Wand2,
-  Wind,
   X,
 } from 'lucide-react';
 import { useAuth } from '@/components/providers/AuthProvider';
 import { apiClient } from '@/lib/apiClient';
-import type {
-  DailyFocus,
-  HomeOverview,
-  JournalEntry,
-  ModuleRecord,
-  PSSData,
-  StreakData,
-} from '@/lib/types';
+import type { JournalEntry } from '@/lib/types';
 import { cn } from '@/lib/utils';
-import { shouldShowPSS, daysUntilNextPSS } from '@/lib/pssSchedule';
-import { PSSCheck } from '@/components/PSSCheck';
+import { shouldShowPSS } from '@/lib/pssSchedule';
 import PandaAvatar from '@/components/PandaAvatar';
+import type { PandaEmotion } from '@/components/panda/types';
+import {
+  HomeClosing,
+  HomeGarden,
+  HomeGreeting,
+  HomeHeader,
+  HomeReflections,
+  HomeYourSpace,
+} from '@/components/home';
+import type { HomePandaPresentation } from '@/components/home/HomeGreeting';
 import {
   ZenPage,
   ZenContainer,
-  ZenSection,
-  ZenGrid,
-  ZenBento,
-  ZenBentoItem,
-  ZenCard,
-  ZenCardHeader,
-  ZenCardTitle,
-  ZenCardDescription,
-  ZenCardContent,
   ZenButton,
   ZenMoodSelector,
-  ZenQuickCalm,
-  ZenStreakGarden,
   ZenRecommendation,
-  ZenSkeletonCard,
+  ZenCard,
 } from '@/components/zen';
 
-type ModuleVisual = {
-  href: string;
-  tint: string;
-  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
-};
-
-const moduleVisuals: Record<string, ModuleVisual> = {
-  breathing: { href: '/breathing', tint: 'bg-zen-primary-soft text-zen-primary', icon: Wind },
-  meditation: { href: '/meditation', tint: 'bg-zen-secondary-soft text-zen-secondary', icon: Brain },
-  journal: { href: '/journal', tint: 'bg-zen-joy-soft text-zen-joy', icon: BookOpen },
-  gratitude: { href: '/gratitude', tint: 'bg-zen-accent-soft text-zen-accent', icon: Heart },
-  mandala: { href: '/art', tint: 'bg-zen-secondary-soft text-zen-secondary', icon: Wand2 },
-  bubble: { href: '/bubbles', tint: 'bg-zen-joy-soft text-zen-joy', icon: Sparkles },
-  burst: { href: '/burst', tint: 'bg-zen-danger-soft text-zen-danger', icon: PartyPopper },
-  scribble: { href: '/scribble', tint: 'bg-zen-secondary-soft text-zen-secondary', icon: PenTool },
-  chatbot: { href: '/chat', tint: 'bg-zen-accent-soft text-zen-accent', icon: Bot },
-  garden: { href: '/healing-garden', tint: 'bg-zen-success-soft text-zen-success', icon: TreeDeciduous },
-  compass: { href: '/innercompass', tint: 'bg-zen-bg-muted text-zen-fg-muted', icon: Compass },
-};
-
 const useHomeData = (enabled: boolean) => {
-  const [overview, setOverview] = useState<HomeOverview | null>(null);
-  const [streak, setStreak] = useState<StreakData | null>(null);
-  const [pss, setPss] = useState<PSSData | null>(null);
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -88,9 +45,6 @@ const useHomeData = (enabled: boolean) => {
 
     const load = async () => {
       if (!enabled) {
-        setOverview(null);
-        setStreak(null);
-        setPss(null);
         setEntries([]);
         return;
       }
@@ -99,22 +53,12 @@ const useHomeData = (enabled: boolean) => {
       setError(null);
 
       try {
-        const [homeOverview, streakSummary, pssSnapshot, journalList] = await Promise.all([
-          apiClient.getHomeOverview(),
-          apiClient.getStreak(),
-          apiClient.getPSS(),
-          apiClient.getJournalEntries({ limit: 3 }),
-        ]);
-
+        const journalList = await apiClient.getJournalEntries({ limit: 3 });
         if (!mounted) return;
-
-        setOverview(homeOverview);
-        setStreak(streakSummary);
-        setPss(pssSnapshot);
         setEntries(journalList);
       } catch (err) {
         if (!mounted) return;
-        setError(err instanceof Error ? err.message : 'Failed to load your dashboard');
+        setError(err instanceof Error ? err.message : 'Failed to load your home');
       } finally {
         if (mounted) setLoading(false);
       }
@@ -126,7 +70,7 @@ const useHomeData = (enabled: boolean) => {
     };
   }, [enabled]);
 
-  return { overview, streak, pss, entries, loading, error, setStreak, setPss };
+  return { entries, loading, error };
 };
 
 const LandingHero = () => {
@@ -136,20 +80,17 @@ const LandingHero = () => {
         <div className="relative overflow-hidden rounded-zen-2xl min-h-[70vh] flex flex-col justify-end">
           <div
             className="absolute inset-0"
-            style={{ background: 'var(--zen-atm-bg-tint, linear-gradient(135deg, hsl(228,60%,98%), hsl(240,30%,99%)))' }}
+            style={{ background: 'var(--zen-atm-bg-tint)' }}
             aria-hidden="true"
           />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--zen-primary)/0.12),transparent_55%)]" aria-hidden="true" />
-          <div className="fixed inset-0 flex items-center justify-center opacity-[0.08] pointer-events-none z-0" aria-hidden="true">
-            <Image src="/icons/panda_logo.jpeg" alt="Panda watermark" width={800} height={800} className="object-contain" priority />
-          </div>
           <div className="absolute top-8 right-8 opacity-90 hidden sm:block z-10" aria-hidden="true">
             <PandaAvatar state="idle" size={120} />
           </div>
 
           <div className="relative z-10 p-8 sm:p-12 max-w-2xl">
             <p className="zen-label text-zen-primary mb-4">ZenU</p>
-            <h1 className="zen-display text-zen-fg">
+            <h1 className="zen-display text-zen-fg font-display">
               Your calm, between classes.
             </h1>
             <p className="zen-body text-zen-fg-muted mt-5 max-w-lg">
@@ -179,107 +120,12 @@ const LandingHero = () => {
           <div className="flex gap-3">
             <TreeDeciduous className="h-5 w-5 text-zen-primary mt-0.5 flex-shrink-0" aria-hidden="true" />
             <p className="zen-body-sm text-zen-fg-muted">
-              Gentle streaks and moods that celebrate growth, not perfection.
+              Gentle growth that celebrates showing up, not perfection.
             </p>
           </div>
         </div>
       </ZenContainer>
     </ZenPage>
-  );
-};
-
-const ModuleCard = ({ module }: { module: ModuleRecord }) => {
-  const visual = moduleVisuals[module.id] ?? {
-    href: '/',
-    tint: 'bg-zen-bg-muted text-zen-fg-muted',
-    icon: Heart,
-  };
-  const Icon = visual.icon;
-
-  return (
-    <Link href={visual.href} className="block h-full focus-visible:outline-none">
-      <ZenCard variant="interactive" className="h-full" padding="md">
-        <div className={cn('w-12 h-12 rounded-zen-lg flex items-center justify-center mb-4', visual.tint)}>
-          <Icon className="h-6 w-6" aria-hidden="true" />
-        </div>
-        <h3 className="zen-h3 text-zen-fg mb-1">{module.title}</h3>
-        <p className="zen-body-sm text-zen-fg-muted">
-          {module.description ?? 'Explore calming practices at your own pace.'}
-        </p>
-      </ZenCard>
-    </Link>
-  );
-};
-
-const DailyFocusCard = ({ focus }: { focus: DailyFocus }) => {
-  const minutes = Math.round(focus.durationSeconds / 60);
-  const href = moduleVisuals[focus.moduleId ?? 'breathing']?.href ?? '/breathing';
-
-  return (
-    <ZenCard variant="accent" padding="lg">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-        <div>
-          <p className="zen-label text-zen-primary">Daily focus</p>
-          <h2 className="zen-h2 text-zen-fg mt-2">{focus.title}</h2>
-          <p className="zen-body text-zen-fg-muted mt-2 max-w-xl">{focus.description}</p>
-        </div>
-        <div className="flex flex-col items-start md:items-end gap-3">
-          <span className="zen-metric text-zen-primary">{minutes} min</span>
-          <ZenButton asChild>
-            <Link href={href}>
-              {focus.cta}
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </Link>
-          </ZenButton>
-        </div>
-      </div>
-    </ZenCard>
-  );
-};
-
-const JournalPreview = ({ entries, loading }: { entries: JournalEntry[]; loading: boolean }) => {
-  if (loading) return <ZenSkeletonCard className="h-full min-h-[12rem]" />;
-
-  if (!entries.length) {
-    return (
-      <ZenCard variant="standard" className="h-full">
-        <ZenCardHeader>
-          <ZenCardTitle>Recent Reflections</ZenCardTitle>
-          <ZenCardDescription>Your next entry awaits.</ZenCardDescription>
-        </ZenCardHeader>
-        <ZenCardContent>
-          <ZenButton asChild variant="outline" size="sm">
-            <Link href="/journal">Open Journal</Link>
-          </ZenButton>
-        </ZenCardContent>
-      </ZenCard>
-    );
-  }
-
-  return (
-    <ZenCard variant="standard" className="h-full">
-      <ZenCardHeader>
-        <div className="flex items-center justify-between gap-2">
-          <ZenCardTitle>Recent Reflections</ZenCardTitle>
-          <Link
-            href="/journal"
-            className="text-sm text-zen-primary hover:text-zen-primary-hover font-medium"
-          >
-            Open journal
-          </Link>
-        </div>
-      </ZenCardHeader>
-      <ZenCardContent className="space-y-3">
-        {entries.map((entry) => (
-          <div key={entry.id} className="rounded-zen-lg bg-zen-bg-subtle p-3">
-            <p className="zen-caption text-zen-fg-subtle">
-              {new Date(entry.createdAt).toLocaleDateString()}
-            </p>
-            <p className="zen-body-sm text-zen-fg mt-1 line-clamp-2 font-serif">{entry.content}</p>
-          </div>
-        ))}
-      </ZenCardContent>
-    </ZenCard>
   );
 };
 
@@ -296,27 +142,35 @@ const PssNudge = ({
   return (
     <div
       className={cn(
-        'flex flex-wrap items-center gap-3 rounded-zen-xl px-4 py-3',
-        'bg-zen-warning-soft border border-zen-warning/25 shadow-zen-subtle',
+        'rounded-zen-lg px-3.5 py-3',
+        'bg-[hsl(38_42%_97%)] border border-[hsl(36_30%_90%)]',
       )}
       role="status"
     >
-      <ClipboardList className="h-5 w-5 text-zen-warning flex-shrink-0" aria-hidden="true" />
-      <p className="zen-body-sm text-zen-fg flex-1 min-w-[12rem]">
-        Weekly stress check-in is due — takes about two minutes.
+      <p className="font-ui text-[0.6875rem] font-semibold tracking-[0.08em] uppercase text-zen-fg-subtle mb-1">
+        Weekly check-in
       </p>
-      <div className="flex items-center gap-2">
-        <ZenButton size="sm" variant="accent" onClick={() => router.push('/assessment')}>
-          Take PSS
-        </ZenButton>
-        <ZenButton
-          size="icon-sm"
-          variant="ghost"
-          aria-label="Dismiss stress check reminder"
-          onClick={onDismiss}
-        >
-          <X className="h-4 w-4" />
-        </ZenButton>
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+        <p className="font-ui text-[0.8125rem] text-zen-fg-muted flex-1 min-w-[9rem]">
+          Your weekly stress check is due
+        </p>
+        <div className="flex items-center gap-0.5">
+          <button
+            type="button"
+            onClick={() => router.push('/assessment')}
+            className="font-ui text-[0.8125rem] font-medium text-zen-secondary hover:text-zen-fg min-h-11 px-1.5 rounded-sm focus-visible:outline-2 focus-visible:outline-zen-primary focus-visible:outline-offset-2"
+          >
+            Take PSS →
+          </button>
+          <button
+            type="button"
+            aria-label="Dismiss stress check reminder"
+            onClick={onDismiss}
+            className="inline-flex h-11 w-10 items-center justify-center rounded-full text-zen-fg-subtle hover:text-zen-fg hover:bg-white/60 focus-visible:outline-2 focus-visible:outline-zen-primary focus-visible:outline-offset-2"
+          >
+            <X className="h-3.5 w-3.5" />
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -324,45 +178,38 @@ const PssNudge = ({
 
 const HomePage = () => {
   const { user, loading: authLoading } = useAuth();
-  const {
-    overview,
-    streak,
-    pss,
-    entries,
-    loading: dashboardLoading,
-    error,
-    setStreak,
-  } = useHomeData(Boolean(user));
+  const { entries, loading: dashboardLoading, error } = useHomeData(Boolean(user));
   const [showPssNudge, setShowPssNudge] = useState(false);
   const [nudgeDismissed, setNudgeDismissed] = useState(false);
-  const [showPSSCard, setShowPSSCard] = useState(false);
-  const [daysNextPSS, setDaysNextPSS] = useState(0);
+  const [recRefreshKey, setRecRefreshKey] = useState(0);
+  const [moodGlow, setMoodGlow] = useState<string | null>(null);
+  const [pandaPresentation, setPandaPresentation] =
+    useState<HomePandaPresentation | null>(null);
 
-  const modules = useMemo(() => overview?.modules ?? [], [overview]);
   const displayName =
     user?.username ?? user?.fullName ?? user?.email?.split('@')[0] ?? 'friend';
+
+  const handlePresentationChange = useCallback(
+    (presentation: HomePandaPresentation | null) => {
+      setPandaPresentation(presentation);
+    },
+    [],
+  );
 
   useEffect(() => {
     if (!user || dashboardLoading) {
       setShowPssNudge(false);
-      setShowPSSCard(false);
       return;
     }
-
-    const due = shouldShowPSS();
-    setShowPSSCard(due);
-    setDaysNextPSS(daysUntilNextPSS());
-    setShowPssNudge(due && !nudgeDismissed);
+    setShowPssNudge(shouldShowPSS() && !nudgeDismissed);
   }, [user, dashboardLoading, nudgeDismissed]);
 
-  const handleWaterGarden = async () => {
-    try {
-      await apiClient.recordActivity('garden');
-      const refreshed = await apiClient.getStreak();
-      setStreak(refreshed);
-    } catch (err) {
-      console.error('Failed to water garden', err);
-    }
+  const handleMoodSelect = (
+    _score: number,
+    meta: { emotion: PandaEmotion; glow: string },
+  ) => {
+    setMoodGlow(meta.glow);
+    setRecRefreshKey((k) => k + 1);
   };
 
   if (authLoading) {
@@ -376,107 +223,48 @@ const HomePage = () => {
   if (!user) return <LandingHero />;
 
   return (
-    <ZenPage atmosphere="none" className="min-h-[calc(100dvh-4rem)] relative">
-      <div className="fixed inset-0 flex items-center justify-center opacity-[0.08] pointer-events-none z-0" aria-hidden="true">
-        <Image src="/icons/panda_logo.jpeg" alt="Panda watermark" width={800} height={800} className="object-contain" priority />
+    <ZenPage atmosphere="home" gradient className="min-h-[calc(100dvh-4rem)] relative">
+      <div className="zen-home-atmosphere absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+        <div
+          className="zen-home-glow left-[-12%] top-[4%] h-48 w-48 md:h-72 md:w-72 opacity-70"
+          style={{ background: moodGlow ?? 'hsl(var(--zen-secondary) / 0.12)' }}
+        />
+        <div className="zen-home-glow right-[-10%] top-[18%] h-52 w-52 md:h-80 md:w-80 bg-zen-secondary-soft opacity-30" />
       </div>
-      <ZenContainer maxWidth="xl" className="pt-8 pb-10 md:pt-12 relative z-10">
-        <ZenSection>
-          <div className="flex flex-col sm:flex-row sm:items-center gap-5 mb-6">
-            <PandaAvatar state="idle" size={72} label="Panda greeting" />
-            <div className="min-w-0 flex-1">
-              <p className="zen-label text-zen-primary">Welcome back</p>
-              <h1 className="zen-h1 text-zen-fg mt-1 truncate">
-                Hey {displayName}, you&apos;re safe here.
-              </h1>
-              <p className="zen-body-sm text-zen-fg-muted mt-2">
-                Pick a practice below or follow today&apos;s focus.
-              </p>
-            </div>
-          </div>
-          <ZenMoodSelector />
-        </ZenSection>
 
-        <ZenSection>
+      <ZenContainer
+        maxWidth="lg"
+        className="relative z-10 pt-3 pb-8 md:pt-6 md:pb-20"
+      >
+        <HomeHeader />
+
+        <div className="flex flex-col gap-9 md:gap-16">
+          <HomeGreeting displayName={displayName} panda={pandaPresentation} />
+
+          <ZenMoodSelector onSelect={handleMoodSelect} />
+
           <PssNudge visible={showPssNudge} onDismiss={() => setNudgeDismissed(true)} />
-        </ZenSection>
 
-        <ZenSection>
-          <ZenRecommendation />
-        </ZenSection>
+          <ZenRecommendation
+            refreshKey={recRefreshKey}
+            onPresentationChange={handlePresentationChange}
+          />
 
-        <ZenSection>
-          <ZenQuickCalm />
-        </ZenSection>
-
-        {error ? (
-          <ZenSection>
+          {error ? (
             <ZenCard variant="subtle" className="border-zen-danger/30 bg-zen-danger-soft text-center">
               <p className="zen-body text-zen-danger">{error}</p>
             </ZenCard>
-          </ZenSection>
-        ) : null}
+          ) : null}
 
-        <ZenSection>
-          {overview?.dailyFocus ? (
-            <DailyFocusCard focus={overview.dailyFocus} />
-          ) : !dashboardLoading ? (
-            <ZenCard variant="subtle" className="text-center border-dashed border-zen-primary/30">
-              <p className="zen-body text-zen-primary">
-                Set your intention anytime — choose a practice while we line up a fresh daily focus.
-              </p>
-            </ZenCard>
-          ) : (
-            <ZenSkeletonCard className="min-h-[8rem]" />
-          )}
-        </ZenSection>
+          <HomeYourSpace />
 
-        <ZenSection>
-          <ZenBento>
-            <ZenBentoItem>
-              {streak ? (
-                <ZenStreakGarden streakData={streak} onWater={handleWaterGarden} />
-              ) : (
-                <ZenSkeletonCard className="min-h-[12rem]" />
-              )}
-            </ZenBentoItem>
-            <ZenBentoItem>
-              {showPSSCard ? (
-                pss ? (
-                  <PSSCheck pssData={pss} />
-                ) : (
-                  <ZenSkeletonCard className="min-h-[12rem]" />
-                )
-              ) : (
-                <ZenCard variant="standard" className="h-full flex items-center justify-center">
-                  <p className="zen-body-sm text-zen-fg-muted text-center py-3">
-                    Next stress check-in in {daysNextPSS} day{daysNextPSS === 1 ? '' : 's'}
-                  </p>
-                </ZenCard>
-              )}
-            </ZenBentoItem>
-            <ZenBentoItem>
-              <JournalPreview entries={entries} loading={dashboardLoading} />
-            </ZenBentoItem>
-          </ZenBento>
-        </ZenSection>
+          <div className="grid grid-cols-2 gap-5 md:gap-12 pt-1">
+            <HomeReflections entries={entries} loading={dashboardLoading} />
+            <HomeGarden />
+          </div>
 
-        <ZenSection>
-          <h2 className="zen-h2 text-zen-fg text-center mb-8">Your Wellness Space</h2>
-          {dashboardLoading && !modules.length ? (
-            <ZenGrid cols={3}>
-              {Array.from({ length: 6 }).map((_, idx) => (
-                <ZenSkeletonCard key={idx} className="min-h-[10rem]" />
-              ))}
-            </ZenGrid>
-          ) : (
-            <ZenGrid cols={3}>
-              {modules.map((module) => (
-                <ModuleCard key={module.id} module={module} />
-              ))}
-            </ZenGrid>
-          )}
-        </ZenSection>
+          <HomeClosing className="mb-1" />
+        </div>
       </ZenContainer>
     </ZenPage>
   );

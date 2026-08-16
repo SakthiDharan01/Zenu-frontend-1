@@ -57,11 +57,33 @@ module.exports = {
 
           surface:        'hsl(var(--zen-surface))',
           'surface-raised': 'hsl(var(--zen-surface-raised))',
+          'surface-elevated': 'hsl(var(--zen-surface-elevated))',
 
           fg:          'hsl(var(--zen-fg))',
           'fg-muted':  'hsl(var(--zen-fg-muted))',
           'fg-subtle': 'hsl(var(--zen-fg-subtle))',
           'fg-inverse':'hsl(var(--zen-fg-inverse))',
+
+          emotion: {
+            sadness:       'hsl(var(--zen-emotion-sadness))',
+            'sadness-soft':'hsl(var(--zen-emotion-sadness-soft))',
+            okay:          'hsl(var(--zen-emotion-okay))',
+            'okay-soft':   'hsl(var(--zen-emotion-okay-soft))',
+            calm:          'hsl(var(--zen-emotion-calm))',
+            'calm-soft':   'hsl(var(--zen-emotion-calm-soft))',
+            joy:           'hsl(var(--zen-emotion-joy))',
+            'joy-soft':    'hsl(var(--zen-emotion-joy-soft))',
+            great:         'hsl(var(--zen-emotion-great))',
+            'great-soft':  'hsl(var(--zen-emotion-great-soft))',
+            surprise:      'hsl(var(--zen-emotion-surprise))',
+            'surprise-soft':'hsl(var(--zen-emotion-surprise-soft))',
+            anger:         'hsl(var(--zen-emotion-anger))',
+            'anger-soft':  'hsl(var(--zen-emotion-anger-soft))',
+            fear:          'hsl(var(--zen-emotion-fear))',
+            'fear-soft':   'hsl(var(--zen-emotion-fear-soft))',
+            disgust:       'hsl(var(--zen-emotion-disgust))',
+            'disgust-soft':'hsl(var(--zen-emotion-disgust-soft))',
+          },
 
           primary:       'hsl(var(--zen-primary))',
           'primary-hover':'hsl(var(--zen-primary-hover))',
@@ -115,8 +137,10 @@ module.exports = {
       },
 
       fontFamily: {
-        sans:  ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'system-ui', 'sans-serif'],
+        sans:  ['Plus Jakarta Sans', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'system-ui', 'sans-serif'],
+        display: ['Lora', 'Georgia', 'Times New Roman', 'serif'],
         serif: ['Lora', 'Georgia', 'Times New Roman', 'serif'],
+        ui: ['Plus Jakarta Sans', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'system-ui', 'sans-serif'],
       },
 
       transitionTimingFunction: {

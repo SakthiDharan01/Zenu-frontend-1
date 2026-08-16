@@ -1,36 +1,53 @@
 /** @type {import('next').NextConfig} */
 
-// next.config.js
-// next.config.js
-// next.config.js
 const withPWA = require('@ducanh2912/next-pwa').default({
   dest: 'public',
   register: true,
   skipWaiting: true,
-  disable: process.env.NODE_ENV === 'development'
-});
-
-module.exports = withPWA({
-  reactStrictMode: true,
+  disable: process.env.NODE_ENV === 'development',
 });
 
 const nextConfig = {
+  reactStrictMode: true,
   images: {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'images.unsplash.com'
-      }
-    ]
+        hostname: 'images.unsplash.com',
+      },
+    ],
   },
   webpack: (config, { isServer }) => {
-    // This is to handle the 'canvas' module which is only needed server-side
     if (!isServer) {
       config.resolve.fallback = {
         ...config.resolve.fallback,
         canvas: false,
       };
     }
+
+    // Prefer SVGR for SVG imports from JS/TS (preserve IDs — no SVGO stripping).
+    const fileLoaderRule = config.module.rules.find(
+      (rule) => rule.test instanceof RegExp && rule.test.test('.svg'),
+    );
+    if (fileLoaderRule) {
+      fileLoaderRule.exclude = /\.svg$/i;
+    }
+
+    config.module.rules.push({
+      test: /\.svg$/i,
+      issuer: /\.[jt]sx?$/,
+      use: [
+        {
+          loader: '@svgr/webpack',
+          options: {
+            svgo: false,
+            titleProp: true,
+            ref: true,
+          },
+        },
+      ],
+    });
+
     return config;
   },
   async headers() {
@@ -46,6 +63,6 @@ const nextConfig = {
       },
     ];
   },
-}
+};
 
-module.exports = nextConfig
+module.exports = withPWA(nextConfig);
