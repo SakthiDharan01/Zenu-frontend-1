@@ -128,6 +128,7 @@ const COMPANION_DENY = [
   /^\/scribble(\/|$)/,
   /^\/art(\/|$)/,
   /^\/bubbles(\/|$)/,
+  /^\/meditation(\/|$)/,
   /^\/dev\/panda(\/|$)/,
   /^\/chat(\/|$)/,
   /^\/signin(\/|$)/,
