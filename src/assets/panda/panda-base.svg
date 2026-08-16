@@ -1,0 +1,319 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 220" width="100%" height="100%" fill="none">
+  <defs>
+    <linearGradient id="hoodie-grad" x1="0.2" y1="0" x2="0.8" y2="1">
+      <stop offset="0%" stop-color="#7B9BFF"/>
+      <stop offset="100%" stop-color="#5B81FA"/>
+    </linearGradient>
+    <linearGradient id="fur-shade" x1="0.5" y1="0" x2="0.5" y2="1">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#F3F4F8"/>
+    </linearGradient>
+  </defs>
+
+  <g id="zenu-panda" transform="translate(10, 4)">
+    <!-- Ground contact shadow (shared) -->
+    <ellipse id="panda-contact-shadow" data-part="shadow" cx="100" cy="198" rx="48" ry="7" fill="#2B2A3F" opacity="0.12"/>
+
+    <!-- ========== BEHIND ACCESSORIES ========== -->
+    <g id="panda-accessories" data-part="accessories">
+      <g id="acc-meditating" data-accessory="meditating" opacity="0" pointer-events="none">
+        <path d="M38 86 C44 68 60 64 68 80 C56 82 44 90 38 86Z" fill="#7BC47F" stroke="#2B2A3F" stroke-width="1.4" stroke-linejoin="round"/>
+        <path d="M162 78 C168 62 184 64 186 82 C174 80 164 86 162 78Z" fill="#8FD18A" stroke="#2B2A3F" stroke-width="1.4" stroke-linejoin="round"/>
+        <path d="M44 148 C36 138 40 124 54 128 C50 136 48 146 44 148Z" fill="#6BBF6F" stroke="#2B2A3F" stroke-width="1.4" stroke-linejoin="round"/>
+        <path d="M172 146 C180 136 178 122 164 126 C168 134 170 144 172 146Z" fill="#7BC47F" stroke="#2B2A3F" stroke-width="1.4" stroke-linejoin="round"/>
+      </g>
+
+      <g id="acc-breathing" data-accessory="breathing" opacity="0" pointer-events="none">
+        <circle cx="100" cy="148" r="56" fill="none" stroke="#5B81FA" stroke-width="3" opacity="0.18"/>
+        <circle cx="100" cy="148" r="42" fill="none" stroke="#7B9BFF" stroke-width="2.5" opacity="0.26"/>
+        <circle cx="100" cy="156" r="20" fill="#5B81FA" opacity="0.12"/>
+      </g>
+
+      <!-- Listening accessory layer (active). Headphones/notes intentionally empty. -->
+      <g id="acc-listening-back" data-accessory="listening" opacity="0" pointer-events="none">
+        <g id="listening-headphones-band" data-part="listening-headphones" opacity="0" pointer-events="none"/>
+      </g>
+
+      <g id="acc-celebration" data-accessory="celebration" opacity="0" pointer-events="none">
+        <circle cx="36" cy="60" r="3.5" fill="#F9A8D4"/>
+        <circle cx="170" cy="52" r="3" fill="#FBBF24"/>
+        <rect x="48" y="42" width="5" height="5" rx="1" fill="#5B81FA" transform="rotate(20 50 44)"/>
+        <circle cx="30" cy="110" r="2.5" fill="#A78BFA"/>
+        <circle cx="178" cy="120" r="2.5" fill="#F9A8D4"/>
+      </g>
+
+      <g id="acc-release" data-accessory="release" opacity="0" pointer-events="none">
+        <circle cx="40" cy="90" r="8" fill="#F9A8D4" opacity="0.75" stroke="#2B2A3F" stroke-width="1.2"/>
+        <circle cx="168" cy="78" r="10" fill="#7B9BFF" opacity="0.7" stroke="#2B2A3F" stroke-width="1.2"/>
+        <circle cx="30" cy="140" r="6" fill="#FBBF24" opacity="0.7" stroke="#2B2A3F" stroke-width="1.2"/>
+        <circle cx="176" cy="150" r="7" fill="#7BC47F" opacity="0.7" stroke="#2B2A3F" stroke-width="1.2"/>
+      </g>
+
+      <g id="acc-garden" data-accessory="garden" opacity="0" pointer-events="none">
+        <ellipse cx="100" cy="198" rx="36" ry="6" fill="#C4B5A0" opacity="0.55"/>
+        <path d="M118 188 C122 176 132 174 134 184" fill="none" stroke="#5B8C5A" stroke-width="2.5" stroke-linecap="round"/>
+        <ellipse cx="128" cy="176" rx="7" ry="4" fill="#7BC47F" stroke="#2B2A3F" stroke-width="1.2"/>
+      </g>
+
+      <g id="acc-sleeping" data-accessory="sleeping" opacity="0" pointer-events="none">
+        <ellipse cx="100" cy="188" rx="48" ry="12" fill="#A5B4FC" stroke="#2B2A3F" stroke-width="1.5"/>
+      </g>
+    </g>
+
+    <!-- ========== DEFAULT BODY (seated) ========== -->
+    <g id="panda-pose-default" data-part="pose-default">
+      <g id="panda-feet" data-part="feet">
+        <g id="panda-foot-left">
+          <ellipse cx="62" cy="182" rx="22" ry="14" fill="#2B2A3F" stroke="#1A1930" stroke-width="1.2"/>
+          <ellipse cx="60" cy="184" rx="7.5" ry="5.5" fill="#FDC2D6"/>
+          <circle cx="70" cy="177" r="2.4" fill="#FDC2D6"/>
+          <circle cx="62" cy="174" r="2.8" fill="#FDC2D6"/>
+          <circle cx="53" cy="176" r="2.4" fill="#FDC2D6"/>
+        </g>
+        <g id="panda-foot-right">
+          <ellipse cx="138" cy="182" rx="22" ry="14" fill="#2B2A3F" stroke="#1A1930" stroke-width="1.2"/>
+          <ellipse cx="140" cy="184" rx="7.5" ry="5.5" fill="#FDC2D6"/>
+          <circle cx="130" cy="177" r="2.4" fill="#FDC2D6"/>
+          <circle cx="138" cy="174" r="2.8" fill="#FDC2D6"/>
+          <circle cx="147" cy="176" r="2.4" fill="#FDC2D6"/>
+        </g>
+      </g>
+
+      <!-- Cross-legged feet for meditation (toggled in renderer) -->
+      <g id="panda-feet-meditating" data-part="feet-meditating" opacity="0" pointer-events="none">
+        <ellipse cx="78" cy="186" rx="20" ry="12" fill="#2B2A3F" stroke="#1A1930" stroke-width="1.2" transform="rotate(-18 78 186)"/>
+        <ellipse cx="76" cy="188" rx="6" ry="4" fill="#FDC2D6" transform="rotate(-18 76 188)"/>
+        <ellipse cx="122" cy="186" rx="20" ry="12" fill="#2B2A3F" stroke="#1A1930" stroke-width="1.2" transform="rotate(18 122 186)"/>
+        <ellipse cx="124" cy="188" rx="6" ry="4" fill="#FDC2D6" transform="rotate(18 124 188)"/>
+      </g>
+
+      <g id="panda-body-group" data-part="body-group">
+        <g id="panda-hoodie" data-part="hoodie">
+          <path d="M48 112 C38 136 162 136 152 112 Z" fill="#4F6FE8" stroke="#2B2A3F" stroke-width="1.6" stroke-linejoin="round"/>
+          <path id="panda-body" data-part="body" d="M58 122 C36 150 46 186 100 186 C154 186 164 150 142 122 Z" fill="url(#hoodie-grad)" stroke="#2B2A3F" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M54 176 Q100 188 146 176" fill="none" stroke="#3F63D4" stroke-width="2.5" stroke-linecap="round" opacity="0.85"/>
+          <g id="panda-hoodie-drawstrings">
+            <path d="M88 124 Q86 136 88 146" fill="none" stroke="#FFFFFF" stroke-width="2.8" stroke-linecap="round"/>
+            <path d="M112 124 Q114 136 112 146" fill="none" stroke="#FFFFFF" stroke-width="2.8" stroke-linecap="round"/>
+            <circle cx="88" cy="146" r="2.6" fill="#FFFFFF" stroke="#2B2A3F" stroke-width="1"/>
+            <circle cx="112" cy="146" r="2.6" fill="#FFFFFF" stroke="#2B2A3F" stroke-width="1"/>
+          </g>
+          <g id="panda-heart" data-part="heart" transform="translate(100, 158) scale(1.05)">
+            <path d="M0 -3 C0 -3 -7 -13 -14 -8 C-21 -3 -14 7 0 16 C14 7 21 -3 14 -8 C7 -13 0 -3 0 -3Z" fill="#FFFFFF" stroke="#2B2A3F" stroke-width="1.4" stroke-linejoin="round"/>
+          </g>
+        </g>
+      </g>
+    </g>
+
+    <!-- ========== WRITING BODY (prone on journal — NO face; shared head leans in) ========== -->
+    <g id="panda-pose-writing" data-part="pose-writing" opacity="0" pointer-events="none">
+      <!-- Open journal on the ground — contact plane under paws/pen -->
+      <g id="activity-writing" data-accessory="writing">
+        <ellipse cx="108" cy="198" rx="58" ry="6" fill="#2B2A3F" opacity="0.12"/>
+        <g id="panda-journal" data-part="journal">
+          <rect x="52" y="162" width="116" height="38" rx="4" fill="#FFFDF8" stroke="#2B2A3F" stroke-width="1.8"/>
+          <line x1="110" y1="164" x2="110" y2="198" stroke="#E8D9C0" stroke-width="2"/>
+          <line x1="60" y1="172" x2="102" y2="172" stroke="#D6C4A8" stroke-width="1.3" stroke-linecap="round"/>
+          <line x1="60" y1="180" x2="100" y2="180" stroke="#D6C4A8" stroke-width="1.3" stroke-linecap="round"/>
+          <line x1="60" y1="188" x2="98" y2="188" stroke="#D6C4A8" stroke-width="1.3" stroke-linecap="round"/>
+          <line x1="118" y1="172" x2="160" y2="172" stroke="#D6C4A8" stroke-width="1.3" stroke-linecap="round"/>
+          <line x1="118" y1="180" x2="158" y2="180" stroke="#D6C4A8" stroke-width="1.3" stroke-linecap="round"/>
+          <line x1="118" y1="188" x2="156" y2="188" stroke="#D6C4A8" stroke-width="1.3" stroke-linecap="round"/>
+          <path d="M128 181 Q136 179 144 182" fill="none" stroke="#5B81FA" stroke-width="1.35" stroke-linecap="round" opacity="0.6"/>
+        </g>
+      </g>
+
+      <!-- Hind paws tucked behind horizontal torso -->
+      <g id="panda-writing-feet" data-part="writing-feet">
+        <ellipse cx="48" cy="128" rx="16" ry="12" fill="#2B2A3F" stroke="#1A1930" stroke-width="1.2"/>
+        <ellipse cx="46" cy="130" rx="5" ry="3.5" fill="#FDC2D6"/>
+        <ellipse cx="152" cy="128" rx="16" ry="12" fill="#2B2A3F" stroke="#1A1930" stroke-width="1.2"/>
+        <ellipse cx="154" cy="130" rx="5" ry="3.5" fill="#FDC2D6"/>
+      </g>
+
+      <!-- Horizontal hoodie torso resting on / above journal top edge -->
+      <g id="panda-writing-body" data-part="writing-body">
+        <ellipse cx="100" cy="136" rx="58" ry="30" fill="url(#hoodie-grad)" stroke="#2B2A3F" stroke-width="2"/>
+        <path d="M58 124 C70 108 130 108 142 124" fill="#4F6FE8" stroke="#2B2A3F" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M70 148 Q100 156 130 148" fill="none" stroke="#3F63D4" stroke-width="2" stroke-linecap="round" opacity="0.75"/>
+        <g transform="translate(100,138) scale(0.9)">
+          <path d="M0 -3 C0 -3 -7 -13 -14 -8 C-21 -3 -14 7 0 16 C14 7 21 -3 14 -8 C7 -13 0 -3 0 -3Z" fill="#FFFFFF" stroke="#2B2A3F" stroke-width="1.3"/>
+        </g>
+      </g>
+    </g>
+
+    <!-- Mid-layer props (in front of body, behind arms) -->
+    <g id="panda-accessories-mid" data-part="accessories-mid">
+      <g id="acc-drawing" data-accessory="drawing" opacity="0" pointer-events="none">
+        <ellipse cx="148" cy="192" rx="28" ry="4" fill="#2B2A3F" opacity="0.1"/>
+        <g id="panda-canvas" data-part="canvas" transform="translate(146,168) rotate(8) translate(-146,-168)">
+          <rect x="118" y="142" width="58" height="48" rx="4" fill="#FFFDF7" stroke="#2B2A3F" stroke-width="1.7"/>
+          <line x1="124" y1="186" x2="170" y2="186" stroke="#2B2A3F" stroke-width="3" stroke-linecap="round"/>
+          <path d="M128 176 Q142 154 164 166" fill="none" stroke="#5B81FA" stroke-width="2.2" stroke-linecap="round"/>
+          <path d="M132 168 Q146 158 158 174" fill="none" stroke="#F9A8D4" stroke-width="1.8" stroke-linecap="round"/>
+          <circle cx="148" cy="160" r="2.2" fill="#FBBF24" opacity="0.85"/>
+        </g>
+      </g>
+    </g>
+
+    <!-- ========== ARM SETS ========== -->
+    <g id="panda-arms-layer" data-part="arms-layer">
+      <g id="panda-arms" data-arm-set="default">
+        <path d="M48 132 C28 154 46 176 66 166 C74 160 70 140 58 134 Z" fill="#2B2A3F" stroke="#1A1930" stroke-width="1.3" stroke-linejoin="round"/>
+        <path d="M152 132 C172 154 154 176 134 166 C126 160 130 140 142 134 Z" fill="#2B2A3F" stroke="#1A1930" stroke-width="1.3" stroke-linejoin="round"/>
+      </g>
+
+      <g id="panda-arms-meditating" data-arm-set="meditating" opacity="0" pointer-events="none">
+        <ellipse cx="72" cy="172" rx="16" ry="11" fill="#2B2A3F" stroke="#1A1930" stroke-width="1.3"/>
+        <ellipse cx="128" cy="172" rx="16" ry="11" fill="#2B2A3F" stroke="#1A1930" stroke-width="1.3"/>
+        <ellipse cx="72" cy="174" rx="5" ry="3.5" fill="#FDC2D6"/>
+        <ellipse cx="128" cy="174" rx="5" ry="3.5" fill="#FDC2D6"/>
+      </g>
+
+      <g id="panda-arms-breathing" data-arm-set="breathing" opacity="0" pointer-events="none">
+        <path d="M46 128 C22 148 40 178 68 168 C76 162 70 138 56 130 Z" fill="#2B2A3F" stroke="#1A1930" stroke-width="1.3" stroke-linejoin="round"/>
+        <path d="M154 128 C178 148 160 178 132 168 C124 162 130 138 144 130 Z" fill="#2B2A3F" stroke="#1A1930" stroke-width="1.3" stroke-linejoin="round"/>
+      </g>
+
+      <!-- Writing: left paw steadies page, right arm reaches forward with pen ON page -->
+      <g id="panda-arms-writing" data-arm-set="writing" opacity="0" pointer-events="none">
+        <g id="panda-writing-anchor-paw" data-part="writing-anchor">
+          <ellipse cx="72" cy="170" rx="13" ry="9" fill="#2B2A3F" stroke="#1A1930" stroke-width="1.2"/>
+          <ellipse cx="72" cy="172" rx="4.5" ry="3" fill="#FDC2D6"/>
+        </g>
+        <g id="panda-writing-hand" data-part="writing-hand">
+          <!-- Forearm extending from torso toward page -->
+          <path d="M128 148 C138 156 140 168 132 174" fill="none" stroke="#2B2A3F" stroke-width="14" stroke-linecap="round"/>
+          <path d="M128 148 C138 156 140 168 132 174" fill="none" stroke="#1A1930" stroke-width="1.2" stroke-linecap="round" opacity="0.35"/>
+          <ellipse cx="130" cy="176" rx="12" ry="9" fill="#2B2A3F" stroke="#1A1930" stroke-width="1.2"/>
+          <ellipse cx="132" cy="178" rx="4" ry="2.8" fill="#FDC2D6"/>
+          <g id="panda-pen" data-part="pen" transform="translate(122,158) rotate(48)">
+            <g data-part="pen-motion">
+              <rect x="0" y="0" width="4.5" height="26" rx="1.6" fill="#5B81FA" stroke="#2B2A3F" stroke-width="1"/>
+              <rect x="0.7" y="0" width="1.2" height="16" rx="0.5" fill="#A5B4FC" opacity="0.75"/>
+              <path d="M0 26 L2.25 34 L4.5 26 Z" fill="#2B2A3F"/>
+            </g>
+          </g>
+        </g>
+      </g>
+
+      <!-- Drawing: left holds palette, right brushes ON canvas -->
+      <g id="panda-arms-drawing" data-arm-set="drawing" opacity="0" pointer-events="none">
+        <g id="panda-palette-hand" data-part="palette-hand">
+          <path d="M48 130 C28 148 40 174 66 166 C74 160 70 140 56 132 Z" fill="#2B2A3F" stroke="#1A1930" stroke-width="1.3" stroke-linejoin="round"/>
+          <ellipse cx="58" cy="170" rx="16" ry="11" fill="#F5E6D3" stroke="#2B2A3F" stroke-width="1.4"/>
+          <circle cx="52" cy="166" r="3.2" fill="#5B81FA"/>
+          <circle cx="62" cy="164" r="3.2" fill="#F9A8D4"/>
+          <circle cx="58" cy="174" r="3" fill="#FBBF24"/>
+          <circle cx="66" cy="172" r="2.6" fill="#7BC47F"/>
+        </g>
+        <g id="panda-drawing-hand" data-part="drawing-hand">
+          <path d="M148 118 C170 128 168 160 144 166 C136 160 138 128 146 122 Z" fill="#2B2A3F" stroke="#1A1930" stroke-width="1.3" stroke-linejoin="round"/>
+          <ellipse cx="138" cy="162" rx="11" ry="8" fill="#2B2A3F" stroke="#1A1930" stroke-width="1.2"/>
+          <g id="panda-brush" data-part="brush" transform="translate(132,140) rotate(28)">
+            <g data-part="brush-motion">
+              <rect x="0" y="0" width="5" height="26" rx="2" fill="#E8C39E" stroke="#2B2A3F" stroke-width="1"/>
+              <path d="M0 26 L2.5 34 L5 26 Z" fill="#5B81FA" stroke="#2B2A3F" stroke-width="0.8"/>
+            </g>
+          </g>
+        </g>
+      </g>
+
+      <!-- Talking: attentive open gesture toward conversation -->
+      <g id="panda-arms-talking" data-arm-set="talking" opacity="0" pointer-events="none">
+        <path d="M48 126 C26 142 40 174 66 164 C74 158 68 136 56 128 Z" fill="#2B2A3F" stroke="#1A1930" stroke-width="1.3" stroke-linejoin="round"/>
+        <path d="M152 118 C174 124 176 156 150 164 C140 158 142 128 150 122 Z" fill="#2B2A3F" stroke="#1A1930" stroke-width="1.3" stroke-linejoin="round"/>
+      </g>
+    </g>
+
+    <!-- ========== SHARED EMOTION HEAD (used by ALL poses) ========== -->
+    <g id="panda-head" data-part="head">
+      <g id="panda-ears" data-part="ears">
+        <circle cx="40" cy="56" r="21" fill="#2B2A3F" stroke="#1A1930" stroke-width="1.4"/>
+        <circle cx="160" cy="56" r="21" fill="#2B2A3F" stroke="#1A1930" stroke-width="1.4"/>
+        <circle cx="40" cy="56" r="11" fill="#3A3854"/>
+        <circle cx="160" cy="56" r="11" fill="#3A3854"/>
+      </g>
+      <path id="panda-head-base" d="M100 22 C144 22 172 46 172 86 C172 128 144 144 100 144 C56 144 28 128 28 86 C28 46 56 22 100 22 Z" fill="url(#fur-shade)" stroke="#2B2A3F" stroke-width="2.25" stroke-linejoin="round"/>
+      <path id="panda-hair" d="M94 24 Q97 12 100 22 Q103 12 106 24 Q100 20 94 24 Z" fill="#FFFFFF" stroke="#2B2A3F" stroke-width="1.4" stroke-linejoin="round"/>
+      <g id="panda-face" data-part="face">
+        <g id="panda-eye-patches" data-part="eye-patches">
+          <path d="M54 82 C48 102 64 122 80 110 C88 100 74 74 60 78 C56 80 54 82 54 82 Z" fill="#2B2A3F"/>
+          <path d="M146 82 C152 102 136 122 120 110 C112 100 126 74 140 78 C144 80 146 82 146 82 Z" fill="#2B2A3F"/>
+        </g>
+        <g id="panda-cheeks" data-part="cheeks">
+          <ellipse cx="44" cy="116" rx="11" ry="7" fill="#FDC2D6" opacity="0.85"/>
+          <ellipse cx="156" cy="116" rx="11" ry="7" fill="#FDC2D6" opacity="0.85"/>
+        </g>
+        <ellipse cx="100" cy="108" rx="5.2" ry="3.4" fill="#2B2A3F"/>
+        <g id="panda-eyes" data-part="eyes">
+          <g id="panda-eyes-open" data-eye="open">
+            <circle cx="66" cy="98" r="11" fill="#2B2A3F"/>
+            <circle cx="62" cy="93" r="4.2" fill="#FFFFFF"/>
+            <circle cx="70" cy="102" r="1.9" fill="#FFFFFF"/>
+            <circle cx="134" cy="98" r="11" fill="#2B2A3F"/>
+            <circle cx="130" cy="93" r="4.2" fill="#FFFFFF"/>
+            <circle cx="138" cy="102" r="1.9" fill="#FFFFFF"/>
+          </g>
+          <g id="panda-eyes-closed-peaceful" data-eye="closedPeaceful" opacity="0">
+            <path d="M55 98 H77" stroke="#2B2A3F" stroke-width="3.2" stroke-linecap="round"/>
+            <path d="M123 98 H145" stroke="#2B2A3F" stroke-width="3.2" stroke-linecap="round"/>
+          </g>
+          <g id="panda-eyes-closed-happy" data-eye="closedHappy" opacity="0">
+            <path d="M54 98 Q66 88 78 98" fill="none" stroke="#2B2A3F" stroke-width="3.2" stroke-linecap="round"/>
+            <path d="M122 98 Q134 88 146 98" fill="none" stroke="#2B2A3F" stroke-width="3.2" stroke-linecap="round"/>
+          </g>
+          <g id="panda-eyes-sad" data-eye="sad" opacity="0">
+            <path d="M54 94 Q66 104 78 94" fill="none" stroke="#2B2A3F" stroke-width="3" stroke-linecap="round"/>
+            <path d="M122 94 Q134 104 146 94" fill="none" stroke="#2B2A3F" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="58" cy="108" r="3" fill="#93C5FD" opacity="0.9"/>
+            <circle cx="142" cy="108" r="3" fill="#93C5FD" opacity="0.9"/>
+          </g>
+        </g>
+        <g id="panda-mouth" data-part="mouth">
+          <path id="panda-mouth-path" d="M92 118 Q96 123 100 119 Q104 123 108 118" fill="none" stroke="#2B2A3F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+      </g>
+    </g>
+
+    <!-- ========== FRONT ACCESSORIES ========== -->
+    <g id="panda-accessories-front" data-part="accessories-front">
+      <g id="acc-talking" data-accessory="talking" opacity="0" pointer-events="none">
+        <g id="panda-speech-bubble" data-part="speech-bubble">
+          <g data-part="speech-bubble-motion">
+            <path d="M148 48 C148 36 168 30 182 40 C196 50 192 72 174 76 L166 88 L168 74 C152 74 148 60 148 48Z" fill="#EEF2FF" stroke="#2B2A3F" stroke-width="1.7"/>
+            <circle cx="162" cy="52" r="3.2" fill="#5B81FA"/>
+            <circle cx="172" cy="52" r="3.2" fill="#5B81FA"/>
+            <circle cx="182" cy="52" r="3.2" fill="#5B81FA"/>
+            <path d="M170 62 C170 62 166 58 164 60 C162 62 166 66 170 69 C174 66 178 62 176 60 C174 58 170 62 170 62Z" fill="#F9A8D4" stroke="#2B2A3F" stroke-width="0.9"/>
+          </g>
+        </g>
+      </g>
+
+      <g id="acc-listening" data-accessory="listening" opacity="0" pointer-events="none">
+        <g id="listening-headphones" data-part="listening-headphones" opacity="0" pointer-events="none"/>
+        <g id="listening-notes" data-part="listening-notes" opacity="0" pointer-events="none"/>
+      </g>
+
+      <g id="acc-gratitude" data-accessory="gratitude" opacity="0" pointer-events="none">
+        <rect x="78" y="148" width="44" height="40" rx="8" fill="#E0F2FE" stroke="#2B2A3F" stroke-width="1.7" opacity="0.95"/>
+        <rect x="86" y="142" width="28" height="10" rx="3" fill="#7DD3FC" stroke="#2B2A3F" stroke-width="1.3"/>
+        <path d="M92 168 L96 160 L100 168 L104 158 L108 168" fill="none" stroke="#FBBF24" stroke-width="2" stroke-linecap="round"/>
+      </g>
+
+      <g id="acc-waving" data-accessory="waving" opacity="0" pointer-events="none">
+        <circle cx="168" cy="64" r="5" fill="#F9A8D4" stroke="#2B2A3F" stroke-width="1.2"/>
+        <circle cx="174" cy="60" r="5" fill="#F9A8D4" stroke="#2B2A3F" stroke-width="1.2"/>
+        <circle cx="174" cy="68" r="5" fill="#F9A8D4" stroke="#2B2A3F" stroke-width="1.2"/>
+        <circle cx="162" cy="60" r="5" fill="#F9A8D4" stroke="#2B2A3F" stroke-width="1.2"/>
+        <circle cx="162" cy="68" r="5" fill="#F9A8D4" stroke="#2B2A3F" stroke-width="1.2"/>
+        <circle cx="168" cy="64" r="3" fill="#FBBF24"/>
+      </g>
+
+      <g id="acc-garden-can" data-accessory="garden" opacity="0" pointer-events="none">
+        <rect x="128" y="150" width="28" height="18" rx="4" fill="#5B81FA" stroke="#2B2A3F" stroke-width="1.5"/>
+        <path d="M156 156 C166 154 170 162 162 166" fill="none" stroke="#5B81FA" stroke-width="3" stroke-linecap="round"/>
+      </g>
+    </g>
+  </g>
+</svg>

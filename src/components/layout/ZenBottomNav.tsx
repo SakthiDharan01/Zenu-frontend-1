@@ -56,28 +56,28 @@ export default function ZenBottomNav() {
                 'flex flex-col items-center justify-center gap-0.5 flex-1 relative',
                 'min-h-11 transition-colors duration-100',
                 'focus-visible:outline-2 focus-visible:outline-zen-primary focus-visible:outline-offset-[-2px]',
-                active ? 'text-zen-primary' : 'text-zen-fg-subtle hover:text-zen-fg-muted',
+                active ? 'text-zen-secondary' : 'text-zen-fg-subtle hover:text-zen-fg-muted',
               )}
             >
               {active && (
                 reducedMotion ? (
-                  <div className="absolute inset-x-3 inset-y-2 rounded-zen-md bg-zen-primary-soft" />
+                  <div className="absolute inset-x-3 inset-y-2 rounded-zen-md bg-zen-secondary-soft" />
                 ) : (
                   <motion.div
                     layoutId="zen-bottom-nav-pill"
-                    className="absolute inset-x-3 inset-y-2 rounded-zen-md bg-zen-primary-soft"
+                    className="absolute inset-x-3 inset-y-2 rounded-zen-md bg-zen-secondary-soft"
                     transition={springIcon}
                   />
                 )
               )}
 
               <motion.div
-                animate={reducedMotion ? { scale: 1 } : { scale: active ? 1.08 : 1 }}
+                animate={reducedMotion ? { scale: 1 } : { scale: active ? 1.06 : 1 }}
                 transition={reducedMotion ? { duration: 0.15 } : springIcon}
                 className="relative z-10"
               >
                 <Icon
-                  className={cn('h-5 w-5', active && 'fill-zen-primary/10')}
+                  className={cn('h-5 w-5', active && 'fill-zen-secondary/10')}
                   strokeWidth={active ? 2.2 : 1.8}
                   aria-hidden="true"
                 />
@@ -86,7 +86,7 @@ export default function ZenBottomNav() {
               <span
                 className={cn(
                   'relative z-10 text-[10px] font-medium leading-none tracking-wide',
-                  active ? 'text-zen-primary' : 'text-zen-fg-subtle',
+                  active ? 'text-zen-secondary' : 'text-zen-fg-subtle',
                 )}
               >
                 {label}

@@ -1,56 +1,95 @@
-"use client";
+'use client';
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { Cloud, Smile, Sparkles, Star, Sun } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { logMood } from '@/lib/signals';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
+import type { PandaEmotion } from '@/components/panda/types';
 
 const MOODS = [
-  { score: 1, label: 'Low' },
-  { score: 2, label: 'Okay' },
-  { score: 3, label: 'Calm' },
-  { score: 4, label: 'Good' },
-  { score: 5, label: 'Great' },
+  {
+    score: 1,
+    label: 'Low',
+    Icon: Cloud,
+    emotion: 'sad' as PandaEmotion,
+    color: 'text-zen-emotion-sadness',
+    soft: 'bg-zen-emotion-sadness-soft',
+    glow: 'hsl(var(--zen-emotion-sadness) / 0.35)',
+  },
+  {
+    score: 2,
+    label: 'Okay',
+    Icon: Smile,
+    emotion: 'neutral' as PandaEmotion,
+    color: 'text-zen-emotion-okay',
+    soft: 'bg-zen-emotion-okay-soft',
+    glow: 'hsl(var(--zen-emotion-okay) / 0.35)',
+  },
+  {
+    score: 3,
+    label: 'Calm',
+    Icon: Sparkles,
+    emotion: 'calm' as PandaEmotion,
+    color: 'text-zen-emotion-calm',
+    soft: 'bg-zen-emotion-calm-soft',
+    glow: 'hsl(var(--zen-emotion-calm) / 0.35)',
+  },
+  {
+    score: 4,
+    label: 'Good',
+    Icon: Sun,
+    emotion: 'happy' as PandaEmotion,
+    color: 'text-zen-emotion-joy',
+    soft: 'bg-zen-emotion-joy-soft',
+    glow: 'hsl(var(--zen-emotion-joy) / 0.38)',
+  },
+  {
+    score: 5,
+    label: 'Great',
+    Icon: Star,
+    emotion: 'excited' as PandaEmotion,
+    color: 'text-zen-emotion-great',
+    soft: 'bg-zen-emotion-great-soft',
+    glow: 'hsl(var(--zen-emotion-great) / 0.35)',
+  },
 ] as const;
 
 export interface ZenMoodSelectorProps {
   className?: string;
-  onSelect?: (score: number) => void;
-  /** Compact chip row for header contexts */
+  onSelect?: (score: number, meta: { emotion: PandaEmotion; glow: string }) => void;
   compact?: boolean;
 }
 
-/**
- * Interactive mood check-in. Logs via signals.logMood (fire-and-forget).
- * Apple Design §1 — feedback on pointer-down via active scale.
- */
 export function ZenMoodSelector({ className, onSelect, compact = false }: ZenMoodSelectorProps) {
   const [selected, setSelected] = useState<number | null>(null);
   const [saved, setSaved] = useState(false);
   const reducedMotion = usePrefersReducedMotion();
 
   const handleSelect = (score: number) => {
+    const mood = MOODS.find((m) => m.score === score)!;
     setSelected(score);
     setSaved(true);
     void logMood(score);
-    onSelect?.(score);
+    onSelect?.(score, { emotion: mood.emotion, glow: mood.glow });
   };
 
   return (
-    <div className={cn('flex flex-col gap-2', className)}>
+    <div className={cn('relative zen-home-section', className)}>
       {!compact && (
-        <p className="zen-caption text-zen-fg-muted">
+        <p className="font-ui text-[0.8125rem] text-zen-fg-muted mb-3.5">
           {saved ? 'Thanks for checking in' : 'How are you feeling?'}
         </p>
       )}
       <div
-        className="flex flex-wrap items-center gap-2"
+        className="grid grid-cols-5 gap-2 md:flex md:flex-wrap md:items-center md:gap-2.5"
         role="group"
         aria-label="Mood selector"
       >
         {MOODS.map((mood) => {
           const isActive = selected === mood.score;
+          const Icon = mood.Icon;
           return (
             <motion.button
               key={mood.score}
@@ -59,17 +98,28 @@ export function ZenMoodSelector({ className, onSelect, compact = false }: ZenMoo
               aria-pressed={isActive}
               onClick={() => handleSelect(mood.score)}
               whileTap={reducedMotion ? undefined : { scale: 0.94 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 28 }}
+              transition={{ type: 'spring', stiffness: 420, damping: 30 }}
               className={cn(
-                'inline-flex items-center gap-1.5 rounded-zen-full border',
-                'min-h-11 px-3 py-2 text-sm font-medium zen-touch',
+                'relative flex flex-col items-center justify-center gap-1.5 rounded-zen-lg',
+                'min-h-[4.15rem] px-1 py-2 text-[0.6875rem] font-medium font-ui',
+                'md:min-h-11 md:flex-row md:gap-2 md:rounded-zen-xl md:px-3.5 md:py-2.5 md:text-sm',
                 'transition-colors duration-zen-fast ease-zen-out',
                 'focus-visible:outline-2 focus-visible:outline-zen-primary focus-visible:outline-offset-2',
                 isActive
-                  ? 'bg-zen-primary-soft border-zen-primary/30 text-zen-primary shadow-zen-subtle'
-                  : 'bg-white/80 border-zen-border-soft text-zen-fg-muted hover:border-zen-border hover:text-zen-fg',
+                  ? cn(mood.soft, mood.color)
+                  : 'bg-transparent text-zen-fg-muted hover:bg-zen-bg-subtle/60 hover:text-zen-fg',
               )}
+              style={
+                isActive && !reducedMotion
+                  ? { boxShadow: `0 8px 22px -12px ${mood.glow}` }
+                  : undefined
+              }
             >
+              <Icon
+                className={cn('h-[1.125rem] w-[1.125rem] shrink-0', isActive && 'scale-105')}
+                aria-hidden="true"
+                strokeWidth={isActive ? 2.1 : 1.7}
+              />
               <span>{mood.label}</span>
             </motion.button>
           );

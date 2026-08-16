@@ -1,115 +1,244 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
-import { Sparkles } from 'lucide-react';
-import { getRecommendations } from '@/lib/signals';
+import { usePathname } from 'next/navigation';
+import { AnimatePresence, motion } from 'framer-motion';
+import { ArrowRight, ChevronDown } from 'lucide-react';
+import { getRecommendations, type RecommendationTodayResponse } from '@/lib/signals';
+import { setRecommendationLaunch } from '@/lib/recommendationAttribution';
 import { cn } from '@/lib/utils';
-import { ZenCard, ZenCardContent, ZenCardHeader, ZenCardTitle } from './ZenCard';
-import { ZenBadge } from './ZenBadge';
+import { ZenButton } from './ZenButton';
 import { ZenSkeleton } from './ZenSkeleton';
-import PandaAvatar from '@/components/PandaAvatar';
-const MODULE_ROUTES: Record<string, string> = {
-  // New API IDs
-  breathing: '/breathing',
-  mindfulness: '/meditation',
-  diary: '/journal',
-  journal_gratitude: '/gratitude',
-  doodle_dreams: '/art',
-  bubble_canvas: '/bubbles',
-  burst_it_out: '/burst',
-  scribble_pad: '/scribble',
-  chatbot_seviyan: '/chat',
-  healing_garden: '/healing-garden',
-  inner_compass: '/innercompass',
+import { Panda } from '@/components/panda/Panda';
+import {
+  mapRecommendationToPanda,
+  MODULE_ROUTES,
+} from '@/components/panda/mapRecommendation';
+import { showPandaMessage } from '@/components/panda/controller';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
+import type { HomePandaPresentation } from '@/components/home/HomeGreeting';
+import { RecommendationAtmosphere } from '@/components/home/RecommendationAtmosphere';
 
-};
+function contextualSentence(context: RecommendationTodayResponse['context'] | undefined): string {
+  if (!context) return 'A small practice chosen for where you are right now.';
+  const tone = context.dominant_tone?.replace(/_/g, ' ');
+  const stress = context.stress_level?.replace(/_/g, ' ');
+  if (tone && stress) {
+    return `Noticing ${tone} energy and ${stress} stress — here's a gentle next step.`;
+  }
+  if (tone) return `Meeting you with a little ${tone} care.`;
+  return 'A small practice chosen for where you are right now.';
+}
 
-export function ZenRecommendation({ className }: { className?: string }) {
-  const [data, setData] = useState<Awaited<ReturnType<typeof getRecommendations>>>(null);
+export function ZenRecommendation({
+  className,
+  refreshKey = 0,
+  onPresentationChange,
+}: {
+  className?: string;
+  refreshKey?: number;
+  onPresentationChange?: (presentation: HomePandaPresentation | null) => void;
+}) {
+  const [data, setData] = useState<RecommendationTodayResponse | null>(null);
   const [loading, setLoading] = useState(true);
+  const [whyOpen, setWhyOpen] = useState(false);
+  const pathname = usePathname();
+  const promptedForLog = useRef<string | null>(null);
+  const reducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
+    let mounted = true;
+    if (refreshKey === 0) setLoading(true);
     getRecommendations().then((d) => {
+      if (!mounted) return;
       setData(d);
       setLoading(false);
     });
-  }, []);
+    return () => {
+      mounted = false;
+    };
+  }, [refreshKey]);
 
-  if (loading) {
+  const selected = data?.recommendations?.[0] ?? null;
+  const mapped = useMemo(
+    () => (selected ? mapRecommendationToPanda(selected.module_id) : null),
+    [selected],
+  );
+
+  useEffect(() => {
+    if (!mapped) {
+      onPresentationChange?.(null);
+      return;
+    }
+    onPresentationChange?.({
+      emotion: mapped.emotion,
+      activity: mapped.activity,
+      animation: mapped.animation,
+    });
+  }, [mapped, onPresentationChange]);
+
+  useEffect(() => {
+    if (!mapped || !selected || !data) return;
+    const promptKey = `${data.log_id ?? 'none'}:${selected.module_id}:${refreshKey}`;
+    if (promptedForLog.current === promptKey) return;
+    promptedForLog.current = promptKey;
+
+    showPandaMessage({
+      message: mapped.defaultMessage,
+      action: mapped.actionLabel,
+      secondaryAction: 'Maybe later',
+      href: mapped.href,
+      recommendationKey: mapped.recommendationKey,
+      recommendationLogId: data.log_id ?? null,
+      emotion: mapped.emotion,
+      activity: mapped.activity,
+      animation: mapped.animation,
+      currentPath: pathname ?? undefined,
+      force: refreshKey > 0,
+    });
+  }, [mapped, selected, pathname, data, refreshKey]);
+
+  if (loading && !data) {
     return (
-      <ZenCard variant="glass" className={cn('min-h-[8rem]', className)}>
-        <div className="flex items-center gap-4">
-          <PandaAvatar state="thinking" size={56} />
-          <div className="flex-1 space-y-2">
-            <ZenSkeleton className="h-4 w-40" />
-            <ZenSkeleton className="h-3 w-56" />
-          </div>
-        </div>
-      </ZenCard>
+      <div className={cn('relative overflow-hidden rounded-zen-xl p-5 md:p-8', className)}>
+        <ZenSkeleton className="h-3 w-28 mb-3" />
+        <ZenSkeleton className="h-8 w-52 mb-2" />
+        <ZenSkeleton className="h-4 w-64 mb-5" />
+        <ZenSkeleton className="h-11 w-28" />
+      </div>
     );
   }
 
-  if (!data) return null;
+  if (!data || !selected || !mapped) return null;
+
+  const route = MODULE_ROUTES[selected.module_id] || mapped.href || '/';
+  const contextLine = contextualSentence(data.context);
 
   return (
-    <ZenCard 
-      variant="feature" 
-      className={cn(className, 'border')} 
-      padding="md"
+    <section
+      className={cn('relative zen-home-section overflow-hidden rounded-zen-xl md:rounded-zen-2xl', className)}
+      aria-labelledby="home-rec-heading"
     >
-      <ZenCardHeader className="mb-3">
-        <div className="flex items-center justify-between gap-3 flex-wrap">
-          <div className="flex items-center gap-3">
-            <PandaAvatar state="idle" size={48} label="Panda recommendations" />
-            <ZenCardTitle className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-zen-joy" aria-hidden="true" />
-              For you right now
-            </ZenCardTitle>
-          </div>
-        </div>
-      </ZenCardHeader>
+      <div
+        className={cn(
+          'relative z-10',
+          'bg-zen-surface/85 border border-zen-border-soft/50',
+          'shadow-[0_10px_32px_-20px_rgba(30,41,90,0.12)]',
+          'grid grid-cols-1 md:grid-cols-[1.2fr_0.8fr] md:items-center',
+          'px-4 py-5 sm:px-6 md:px-9 md:py-9',
+          'gap-3 md:gap-6',
+        )}
+      >
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={`${selected.module_id}-${refreshKey}`}
+            initial={reducedMotion ? { opacity: 0 } : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: reducedMotion ? 0.12 : 0.28 }}
+            className="min-w-0 relative"
+          >
+            {/* Mobile atmosphere sits top-right of the hero, not empty glow */}
+            <RecommendationAtmosphere
+              compact
+              moduleId={selected.module_id}
+              className="pointer-events-none absolute -right-2 top-1 md:hidden"
+            />
 
-      <ZenCardContent>
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
-          {data.recommendations.map((rec, i) => {
-            const targetId = rec.module_id || (rec as any).id;
-            const route = MODULE_ROUTES[targetId] || '/';
-            return (
-              <Link
-                key={targetId + i}
-                href={route}
-                className={cn(
-                  'block text-left p-3 rounded-zen-lg border transition-all duration-zen-fast ease-zen-out',
-                  'active:scale-[0.98]',
-                  'focus-visible:outline-2 focus-visible:outline-offset-2',
-                  'min-h-11',
-                  'bg-zen-bg-subtle hover:bg-zen-bg-muted border-zen-border-soft'
-                )}
+            <p className="zen-eyebrow text-zen-secondary mb-2 md:mb-3">For you right now</p>
+            <p className="font-ui text-[0.8125rem] leading-snug text-zen-fg-muted mb-2.5 md:mb-3.5 max-w-[15.5rem] md:max-w-md pr-20 md:pr-0">
+              {contextLine}
+            </p>
+            <h2
+              id="home-rec-heading"
+              className="font-display text-[1.375rem] sm:text-[1.65rem] md:text-[2rem] leading-[1.18] tracking-tight text-zen-fg font-semibold pr-16 md:pr-0"
+            >
+              {selected.name}
+            </h2>
+            <p className="font-ui text-[0.875rem] leading-relaxed text-zen-fg-muted mt-2 md:mt-2.5 max-w-md">
+              {mapped.defaultMessage}
+            </p>
+            <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1">
+              <span className="zen-caption text-zen-fg-subtle">
+                {selected.duration_min} min
+              </span>
+              {selected.tags?.length ? (
+                <span className="zen-caption text-zen-fg-subtle">
+                  {selected.tags.slice(0, 2).join(' · ')}
+                </span>
+              ) : null}
+            </div>
+            <div className="mt-4 md:mt-5 flex flex-wrap items-center gap-2.5">
+              <ZenButton asChild size="lg" variant="secondary" className="min-h-11 rounded-zen-xl">
+                <Link
+                  href={route}
+                  onClick={() => setRecommendationLaunch(data.log_id, route)}
+                >
+                  Start
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                </Link>
+              </ZenButton>
+              <button
+                type="button"
+                className="inline-flex items-center gap-1 font-ui text-[0.8125rem] text-zen-fg-muted hover:text-zen-fg transition-colors focus-visible:outline-2 focus-visible:outline-zen-primary focus-visible:outline-offset-2 rounded-sm min-h-11 px-1"
+                aria-expanded={whyOpen}
+                onClick={() => setWhyOpen((v) => !v)}
               >
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs font-bold text-zen-primary">#{i + 1}</span>
-                  <span className="text-xs text-zen-fg-muted">{rec.duration_min} min</span>
-                </div>
-                <p className="text-sm font-semibold text-zen-fg transition-colors">
-                  {rec.name}
-                </p>
-                <div className="flex flex-wrap gap-1 mt-1.5">
-                  {rec.tags.slice(0, 2).map((tag) => (
-                    <ZenBadge key={tag} variant="soft" size="sm">
-                      {tag}
-                    </ZenBadge>
-                  ))}
-                </div>
-              </Link>
-            );
-          })}
+                Why this?
+                <ChevronDown
+                  className={cn('h-3.5 w-3.5 transition-transform', whyOpen && 'rotate-180')}
+                  aria-hidden="true"
+                />
+              </button>
+            </div>
+            <AnimatePresence initial={false}>
+              {whyOpen ? (
+                <motion.p
+                  initial={reducedMotion ? { opacity: 0 } : { opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={reducedMotion ? { opacity: 0 } : { opacity: 0, height: 0 }}
+                  className="font-ui text-[0.8125rem] text-zen-fg-muted mt-3 max-w-md overflow-hidden"
+                >
+                  Personalised from your recent mood, tone, and time of day
+                  {data.context?.time_of_day
+                    ? ` (${data.context.time_of_day.replace(/_/g, ' ')})`
+                    : ''}
+                  .
+                </motion.p>
+              ) : null}
+            </AnimatePresence>
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Desktop: atmosphere + Panda composition */}
+        <div className="relative hidden md:flex justify-end items-center min-h-[11rem]">
+          <RecommendationAtmosphere
+            moduleId={selected.module_id}
+            className="absolute inset-0 flex items-center justify-center opacity-90"
+          />
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={`panda-${selected.module_id}-${refreshKey}`}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: reducedMotion ? 0.12 : 0.28 }}
+              className="relative z-10"
+            >
+              <Panda
+                emotion={mapped.emotion}
+                activity={mapped.activity}
+                animation={mapped.animation}
+                mode="responsive"
+                size={140}
+                label="Panda recommendation companion"
+              />
+            </motion.div>
+          </AnimatePresence>
         </div>
-        <p className="zen-caption text-zen-fg-subtle text-center mt-4">
-          Personalised by ZenU · Updates daily
-        </p>
-      </ZenCardContent>
-    </ZenCard>
+      </div>
+    </section>
   );
 }
 

@@ -7,12 +7,14 @@ import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Activity,
+  Bell,
   BookOpen,
   Bot,
   ChevronDown,
   Flame,
   Heart,
   LogOut,
+  Menu,
   Palette,
   PenTool,
   Sparkles,
@@ -26,6 +28,12 @@ import { authClient } from '@/lib/authClient';
 import { useAuth } from '@/components/providers/AuthProvider';
 import { cn } from '@/lib/utils';
 import { isZenFocusRoute } from '@/lib/zenFocus';
+import {
+  ZenSheet,
+  ZenSheetContent,
+  ZenSheetHeader,
+  ZenSheetTitle,
+} from '@/components/zen/ZenSheet';
 
 const NAV_GROUPS = [
   {
@@ -99,13 +107,14 @@ function AccordionGroup({
       <button
         onClick={onToggle}
         className={cn(
-          'w-full flex items-center justify-between px-3 py-2 text-[0.9rem] font-medium rounded-zen-md transition-colors',
-          isGroupActive ? 'text-zen-fg font-semibold' : 'text-zen-fg-muted hover:bg-zen-bg-subtle hover:text-zen-fg'
+          'w-full flex items-center justify-between px-3 py-2 rounded-zen-md transition-colors',
+          'text-[0.6875rem] font-semibold uppercase tracking-[0.1em]',
+          isGroupActive ? 'text-zen-fg-muted' : 'text-zen-fg-subtle hover:text-zen-fg-muted'
         )}
       >
         <span>{group.label}</span>
         <ChevronDown
-          className={cn('h-4 w-4 transition-transform duration-200', isOpen && 'rotate-180')}
+          className={cn('h-3.5 w-3.5 transition-transform duration-200', isOpen && 'rotate-180')}
         />
       </button>
       <AnimatePresence initial={false}>
@@ -114,9 +123,10 @@ function AccordionGroup({
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
             className="overflow-hidden"
           >
-            <div className="flex flex-col gap-1 pl-3 py-1">
+            <div className="flex flex-col gap-0.5 pl-1 py-1">
               {group.items.map((item) => {
                 const isActive = pathname?.startsWith(item.href);
                 const Icon = item.icon;
@@ -125,11 +135,13 @@ function AccordionGroup({
                     key={item.href}
                     href={item.href}
                     className={cn(
-                      'flex items-center gap-3 px-3 py-2 rounded-zen-md transition-colors text-sm',
-                      isActive ? 'text-zen-primary bg-zen-primary-soft font-medium' : 'text-zen-fg-muted hover:text-zen-fg hover:bg-zen-bg-subtle'
+                      'flex items-center gap-3 px-3 py-2 rounded-zen-lg transition-colors text-[0.875rem]',
+                      isActive
+                        ? 'text-zen-secondary bg-zen-secondary-soft font-medium'
+                        : 'text-zen-fg-muted hover:text-zen-fg hover:bg-zen-bg-subtle/80'
                     )}
                   >
-                    <Icon className="h-4 w-4 shrink-0" />
+                    <Icon className="h-4 w-4 shrink-0 opacity-80" />
                     <span>{item.label}</span>
                   </Link>
                 );
@@ -147,6 +159,8 @@ export default function ZenNavigation() {
   const pathname = usePathname();
   // Expanded by default
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [notifyOpen, setNotifyOpen] = useState(false);
   
   // Track open accordions. Expand all by default
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
@@ -211,31 +225,149 @@ export default function ZenNavigation() {
 
   return (
     <>
-      {/* Mobile Top Navbar (Fallback when sidebar is hidden on small screens) */}
-      <nav 
-        className="md:hidden sticky top-0 z-50 h-16 w-full flex items-center justify-between px-4 shrink-0 bg-white border-b border-zen-border-soft"
+      {/* Mobile top chrome — hamburger + logo + notification */}
+      <nav
+        className="md:hidden sticky top-0 z-50 h-14 pt-safe w-full flex items-center justify-between px-4 shrink-0 bg-zen-surface/85 backdrop-blur-md border-b border-zen-border-soft"
+        aria-label="Mobile header"
       >
-        <Link href="/" className="flex items-center gap-2">
-          <Image src="/icons/icon-192.jpeg" alt="ZenU Logo" width={32} height={32} className="rounded-full shadow-zen-subtle" />
-          <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-zen-primary to-zen-secondary bg-clip-text text-transparent">
-            ZenU
-          </span>
-        </Link>
-        <button
-          onClick={handleSignOut}
-          className="text-zen-fg-muted hover:text-red-500 p-2 transition-colors"
-        >
-          <LogOut className="h-5 w-5" />
-        </button>
+        <div className="flex items-center gap-2 min-w-0">
+          <button
+            type="button"
+            aria-label="Open menu"
+            onClick={() => setMobileNavOpen(true)}
+            className="inline-flex h-10 w-10 items-center justify-center rounded-zen-full text-zen-fg-muted hover:bg-zen-bg-subtle hover:text-zen-fg active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-zen-primary focus-visible:outline-offset-2"
+          >
+            <Menu className="h-5 w-5" aria-hidden="true" />
+          </button>
+          <Link href="/" className="flex items-center gap-2 min-w-0">
+            <Image
+              src="/icons/icon-192.jpeg"
+              alt=""
+              width={28}
+              height={28}
+              className="rounded-full"
+            />
+            <span className="text-base font-semibold tracking-tight text-zen-fg truncate">
+              ZenU
+            </span>
+          </Link>
+        </div>
+
+        <div className="relative">
+          <button
+            type="button"
+            aria-label="Notifications"
+            aria-expanded={notifyOpen}
+            onClick={() => setNotifyOpen((v) => !v)}
+            className="inline-flex h-10 w-10 items-center justify-center rounded-zen-full text-zen-fg-muted hover:bg-zen-bg-subtle hover:text-zen-fg active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-zen-primary focus-visible:outline-offset-2"
+          >
+            <Bell className="h-5 w-5" aria-hidden="true" />
+          </button>
+          {notifyOpen ? (
+            <div
+              role="dialog"
+              aria-label="Notifications"
+              className="absolute right-0 top-12 z-30 w-56 rounded-zen-xl border border-zen-border-soft bg-zen-surface p-4 shadow-zen-elevated"
+            >
+              <p className="zen-body-sm text-zen-fg-muted text-center py-1">
+                You&apos;re all caught up.
+              </p>
+            </div>
+          ) : null}
+        </div>
       </nav>
+
+      <ZenSheet open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
+        <ZenSheetContent side="left" className="bg-zen-surface p-0 pt-safe flex flex-col">
+          <ZenSheetHeader className="px-5 pt-5 pb-3 text-left border-b border-zen-border-soft">
+            <ZenSheetTitle className="text-lg font-semibold text-zen-fg">Menu</ZenSheetTitle>
+          </ZenSheetHeader>
+          <div className="flex-1 overflow-y-auto px-3 py-4">
+            <Link
+              href="/"
+              onClick={() => setMobileNavOpen(false)}
+              className={cn(
+                'flex items-center gap-3 px-3 py-2.5 rounded-zen-lg text-sm mb-1',
+                pathname === '/'
+                  ? 'bg-zen-secondary-soft text-zen-secondary font-medium'
+                  : 'text-zen-fg-muted hover:bg-zen-bg-subtle',
+              )}
+            >
+              <Heart className="h-4 w-4" />
+              Home
+            </Link>
+            <Link
+              href="/chat"
+              onClick={() => setMobileNavOpen(false)}
+              className={cn(
+                'flex items-center gap-3 px-3 py-2.5 rounded-zen-lg text-sm mb-4',
+                pathname?.startsWith('/chat')
+                  ? 'bg-zen-secondary-soft text-zen-secondary font-medium'
+                  : 'text-zen-fg-muted hover:bg-zen-bg-subtle',
+              )}
+            >
+              <Bot className="h-4 w-4" />
+              Seviyan
+            </Link>
+            {NAV_GROUPS.map((group) => (
+              <div key={group.label} className="mb-4">
+                <p className="px-3 mb-1.5 text-[0.6875rem] font-semibold uppercase tracking-[0.1em] text-zen-fg-subtle">
+                  {group.label}
+                </p>
+                <div className="flex flex-col gap-0.5">
+                  {group.items.map((item) => {
+                    const Icon = item.icon;
+                    const active = pathname?.startsWith(item.href);
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => setMobileNavOpen(false)}
+                        className={cn(
+                          'flex items-center gap-3 px-3 py-2.5 rounded-zen-lg text-sm',
+                          active
+                            ? 'bg-zen-secondary-soft text-zen-secondary font-medium'
+                            : 'text-zen-fg-muted hover:bg-zen-bg-subtle hover:text-zen-fg',
+                        )}
+                      >
+                        <Icon className="h-4 w-4 shrink-0" />
+                        {item.label}
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="border-t border-zen-border-soft p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="h-9 w-9 rounded-full bg-zen-secondary-soft text-zen-secondary flex items-center justify-center text-sm font-semibold shrink-0">
+                  {displayName.charAt(0).toUpperCase()}
+                </div>
+                <span className="text-sm font-medium text-zen-fg truncate">{displayName}</span>
+              </div>
+              <button
+                type="button"
+                onClick={handleSignOut}
+                disabled={loading}
+                className="p-2 rounded-full text-zen-fg-subtle hover:text-zen-danger hover:bg-zen-bg-subtle"
+                aria-label="Sign out"
+              >
+                <LogOut className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        </ZenSheetContent>
+      </ZenSheet>
 
       {/* Desktop Sidebar */}
       <motion.aside
         initial={false}
-        animate={{ width: isCollapsed ? 80 : 260 }}
-        className="hidden md:flex flex-col h-full z-40 transition-all duration-300 shrink-0 overflow-hidden bg-white border-r border-zen-border-soft shadow-zen-subtle"
+        animate={{ width: isCollapsed ? 80 : 252 }}
+        className="hidden md:flex flex-col h-full z-40 transition-all duration-300 shrink-0 overflow-hidden bg-zen-surface/90 border-r border-zen-border-soft"
       >
-        <div className="flex items-center justify-between p-4 h-16 shrink-0 border-b border-zen-border-soft">
+        <div className="flex items-center justify-between p-4 h-16 shrink-0">
           <AnimatePresence>
             {!isCollapsed && (
               <motion.div
@@ -245,11 +377,10 @@ export default function ZenNavigation() {
                 className="overflow-hidden flex items-center gap-3 shrink-0"
               >
                 <Link href="/" className="flex items-center gap-3 group shrink-0">
-                  <div className="relative h-10 w-10 shrink-0">
-                    <Image src="/icons/icon-192.jpeg" alt="ZenU Logo" fill className="rounded-full object-cover shadow-zen-subtle" />
-                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-zen-primary to-zen-secondary opacity-0 blur-md group-hover:opacity-40 transition-opacity duration-300" />
+                  <div className="relative h-9 w-9 shrink-0">
+                    <Image src="/icons/icon-192.jpeg" alt="ZenU Logo" fill className="rounded-full object-cover" />
                   </div>
-                  <span className="text-2xl font-bold tracking-tight bg-gradient-to-r from-zen-primary to-zen-secondary bg-clip-text text-transparent">
+                  <span className="text-xl font-semibold tracking-tight text-zen-fg font-ui">
                     ZenU
                   </span>
                 </Link>
@@ -259,40 +390,44 @@ export default function ZenNavigation() {
           
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="p-2 rounded-zen-md text-zen-fg-muted hover:bg-zen-bg-subtle hover:text-zen-fg transition-colors mx-auto"
+            className="p-2 rounded-zen-md text-zen-fg-subtle hover:bg-zen-bg-subtle hover:text-zen-fg transition-colors mx-auto"
             title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
             {isCollapsed ? <PanelLeftOpen className="h-5 w-5" /> : <PanelLeftClose className="h-5 w-5" />}
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto overflow-x-hidden px-3 py-4 custom-scrollbar">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden px-3 py-3 custom-scrollbar">
           {user ? (
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-1">
               <Link
                 href="/"
                 className={cn(
-                  'flex items-center gap-3 rounded-zen-md transition-colors',
+                  'flex items-center gap-3 rounded-zen-lg transition-colors',
                   isCollapsed ? 'justify-center w-10 h-10 mx-auto' : 'px-3 py-2',
-                  pathname === '/' ? 'text-zen-primary bg-zen-primary-soft font-medium' : 'text-zen-fg-muted hover:bg-zen-bg-subtle hover:text-zen-fg'
+                  pathname === '/'
+                    ? 'text-zen-secondary bg-zen-secondary-soft font-medium'
+                    : 'text-zen-fg-muted hover:bg-zen-bg-subtle hover:text-zen-fg'
                 )}
                 title="Home"
               >
                 <Heart className={cn('shrink-0', isCollapsed ? 'h-5 w-5' : 'h-4 w-4')} />
-                {!isCollapsed && <span>Home</span>}
+                {!isCollapsed && <span className="text-[0.875rem]">Home</span>}
               </Link>
 
               <Link
                 href="/chat"
                 className={cn(
-                  'flex items-center gap-3 rounded-zen-md transition-colors mb-4',
+                  'flex items-center gap-3 rounded-zen-lg transition-colors mb-3',
                   isCollapsed ? 'justify-center w-10 h-10 mx-auto' : 'px-3 py-2',
-                  pathname?.startsWith('/chat') ? 'text-zen-primary bg-zen-primary-soft font-medium' : 'text-zen-fg-muted hover:bg-zen-bg-subtle hover:text-zen-fg'
+                  pathname?.startsWith('/chat')
+                    ? 'text-zen-secondary bg-zen-secondary-soft font-medium'
+                    : 'text-zen-fg-muted hover:bg-zen-bg-subtle hover:text-zen-fg'
                 )}
                 title="Seviyan"
               >
                 <Bot className={cn('shrink-0', isCollapsed ? 'h-5 w-5' : 'h-4 w-4')} />
-                {!isCollapsed && <span>Seviyan</span>}
+                {!isCollapsed && <span className="text-[0.875rem]">Seviyan</span>}
               </Link>
 
               {NAV_GROUPS.map((group) => (
@@ -321,36 +456,36 @@ export default function ZenNavigation() {
         </div>
 
         {user && (
-          <div className="shrink-0 p-3 border-t border-zen-border-soft overflow-hidden">
+          <div className="shrink-0 p-3 overflow-hidden">
             {isCollapsed ? (
               <div className="flex flex-col gap-2 items-center">
-                <div className="h-10 w-10 rounded-full bg-gradient-to-br from-zen-primary to-zen-secondary flex items-center justify-center text-white text-sm font-semibold shadow-zen-subtle shrink-0">
+                <div className="h-9 w-9 rounded-full bg-zen-secondary-soft text-zen-secondary flex items-center justify-center text-sm font-semibold shrink-0">
                   {displayName.charAt(0).toUpperCase()}
                 </div>
                 <button
                   onClick={handleSignOut}
                   disabled={loading}
-                  className="p-2 rounded-full text-zen-fg-muted hover:text-red-500 hover:bg-zen-bg-subtle transition-colors"
+                  className="p-2 rounded-full text-zen-fg-muted hover:text-zen-danger hover:bg-zen-bg-subtle transition-colors"
                   title="Sign out"
                 >
                   <LogOut className="h-5 w-5" />
                 </button>
               </div>
             ) : (
-              <div className="flex items-center justify-between gap-3 p-2 rounded-zen-xl bg-zen-bg-subtle border border-transparent hover:border-zen-border transition-colors w-full">
+              <div className="flex items-center justify-between gap-3 p-2 rounded-zen-xl w-full">
                 <div className="flex items-center gap-3 overflow-hidden">
-                  <div className="h-10 w-10 rounded-full bg-gradient-to-br from-zen-primary to-zen-secondary flex items-center justify-center text-white text-sm font-semibold shadow-zen-subtle shrink-0">
+                  <div className="h-9 w-9 rounded-full bg-zen-secondary-soft text-zen-secondary flex items-center justify-center text-sm font-semibold shrink-0">
                     {displayName.charAt(0).toUpperCase()}
                   </div>
                   <div className="flex flex-col overflow-hidden">
-                    <span className="text-sm font-semibold text-zen-fg truncate">{displayName}</span>
-                    <span className="text-xs text-zen-fg-muted truncate">Student</span>
+                    <span className="text-sm font-medium text-zen-fg truncate">{displayName}</span>
+                    <span className="text-xs text-zen-fg-subtle truncate">Student</span>
                   </div>
                 </div>
                 <button
                   onClick={handleSignOut}
                   disabled={loading}
-                  className="p-2 shrink-0 rounded-full text-zen-fg-muted hover:text-red-500 hover:bg-zen-border-soft transition-colors"
+                  className="p-2 shrink-0 rounded-full text-zen-fg-subtle hover:text-zen-danger hover:bg-zen-bg-subtle transition-colors"
                   title="Sign out"
                 >
                   <LogOut className="h-4 w-4" />
