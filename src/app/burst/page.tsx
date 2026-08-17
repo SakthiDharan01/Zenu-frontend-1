@@ -2,10 +2,8 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
 import { trackEngagement } from '@/lib/signals';
-import { ZenPage, ZenContainer, ZenButton, ZenTextarea } from '@/components/zen';
+import { ZenPage, ZenContainer, ZenButton, ZenTextarea, ZenBackLink } from '@/components/zen';
 import ModulePage from '@/components/ui/ModulePage';
 import { getTheme } from '@/lib/moduleThemes';
 
@@ -78,16 +76,7 @@ export default function BurstItOutPage() {
     <ModulePage theme={theme}>
       <ZenPage atmosphere="none" className="min-h-[calc(100dvh-4rem)]">
       <ZenContainer maxWidth="xl" className="relative py-10 flex flex-col items-center">
-        <Link
-          href="/"
-          aria-label="Back to dashboard"
-          className="absolute top-4 left-4 inline-flex items-center gap-2 px-3 py-2 rounded-zen-full glass-floating shadow-zen-floating text-sm font-medium text-zen-fg hover:bg-white/95 active:scale-[0.97] transition-all duration-zen-fast focus-visible:outline-2 focus-visible:outline-zen-primary"
-        >
-          <ArrowLeft className="w-4 h-4 text-zen-fg-muted" aria-hidden="true" />
-          <span className="hidden sm:inline text-zen-fg-muted">ZenU</span>
-          <span className="h-3 w-px bg-zen-border hidden sm:block" aria-hidden="true" />
-          <span>Burst</span>
-        </Link>
+        <ZenBackLink className="absolute top-4 left-4 z-10 rounded-zen-full px-3 glass-floating shadow-zen-floating" />
 
         <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-white text-center mt-10 mb-3">Burst it out</h1>
         <p className="text-lg md:text-xl text-purple-200 text-center mb-10 max-w-2xl">
