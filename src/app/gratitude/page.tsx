@@ -304,7 +304,7 @@ function GratitudePageInner() {
 
       <div className="relative z-10 mx-auto flex w-full max-w-[720px] flex-col items-center px-4 sm:px-6 lg:px-8">
         <div className="w-full">
-          <ZenBackLink className="-ml-2" />
+          <ZenBackLink section="Gratitude" className="mb-2" />
         </div>
 
         <GratitudeHeader

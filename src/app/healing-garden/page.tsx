@@ -238,7 +238,7 @@ export default function HealingGardenPage() {
       <div className="min-h-screen" style={{ background: 'transparent', color: theme.textPrimary }}>
         <div className="max-w-5xl mx-auto px-5 py-10 pb-20">
 
-        <ZenBackLink className="mb-8 text-[#ede4d3]/opacity-60 hover:text-[#ede4d3] hover:opacity-100" />
+        <ZenBackLink section="Healing Garden" className="mb-8" />
 
         {/* Header */}
         <header className="text-center mb-6">

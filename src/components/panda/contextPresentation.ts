@@ -132,6 +132,7 @@ const COMPANION_DENY = [
   /^\/breathing(\/|$)/,
   /^\/journal(\/|$)/,
   /^\/gratitude(\/|$)/,
+  /^\/burst(\/|$)/,
   /^\/dev\/panda(\/|$)/,
   /^\/chat(\/|$)/,
   /^\/signin(\/|$)/,

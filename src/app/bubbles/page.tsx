@@ -52,12 +52,8 @@ export default function BubblesPage() {
       </div>
 
       <ZenBackLink
-        className={cn(
-          'absolute left-3 top-3 z-30 rounded-zen-full px-3',
-          'border border-white/15 bg-black/35 text-white/90 backdrop-blur-md',
-          'hover:bg-black/50 hover:text-white',
-          'md:left-4 md:top-4',
-        )}
+        section="Bubbles"
+        className="absolute left-3 top-3 z-30 md:left-4 md:top-4"
       />
 
       <div className="relative z-10 flex min-h-0 flex-1 flex-col p-2 pt-14 md:p-3 md:pt-16">

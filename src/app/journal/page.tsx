@@ -124,7 +124,7 @@ function JournalContent() {
       </div>
 
       <div className="relative z-10 mx-auto w-full max-w-[1200px] space-y-6 px-4 sm:px-6 lg:px-8">
-        <ZenBackLink className="-ml-2" />
+        <ZenBackLink section="Journal" className="mb-2" />
 
         {loadError ? (
           <div className="rounded-zen-xl border border-zen-danger/20 bg-zen-danger-soft/40 px-5 py-4 text-center">

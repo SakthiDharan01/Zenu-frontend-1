@@ -7,7 +7,6 @@ import ZenFocusMode from '@/components/layout/ZenFocusMode';
 import {
   ZenPage,
   ZenButton,
-  ZenBackLink,
 } from '@/components/zen';
 import { apiClient } from '@/lib/apiClient';
 import type { Meditation } from '@/lib/types';
@@ -45,7 +44,7 @@ function MeditationPageInner() {
   const session = meditations[0] ?? null;
 
   return (
-    <ZenFocusMode title="Mindfulness Studio">
+    <ZenFocusMode title="Meditate">
       <ZenPage
         atmosphere="home"
         className={cn(
@@ -66,7 +65,6 @@ function MeditationPageInner() {
         </div>
 
         <div className="relative z-10 mx-auto w-full max-w-[1200px] px-4 sm:px-6 lg:px-8">
-          <ZenBackLink className="-ml-2 mb-4" />
           <header className="mx-auto max-w-3xl text-center">
             <p className="font-ui text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-zen-secondary md:text-[0.75rem]">
               Guided stillness

@@ -112,7 +112,7 @@ function BreathingPageInner() {
       </div>
 
       <div className="relative z-10 mx-auto w-full max-w-[1200px] px-4 sm:px-6 lg:px-8">
-        <ZenBackLink className="-ml-2 mb-4" />
+        <ZenBackLink section="Breathe" className="mb-4" />
         <BreathingHeader />
 
         {error ? (

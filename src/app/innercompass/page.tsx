@@ -26,7 +26,7 @@ const InnerCompass = () => {
         maxWidth="full"
         className="relative z-10 mx-auto w-full max-w-[1320px] pt-3 pb-6 px-4 sm:px-5 md:pt-6 md:pb-16 md:px-8 lg:px-10"
       >
-        <ZenBackLink className="mb-5 md:mb-6" />
+        <ZenBackLink section="Inner Compass" className="mb-5 md:mb-6" />
         <InnerCompassComponent />
       </ZenContainer>
     </ZenPage>
