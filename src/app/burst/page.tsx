@@ -35,6 +35,7 @@ export default function BurstItOutPage() {
   const [bubbleSize, setBubbleSize] = useState(96);
   const startTime = useRef(Date.now());
   const busy = phase !== 'typing' && phase !== 'affirming';
+  const theme = getTheme('burst');
 
   useEffect(() => {
     trackEngagement('burst_it_out', 'opened');
@@ -64,7 +65,6 @@ export default function BurstItOutPage() {
     setPhase('expanding');
     setBubbleSize(280);
     await sleep(reducedMotion ? 500 : 1100);
-    // Wait for user to pop — agency
   };
 
   const handlePop = async () => {
@@ -83,7 +83,6 @@ export default function BurstItOutPage() {
     startTime.current = Date.now();
   };
 
-  const theme = getTheme('burst');
   const statusLine =
     phase === 'traveling'
       ? 'Sending your thought into the bubble…'
@@ -92,16 +91,38 @@ export default function BurstItOutPage() {
         : null;
 
   return (
-    <ModulePage theme={theme}>
-      <ZenPage
-        atmosphere="none"
-        className="relative min-h-[calc(100dvh-4rem)] pb-[calc(5.5rem+env(safe-area-inset-bottom,0px))] md:pb-10"
+    <ModulePage
+      theme={theme}
+      className={cn(
+        // Same shell fill as Bubbles: cover main’s padding box so cream never peeks
+        'relative flex w-full flex-col overflow-x-hidden',
+        'max-md:absolute max-md:inset-0 max-md:overflow-y-auto',
+        'md:h-full md:min-h-0 md:flex-1',
+        // Keep composer/content clear of the floating bottom nav
+        'max-md:pb-[calc(5.5rem+env(safe-area-inset-bottom,0px)+1rem)]',
+        'md:pb-10',
+      )}
+    >
+      {/* Page shell — Back stays sticky in the scroll container, not inside the scene */}
+      <div
+        className={cn(
+          'sticky top-0 z-40 px-4 pt-3 pb-2 sm:px-6',
+          'supports-[backdrop-filter]:backdrop-blur-md',
+        )}
+        style={{
+          background:
+            'linear-gradient(180deg, rgba(10,5,20,0.92) 0%, rgba(30,16,53,0.78) 70%, rgba(30,16,53,0) 100%)',
+        }}
       >
-        <div className="relative z-10 mx-auto flex w-full max-w-3xl flex-col px-4 pt-5 sm:px-6 md:pt-8">
-          <ZenBackLink section="Burst" className="mb-6 self-start" />
+        <div className="mx-auto max-w-3xl">
+          <ZenBackLink section="Burst" />
+        </div>
+      </div>
 
-          <header className="text-center">
-            <p className="font-ui text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-violet-200/80">
+      <ZenPage atmosphere="none" className="relative w-full">
+        <div className="relative z-10 mx-auto flex w-full max-w-3xl flex-col px-4 pb-8 sm:px-6 md:pb-10">
+          <header className="pt-2 text-center md:pt-4">
+            <p className="font-ui text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-violet-200/85">
               Let it go
             </p>
             <h1
@@ -112,12 +133,11 @@ export default function BurstItOutPage() {
             >
               Burst it out
             </h1>
-            <p className="mx-auto mt-2 max-w-md font-ui text-sm leading-relaxed text-violet-100/75 md:text-[0.9375rem]">
+            <p className="mx-auto mt-2 max-w-md font-ui text-sm leading-relaxed text-violet-100/80 md:text-[0.9375rem]">
               Write what’s heavy. Watch it rise. Pop the bubble and leave it behind.
             </p>
           </header>
 
-          {/* One stage: bubble + companion */}
           <section className="mt-6 flex flex-col items-center md:mt-8">
             <BurstBubble phase={phase} size={bubbleSize} thought={thought} />
 
@@ -136,7 +156,7 @@ export default function BurstItOutPage() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="mt-3 font-ui text-sm italic text-violet-200/80"
+                  className="mt-3 font-ui text-sm italic text-violet-200/85"
                 >
                   {statusLine}
                 </motion.p>
@@ -182,7 +202,7 @@ export default function BurstItOutPage() {
                   <ZenButton
                     type="button"
                     variant="outline"
-                    className="mt-6 rounded-full border-white/25 bg-white/10 text-white hover:bg-white/16 hover:text-white"
+                    className="mt-6 rounded-full border-white/30 bg-white/10 text-white hover:bg-white/18 hover:text-white"
                     onClick={handleReset}
                   >
                     Release another thought
